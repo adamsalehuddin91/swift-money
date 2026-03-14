@@ -1,5 +1,6 @@
 import '../css/app.css';
 import './bootstrap';
+import { registerSW } from 'virtual:pwa-register';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -23,3 +24,8 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
+
+// Register PWA service worker
+if ('serviceWorker' in navigator) {
+    registerSW({ immediate: true });
+}
