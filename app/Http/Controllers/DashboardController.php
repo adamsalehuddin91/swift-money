@@ -37,12 +37,12 @@ class DashboardController extends Controller
         // Personal data (filtered by assigned_to / user_id)
         $myIncome = $this->incomeService->getTotalForUser($user->id, $monthYear);
         $mySummary = $this->billService->getBillSummary($familyId, $monthYear, $userName);
-        $myNetBalance = $myIncome - $mySummary['unpaid_bills'];
+        $myNetBalance = $myIncome - $mySummary['paid_bills'];
 
         // Family data (all members combined)
         $familyIncome = $this->incomeService->getTotalForFamily($familyId, $monthYear);
         $familySummary = $this->billService->getBillSummary($familyId, $monthYear);
-        $familyNetBalance = $familyIncome - $familySummary['unpaid_bills'];
+        $familyNetBalance = $familyIncome - $familySummary['paid_bills'];
 
         return Inertia::render('Dashboard', [
             'user' => [
