@@ -1,0 +1,48 @@
+FROM php:8.3-fpm-alpine AS base
+
+# Install system deps + PHP extensions
+RUN apk add --no-cache \
+    nginx supervisor curl zip unzip git \
+    libpng-dev libjpeg-turbo-dev freetype-dev \
+    oniguruma-dev libxml2-dev sqlite-dev \
+    nodejs npm \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_sqlite pdo_mysql mbstring xml gd bcmath opcache
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+# ── Dependencies ──
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+
+COPY package.json package-lock.json ./
+RUN npm ci --production=false
+
+# ── App source ──
+COPY . .
+
+# ── Build frontend ──
+RUN npm run build && rm -rf node_modules
+
+# ── Laravel optimizations ──
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache \
+    && php artisan storage:link
+
+# ── Permissions ──
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
+
+# ── Nginx config ──
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+
+# ── Supervisor config ──
+COPY docker/supervisord.conf /etc/supervisord.conf
+
+EXPOSE 80
+
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
