@@ -14,15 +14,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# ── Dependencies ──
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
-
-COPY package.json package-lock.json ./
-RUN npm ci --production=false
-
-# ── App source ──
+# ── App source first (so composer sees full autoload config) ──
 COPY . .
+
+# ── Dependencies ──
+RUN composer install --optimize-autoloader --no-interaction
+RUN npm ci --production=false
 
 # ── Build frontend ──
 RUN npm run build && rm -rf node_modules
