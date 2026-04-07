@@ -3,20 +3,40 @@ import { useState, useEffect } from 'react';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
     Zap, Heart, User, Plus, ChevronRight,
-    TrendingDown, Eye, EyeOff, Wallet, ArrowUpRight, X,
+    TrendingDown, TrendingUp, Eye, EyeOff, Wallet, ArrowUpRight, X,
     LogOut, Users, FileText, Bell, ShieldCheck,
-    Clock, DollarSign, Link2, Camera, Image, Trash2
+    Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil,
+    Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
+    PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar
 } from 'lucide-react';
+import {
+    LineChart, Line, BarChart, Bar, XAxis, YAxis,
+    CartesianGrid, Tooltip, ResponsiveContainer, Cell
+} from 'recharts';
 
 const categoryIcons = {
-    Sekolah: <GraduationCap size={16} className="text-blue-500" />,
-    Rumah: <Home size={16} className="text-indigo-500" />,
-    Insurance: <Heart size={16} className="text-red-500" />,
-    Coway: <Zap size={16} className="text-orange-500" />,
-    Lain2: <CreditCard size={16} className="text-slate-500" />,
+    Sekolah:    <GraduationCap size={16} className="text-blue-500" />,
+    Rumah:      <Home size={16} className="text-indigo-500" />,
+    Insurance:  <Heart size={16} className="text-red-500" />,
+    Coway:      <Zap size={16} className="text-orange-500" />,
+    Kereta:     <Car size={16} className="text-sky-500" />,
+    Utiliti:    <Droplets size={16} className="text-cyan-500" />,
+    Telefon:    <Smartphone size={16} className="text-violet-500" />,
+    Internet:   <Wifi size={16} className="text-teal-500" />,
+    Makanan:    <ShoppingCart size={16} className="text-lime-500" />,
+    Kesihatan:  <Activity size={16} className="text-pink-500" />,
+    Pelaburan:  <TrendingUp size={16} className="text-emerald-500" />,
+    Hiburan:    <Tv size={16} className="text-purple-500" />,
+    Minyak:     <Fuel size={16} className="text-amber-500" />,
+    Lain2:      <CreditCard size={16} className="text-slate-500" />,
 };
 
-const CATEGORIES = ['Sekolah', 'Rumah', 'Insurance', 'Coway', 'Lain2'];
+const CATEGORIES = [
+    'Rumah', 'Kereta', 'Sekolah', 'Insurance',
+    'Utiliti', 'Telefon', 'Internet', 'Minyak',
+    'Makanan', 'Kesihatan', 'Pelaburan', 'Hiburan',
+    'Coway', 'Lain2',
+];
 
 function formatMoney(amount, isHidden = false, isPrivate = false) {
     if (isHidden && isPrivate) return 'RM •••••';
@@ -85,6 +105,16 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
                     <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
+                <button
+                    type="button"
+                    onClick={() => setData('is_recurring', !data.is_recurring)}
+                    className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${data.is_recurring ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-slate-50 border-transparent text-slate-500'}`}
+                >
+                    <span className="flex items-center gap-2 text-sm font-bold"><RefreshCw size={14}/> Berulang setiap bulan</span>
+                    <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${data.is_recurring ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'}`}>
+                        {data.is_recurring && <CheckCheck size={11} className="text-white" />}
+                    </span>
+                </button>
                 <button type="submit" disabled={processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Saving...' : isEdit ? 'Kemaskini' : 'Simpan Pendapatan'}
                 </button>
@@ -98,17 +128,37 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
     );
 }
 
-// ─── Bill Template Modal ───
-function BillModal({ show, onClose, allDebts }) {
-    const { data, setData, post, processing, reset } = useForm({
+// ─── Bill Template Modal (Add / Edit) ───
+function BillModal({ show, onClose, allDebts, editTemplate }) {
+    const isEdit = !!editTemplate;
+    const { data, setData, post, put, delete: destroy, processing, reset } = useForm({
         title: '', default_amount: '', category: 'Rumah', assigned_to: 'Abg', debt_id: '',
     });
+
+    useEffect(() => {
+        if (editTemplate) {
+            setData({
+                title: editTemplate.title,
+                default_amount: editTemplate.default_amount,
+                category: editTemplate.category,
+                assigned_to: editTemplate.assigned_to,
+                debt_id: editTemplate.debt_id || '',
+            });
+        } else {
+            reset();
+        }
+    }, [editTemplate, show]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('bills.templates.store'), { onSuccess: () => { reset(); onClose(); } });
+        if (isEdit) {
+            put(route('bills.templates.update', editTemplate.id), { onSuccess: () => { reset(); onClose(); } });
+        } else {
+            post(route('bills.templates.store'), { onSuccess: () => { reset(); onClose(); } });
+        }
     };
     return (
-        <Modal show={show} onClose={onClose} title="Tambah Komitmen">
+        <Modal show={show} onClose={onClose} title={isEdit ? 'Edit Komitmen' : 'Tambah Komitmen'}>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Tajuk</label>
@@ -143,24 +193,43 @@ function BillModal({ show, onClose, allDebts }) {
                     </div>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
-                    {processing ? 'Saving...' : 'Tambah Komitmen'}
+                    {processing ? 'Saving...' : isEdit ? 'Kemaskini Komitmen' : 'Tambah Komitmen'}
                 </button>
+                {isEdit && (
+                    <button type="button" disabled={processing} onClick={() => destroy(route('bills.templates.destroy', editTemplate.id), { onSuccess: () => { reset(); onClose(); } })} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all disabled:opacity-50">
+                        Padam Komitmen
+                    </button>
+                )}
             </form>
         </Modal>
     );
 }
 
-// ─── Add Debt Modal ───
-function DebtModal({ show, onClose }) {
-    const { data, setData, post, processing, reset } = useForm({
+// ─── Add / Edit Debt Modal ───
+function DebtModal({ show, onClose, editDebt }) {
+    const isEdit = !!editDebt;
+    const { data, setData, post, put, delete: destroy, processing, reset } = useForm({
         title: '', total_amount: '', type: 'fixed',
     });
+
+    useEffect(() => {
+        if (editDebt) {
+            setData({ title: editDebt.title, total_amount: editDebt.total, type: editDebt.type });
+        } else {
+            reset();
+        }
+    }, [editDebt, show]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('debts.store'), { onSuccess: () => { reset(); onClose(); } });
+        if (isEdit) {
+            put(route('debts.update', editDebt.id), { onSuccess: () => { reset(); onClose(); } });
+        } else {
+            post(route('debts.store'), { onSuccess: () => { reset(); onClose(); } });
+        }
     };
     return (
-        <Modal show={show} onClose={onClose} title="Tambah Hutang">
+        <Modal show={show} onClose={onClose} title={isEdit ? 'Edit Hutang' : 'Tambah Hutang'}>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Hutang</label>
@@ -178,8 +247,13 @@ function DebtModal({ show, onClose }) {
                     </select>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-orange-500 text-white font-bold p-4 rounded-2xl shadow-lg shadow-orange-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
-                    {processing ? 'Saving...' : 'Simpan Hutang'}
+                    {processing ? 'Saving...' : isEdit ? 'Kemaskini Hutang' : 'Simpan Hutang'}
                 </button>
+                {isEdit && (
+                    <button type="button" disabled={processing} onClick={() => destroy(route('debts.destroy', editDebt.id), { onSuccess: () => { reset(); onClose(); } })} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all disabled:opacity-50">
+                        Padam Hutang
+                    </button>
+                )}
             </form>
         </Modal>
     );
@@ -319,7 +393,7 @@ function ReceiptModal({ show, onClose, bill }) {
         <Modal show={show} onClose={onClose} title={`Resit: ${bill?.title || ''}`}>
             {bill?.receipt_path ? (
                 <div className="space-y-4">
-                    <img src={`/storage/${bill.receipt_path}`} alt="Resit" className="w-full rounded-2xl shadow-sm border border-slate-100" />
+                    <img src={route('bills.receipt.view', bill.id)} alt="Resit" className="w-full rounded-2xl shadow-sm border border-slate-100" />
                     <div className="grid grid-cols-2 gap-3">
                         <label className="flex items-center justify-center gap-2 text-[10px] font-bold text-indigo-600 bg-indigo-50 py-3 rounded-xl cursor-pointer active:scale-95 transition-all">
                             <Camera size={14}/> Tukar Resit
@@ -343,6 +417,202 @@ function ReceiptModal({ show, onClose, bill }) {
                 </div>
             )}
         </Modal>
+    );
+}
+
+// ─── Savings Goal Modal (Add / Edit) ───
+function SavingsModal({ show, onClose, editGoal }) {
+    const isEdit = !!editGoal;
+    const { data, setData, post, put, delete: destroy, processing, reset } = useForm({
+        title: '', target_amount: '', deadline: '', emoji: '💰',
+    });
+
+    useEffect(() => {
+        if (editGoal) {
+            setData({ title: editGoal.title, target_amount: editGoal.target, deadline: editGoal.deadline || '', emoji: editGoal.emoji });
+        } else {
+            reset();
+        }
+    }, [editGoal, show]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (isEdit) {
+            put(route('savings.update', editGoal.id), { onSuccess: () => { reset(); onClose(); } });
+        } else {
+            post(route('savings.store'), { onSuccess: () => { reset(); onClose(); } });
+        }
+    };
+
+    const EMOJIS = ['💰', '🏠', '🚗', '✈️', '📱', '🎓', '💍', '🏖️', '💊', '🛒'];
+
+    return (
+        <Modal show={show} onClose={onClose} title={isEdit ? 'Edit Simpanan' : 'Tambah Simpanan'}>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Emoji</label>
+                    <div className="flex gap-2 flex-wrap mt-2">
+                        {EMOJIS.map(e => (
+                            <button key={e} type="button" onClick={() => setData('emoji', e)}
+                                className={`text-xl p-2 rounded-2xl transition-all ${data.emoji === e ? 'bg-indigo-100 ring-2 ring-indigo-400' : 'bg-slate-50'}`}>
+                                {e}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Simpanan</label>
+                    <input type="text" placeholder="e.g. Dana Kecemasan, DP Rumah" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Target (RM)</label>
+                        <input type="number" step="1" placeholder="10000" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.target_amount} onChange={(e) => setData('target_amount', e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Tarikh Target</label>
+                        <input type="date" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} />
+                    </div>
+                </div>
+                <button type="submit" disabled={processing} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-emerald-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
+                    {processing ? 'Saving...' : isEdit ? 'Kemaskini Simpanan' : 'Tambah Simpanan'}
+                </button>
+                {isEdit && (
+                    <button type="button" disabled={processing} onClick={() => destroy(route('savings.destroy', editGoal.id), { onSuccess: () => { reset(); onClose(); } })} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all disabled:opacity-50">
+                        Padam Simpanan
+                    </button>
+                )}
+            </form>
+        </Modal>
+    );
+}
+
+// ─── Savings Contribute Modal ───
+function SavingsContributeModal({ show, onClose, goal }) {
+    const { data, setData, post, processing, reset } = useForm({ amount: '', note: '' });
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('savings.contribute', goal.id), { onSuccess: () => { reset(); onClose(); } });
+    };
+    return (
+        <Modal show={show} onClose={onClose} title={`Tambah: ${goal?.title || ''}`}>
+            <div className="mb-4 p-4 bg-emerald-50 rounded-2xl flex items-center justify-between">
+                <div>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase">Terkumpul</p>
+                    <p className="text-sm font-black text-emerald-600">{formatMoney(goal?.saved || 0)} / {formatMoney(goal?.target || 0)}</p>
+                </div>
+                <span className="text-3xl">{goal?.emoji}</span>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                </div>
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nota (optional)</label>
+                    <input type="text" placeholder="e.g. Lebihan gaji" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
+                </div>
+                <button type="submit" disabled={processing} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-emerald-200 active:scale-95 transition-all disabled:opacity-50">
+                    {processing ? 'Saving...' : 'Tambah Simpanan'}
+                </button>
+            </form>
+        </Modal>
+    );
+}
+
+// ─── Analytics View ───
+function AnalyticsView({ familyId }) {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!familyId) return;
+        setLoading(true);
+        fetch(route('analytics'))
+            .then(r => r.json())
+            .then(d => { setData(d); setLoading(false); })
+            .catch(() => setLoading(false));
+    }, [familyId]);
+
+    const COLORS = ['#6366f1', '#f97316', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16'];
+
+    if (loading) return <div className="flex items-center justify-center h-64"><p className="text-slate-400 text-sm">Memuatkan data...</p></div>;
+    if (!data) return null;
+
+    const maxVal = Math.max(...(data.trend || []).map(d => Math.max(d.income, d.bills)));
+
+    return (
+        <div className="p-6 pt-16 space-y-8">
+            <div>
+                <h2 className="text-xl font-black text-slate-800 tracking-tighter">Analitik</h2>
+                <p className="text-slate-400 text-xs font-medium mt-1">6 bulan terakhir</p>
+            </div>
+
+            {/* Trend Chart */}
+            <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Pendapatan vs Komitmen</h3>
+                <ResponsiveContainer width="100%" height={180}>
+                    <LineChart data={data.trend} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <XAxis dataKey="month" tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
+                        <Tooltip formatter={(v, n) => [`RM ${Number(v).toLocaleString()}`, n === 'income' ? 'Pendapatan' : n === 'bills' ? 'Komitmen' : 'Simpan']}
+                            contentStyle={{ borderRadius: 16, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', fontSize: 11 }} />
+                        <Line type="monotone" dataKey="income" stroke="#6366f1" strokeWidth={2.5} dot={{ r: 3, fill: '#6366f1' }} name="income" />
+                        <Line type="monotone" dataKey="bills" stroke="#f97316" strokeWidth={2.5} dot={{ r: 3, fill: '#f97316' }} name="bills" />
+                        <Line type="monotone" dataKey="saved" stroke="#10b981" strokeWidth={2} strokeDasharray="4 2" dot={false} name="saved" />
+                    </LineChart>
+                </ResponsiveContainer>
+                <div className="flex gap-4 mt-3 justify-center">
+                    {[['#6366f1','Pendapatan'],['#f97316','Komitmen'],['#10b981','Simpan']].map(([c,l]) => (
+                        <div key={l} className="flex items-center gap-1.5">
+                            <div className="w-3 h-1.5 rounded-full" style={{ background: c }}></div>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">{l}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Monthly savings bars */}
+            <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Lebihan Bulanan</h3>
+                <ResponsiveContainer width="100%" height={140}>
+                    <BarChart data={data.trend} margin={{ top: 0, right: 5, left: -20, bottom: 0 }} barSize={24}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                        <XAxis dataKey="month" tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={v => `${(v/1000).toFixed(0)}K`} />
+                        <Tooltip formatter={(v) => [`RM ${Number(v).toLocaleString()}`, 'Lebihan']}
+                            contentStyle={{ borderRadius: 16, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', fontSize: 11 }} />
+                        <Bar dataKey="saved" radius={[8, 8, 0, 0]}>
+                            {data.trend.map((_, i) => <Cell key={i} fill={i === data.trend.length - 1 ? '#6366f1' : '#e0e7ff'} />)}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
+
+            {/* Category breakdown */}
+            {data.breakdown?.length > 0 && (
+                <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Breakdown Kategori (Bulan Ini)</h3>
+                    <div className="space-y-3">
+                        {data.breakdown.map((item, i) => {
+                            const max = data.breakdown[0]?.amount || 1;
+                            return (
+                                <div key={item.category}>
+                                    <div className="flex justify-between mb-1">
+                                        <span className="text-xs font-bold text-slate-600">{item.category}</span>
+                                        <span className="text-xs font-black text-slate-700">RM {Number(item.amount).toLocaleString()}</span>
+                                    </div>
+                                    <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
+                                        <div className="h-full rounded-full transition-all" style={{ width: `${(item.amount / max) * 100}%`, background: COLORS[i % COLORS.length] }}></div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -429,7 +699,7 @@ function ProfileView({ user, summary, isHidden }) {
 }
 
 // ─── Main Dashboard ───
-export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup }) {
+export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, savings_goals }) {
     const [isHidden, setIsHidden] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
     const [viewMode, setViewMode] = useState('saya'); // 'saya' or 'keluarga'
@@ -439,6 +709,12 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [selectedDebt, setSelectedDebt] = useState(null);
+    const [editDebt, setEditDebt] = useState(null);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [showSavingsModal, setShowSavingsModal] = useState(false);
+    const [editGoal, setEditGoal] = useState(null);
+    const [showContributeModal, setShowContributeModal] = useState(false);
+    const [selectedGoal, setSelectedGoal] = useState(null);
     const [selectedIncome, setSelectedIncome] = useState(null);
     const [showReceiptModal, setShowReceiptModal] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null);
@@ -502,8 +778,10 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
             <div className="max-w-md mx-auto bg-slate-50 min-h-screen pb-28 font-sans text-slate-900 overflow-x-hidden relative">
 
                 <IncomeModal show={showIncomeModal} onClose={() => { setShowIncomeModal(false); setSelectedIncome(null); }} monthYear={monthYear} editIncome={selectedIncome} />
-                <BillModal show={showBillModal} onClose={() => setShowBillModal(false)} allDebts={all_debts} />
-                <DebtModal show={showDebtModal} onClose={() => setShowDebtModal(false)} />
+                <BillModal show={showBillModal} onClose={() => { setShowBillModal(false); setSelectedTemplate(null); }} allDebts={all_debts} editTemplate={selectedTemplate} />
+                <DebtModal show={showDebtModal} onClose={() => { setShowDebtModal(false); setEditDebt(null); }} editDebt={editDebt} />
+                <SavingsModal show={showSavingsModal} onClose={() => { setShowSavingsModal(false); setEditGoal(null); }} editGoal={editGoal} />
+                <SavingsContributeModal show={showContributeModal} onClose={() => { setShowContributeModal(false); setSelectedGoal(null); }} goal={selectedGoal} />
                 <PaymentModal show={showPaymentModal} onClose={() => { setShowPaymentModal(false); setSelectedDebt(null); }} debt={selectedDebt} />
                 <HistoryModal show={showHistoryModal} onClose={() => { setShowHistoryModal(false); setSelectedDebt(null); }} debt={selectedDebt} />
                 <ReceiptModal show={showReceiptModal} onClose={() => { setShowReceiptModal(false); setSelectedBill(null); }} bill={selectedBill} />
@@ -677,6 +955,65 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     <button onClick={() => openHistory(debt)} className="flex-1 text-[10px] font-bold text-slate-500 bg-slate-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                         <Clock size={12}/> Sejarah
                                                     </button>
+                                                    <button onClick={() => { setEditDebt(debt); setShowDebtModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <Pencil size={12}/> Edit
+                                                    </button>
+                                                    <button onClick={() => { if (confirm('Mark hutang ini selesai?')) router.post(route('debts.settle', debt.id), {}, { preserveScroll: true }); }} className="flex-1 text-[10px] font-bold text-green-600 bg-green-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <CheckCheck size={12}/> Selesai
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
+
+                            {/* Savings Goals */}
+                            <section>
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <PiggyBank size={14} className="text-emerald-500" /> Simpanan
+                                    </h3>
+                                    <button onClick={() => setShowSavingsModal(true)} className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg">
+                                        <Plus size={12}/> TAMBAH
+                                    </button>
+                                </div>
+                                {(savings_goals || []).length === 0 ? (
+                                    <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 text-center">
+                                        <p className="text-slate-400 text-xs">Tiada sasaran simpanan</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {(savings_goals || []).map(goal => (
+                                            <div key={goal.id} className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-100">
+                                                <div className="flex justify-between items-start mb-2.5">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-2xl">{goal.emoji}</span>
+                                                        <div>
+                                                            <h4 className="font-bold text-slate-700 text-[13px]">{goal.title}</h4>
+                                                            {goal.deadline && (
+                                                                <p className="text-[9px] text-slate-400 font-bold uppercase flex items-center gap-1">
+                                                                    <Calendar size={9}/> {new Date(goal.deadline).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-[11px] font-black text-emerald-600">{goal.pct}%</p>
+                                                </div>
+                                                <div className="w-full bg-slate-50 h-2 rounded-full overflow-hidden border border-slate-100/50">
+                                                    <div className="bg-emerald-400 h-full rounded-full transition-all duration-1000" style={{ width: `${goal.pct}%` }}></div>
+                                                </div>
+                                                <div className="flex justify-between mt-2">
+                                                    <p className="text-[8px] text-slate-400 font-bold">{formatMoney(goal.saved)} / {formatMoney(goal.target)}</p>
+                                                    <p className="text-[8px] text-slate-400 font-bold">Baki: {formatMoney(goal.remaining)}</p>
+                                                </div>
+                                                <div className="flex gap-2 mt-3 pt-3 border-t border-slate-50">
+                                                    <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <Plus size={12}/> Tambah
+                                                    </button>
+                                                    <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <Pencil size={12}/> Edit
+                                                    </button>
                                                 </div>
                                             </div>
                                         ))}
@@ -740,7 +1077,12 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                         >
                                                             {bill.receipt_path ? <Image size={14} /> : <Camera size={14} />}
                                                         </button>
-                                                        <ChevronRight size={16} className="text-slate-300" />
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); setSelectedTemplate({ id: bill.template_id, title: bill.title, default_amount: bill.default_amount, category: bill.category, assigned_to: bill.assigned, debt_id: bill.debt_id || '' }); setShowBillModal(true); }}
+                                                            className="p-1.5 rounded-xl bg-slate-50 text-slate-400 active:scale-90 transition-all"
+                                                        >
+                                                            <Pencil size={14} />
+                                                        </button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -750,6 +1092,79 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             })}
                         </div>
                     </>
+                ) : activeTab === 'analytics' ? (
+                    <AnalyticsView familyId={user?.family_id} />
+                ) : activeTab === 'savings' ? (
+                    <div className="p-6 pt-16 space-y-6">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h2 className="text-xl font-black text-slate-800 tracking-tighter">Simpanan</h2>
+                                <p className="text-slate-400 text-xs mt-1">Sasaran & perkembangan</p>
+                            </div>
+                            <button onClick={() => setShowSavingsModal(true)} className="flex items-center gap-1 bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-2xl shadow-md shadow-emerald-200 active:scale-95 transition-all">
+                                <Plus size={14}/> Baru
+                            </button>
+                        </div>
+                        {(savings_goals || []).length === 0 ? (
+                            <div className="bg-white rounded-[28px] p-10 shadow-sm border border-slate-100 text-center space-y-3">
+                                <span className="text-5xl">🐷</span>
+                                <p className="text-slate-400 text-sm font-medium">Belum ada sasaran simpanan</p>
+                                <button onClick={() => setShowSavingsModal(true)} className="text-emerald-600 font-bold text-xs bg-emerald-50 px-4 py-2 rounded-xl">
+                                    Tambah Pertama
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {/* Summary bar */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Terkumpul</p>
+                                        <p className="text-sm font-black text-emerald-600">{formatMoney((savings_goals||[]).reduce((a,g)=>a+g.saved,0))}</p>
+                                    </div>
+                                    <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Target</p>
+                                        <p className="text-sm font-black text-slate-700">{formatMoney((savings_goals||[]).reduce((a,g)=>a+g.target,0))}</p>
+                                    </div>
+                                </div>
+                                {(savings_goals || []).map(goal => (
+                                    <div key={goal.id} className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-100">
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-3xl">{goal.emoji}</span>
+                                                <div>
+                                                    <h4 className="font-bold text-slate-700">{goal.title}</h4>
+                                                    {goal.deadline && (
+                                                        <p className="text-[9px] text-slate-400 font-bold flex items-center gap-1 mt-0.5">
+                                                            <Calendar size={9}/> {new Date(goal.deadline).toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-lg font-black text-emerald-600">{goal.pct}%</p>
+                                                <p className="text-[9px] text-slate-400 font-bold">selesai</p>
+                                            </div>
+                                        </div>
+                                        <div className="w-full bg-slate-50 h-3 rounded-full overflow-hidden">
+                                            <div className="bg-emerald-400 h-full rounded-full transition-all duration-1000" style={{ width: `${goal.pct}%` }}></div>
+                                        </div>
+                                        <div className="flex justify-between mt-2 mb-3">
+                                            <p className="text-xs font-black text-emerald-600">{formatMoney(goal.saved)}</p>
+                                            <p className="text-xs font-black text-slate-400">{formatMoney(goal.target)}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                <Plus size={12}/> Tambah Simpanan
+                                            </button>
+                                            <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="px-4 text-[10px] font-bold text-slate-500 bg-slate-50 py-2.5 rounded-xl flex items-center justify-center active:scale-95 transition-all">
+                                                <Pencil size={12}/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     <ProfileView user={user} summary={s} isHidden={isHidden} />
                 )}
@@ -761,8 +1176,16 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             <Home size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Home</span>
                         </button>
+                        <button onClick={() => setActiveTab('analytics')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'analytics' ? 'text-indigo-600' : 'text-slate-400'}`}>
+                            <BarChart2 size={22} strokeWidth={2.5} />
+                            <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Analitik</span>
+                        </button>
                         <button onClick={() => setShowBillModal(true)} className="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg shadow-indigo-200 -mt-12 active:scale-90 transition-all border-4 border-slate-50">
                             <Plus size={24} strokeWidth={3} />
+                        </button>
+                        <button onClick={() => setActiveTab('savings')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'savings' ? 'text-emerald-600' : 'text-slate-400'}`}>
+                            <PiggyBank size={22} strokeWidth={2.5} />
+                            <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Simpan</span>
                         </button>
                         <button onClick={() => setActiveTab('user')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'user' ? 'text-indigo-600' : 'text-slate-400'}`}>
                             <User size={22} strokeWidth={2.5} />

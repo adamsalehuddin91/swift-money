@@ -13,6 +13,7 @@ class DebtService
     {
         return Debt::where('family_id', $familyId)
             ->where('current_balance', '>', 0)
+            ->select(['id', 'title', 'total_amount', 'current_balance', 'type'])
             ->get()
             ->map(fn ($debt) => [
                 'id' => $debt->id,

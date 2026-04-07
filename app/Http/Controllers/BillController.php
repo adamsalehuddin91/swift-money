@@ -74,7 +74,11 @@ class BillController extends Controller
         abort_unless($template->family_id === $request->user()->family_id, 403);
 
         $validated = $request->validate([
-            'assigned_to' => 'required|in:Abg,Ayg',
+            'title'          => 'sometimes|required|string|max:255',
+            'default_amount' => 'sometimes|required|numeric|min:0.01',
+            'category'       => 'sometimes|required|string|max:255',
+            'assigned_to'    => 'sometimes|required|in:Abg,Ayg',
+            'debt_id'        => ['sometimes', 'nullable', Rule::exists('debts', 'id')->where('family_id', $request->user()->family_id)],
         ]);
 
         $this->billService->updateTemplate($template, $validated);
@@ -105,10 +109,10 @@ class BillController extends Controller
 
         // Delete old receipt if exists
         if ($record->receipt_path) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($record->receipt_path);
+            \Illuminate\Support\Facades\Storage::disk('local')->delete($record->receipt_path);
         }
 
-        $path = $request->file('receipt')->store('receipts', 'public');
+        $path = $request->file('receipt')->store('receipts', 'local');
         $record->update(['receipt_path' => $path]);
 
         return back();
@@ -119,9 +123,26 @@ class BillController extends Controller
         abort_unless($record->template->family_id === $request->user()->family_id, 403);
 
         if ($record->receipt_path) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($record->receipt_path);
+            \Illuminate\Support\Facades\Storage::disk('local')->delete($record->receipt_path);
             $record->update(['receipt_path' => null]);
         }
+
+        return back();
+    }
+
+    public function viewReceipt(Request $request, BillRecord $record)
+    {
+        abort_unless($record->template->family_id === $request->user()->family_id, 403);
+        abort_unless($record->receipt_path, 404);
+
+        return \Illuminate\Support\Facades\Storage::disk('local')->response($record->receipt_path);
+    }
+
+    public function archiveTemplate(Request $request, BillTemplate $template)
+    {
+        abort_unless($template->family_id === $request->user()->family_id, 403);
+
+        $template->update(['is_active' => false]);
 
         return back();
     }

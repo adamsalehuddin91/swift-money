@@ -7,9 +7,13 @@ if [ -d /app/storage/db ]; then
     [ -f /app/storage/db/database.sqlite ] && chmod 666 /app/storage/db/database.sqlite
 fi
 
-if [ -d /app/storage/app/public/receipts ]; then
-    chown -R www-data:www-data /app/storage/app/public/receipts
-    chmod -R 775 /app/storage/app/public/receipts
+# Private receipts storage (not public)
+if [ -d /app/storage/app/receipts ]; then
+    chown -R www-data:www-data /app/storage/app/receipts
+    chmod -R 775 /app/storage/app/receipts
 fi
+
+# Run migrations automatically on every deploy
+php artisan migrate --force
 
 exec supervisord -c /etc/supervisord.conf

@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Models\BillRecord;
 use App\Models\BillTemplate;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class BillService
 {
@@ -24,10 +25,8 @@ class BillService
             ->get();
     }
 
-    public function getCategorizedBills(int $familyId, string $monthYear, ?string $assignedTo = null): array
+    public function getCategorizedBills(Collection $records, ?string $assignedTo = null): array
     {
-        $records = $this->getRecordsForMonth($familyId, $monthYear);
-
         if ($assignedTo) {
             $records = $records->filter(fn ($r) => $r->template->assigned_to === $assignedTo);
         }
@@ -45,14 +44,13 @@ class BillService
                 'debt_id' => $r->template->debt_id,
                 'debt_title' => $r->template->debt?->title,
                 'receipt_path' => $r->receipt_path,
+                'default_amount' => (float) $r->template->default_amount,
             ])->values())
             ->toArray();
     }
 
-    public function getBillSummary(int $familyId, string $monthYear, ?string $assignedTo = null): array
+    public function getBillSummary(Collection $records, ?string $assignedTo = null): array
     {
-        $records = $this->getRecordsForMonth($familyId, $monthYear);
-
         if ($assignedTo) {
             $records = $records->filter(fn ($r) => $r->template->assigned_to === $assignedTo);
         }
@@ -73,6 +71,15 @@ class BillService
     public function updateTemplate(BillTemplate $template, array $data): BillTemplate
     {
         $template->update($data);
+
+        // Sync current month's unpaid record if default_amount changed
+        if (isset($data['default_amount'])) {
+            BillRecord::where('bill_template_id', $template->id)
+                ->where('month_year', now()->format('m-Y'))
+                ->where('is_paid', false)
+                ->update(['actual_amount' => $data['default_amount']]);
+        }
+
         return $template->fresh();
     }
 
@@ -88,11 +95,19 @@ class BillService
 
     public function createTemplate(array $data): BillTemplate
     {
-        return BillTemplate::create($data);
+        $template = BillTemplate::create($data);
+        // Invalidate cache so the new template gets a record on next dashboard load
+        Cache::forget("bills_generated_{$data['family_id']}_" . now()->format('m-Y'));
+        return $template;
     }
 
     public function generateMonthlyRecords(int $familyId, string $monthYear): int
     {
+        $cacheKey = "bills_generated_{$familyId}_{$monthYear}";
+        if (Cache::has($cacheKey)) {
+            return 0;
+        }
+
         $templates = BillTemplate::where('family_id', $familyId)
             ->where('is_active', true)
             ->get();
@@ -114,6 +129,8 @@ class BillService
                 $created++;
             }
         }
+
+        Cache::put($cacheKey, true, now()->endOfMonth()->addDay());
 
         return $created;
     }
