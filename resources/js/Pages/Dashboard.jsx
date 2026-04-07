@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
     Zap, Heart, User, Plus, ChevronRight,
-    TrendingDown, TrendingUp, Eye, EyeOff, Wallet, ArrowUpRight, X,
+    TrendingDown, TrendingUp, Eye, EyeOff, Wallet, ArrowUpRight, X, ChevronLeft,
     LogOut, Users, FileText, Bell, ShieldCheck,
     Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil,
     Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
-    PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar
+    PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar,
+    KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame
 } from 'lucide-react';
 import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis,
@@ -616,35 +617,172 @@ function AnalyticsView({ familyId }) {
     );
 }
 
-// ─── Profile View ───
-function ProfileView({ user, summary, isHidden }) {
-    const totalIncome = summary?.total_income || 0;
-    const totalBills = summary?.total_bills || 0;
-    const burnRate = totalIncome > 0 ? Math.round((totalBills / totalIncome) * 100) : 0;
+// ─── Edit Profile Modal ───
+function EditProfileModal({ show, onClose, user }) {
+    const [tab, setTab] = useState('profil');
+    const profileForm = useForm({ name: user?.name || '', email: user?.email || '' });
+    const passwordForm = useForm({ current_password: '', password: '', password_confirmation: '' });
+
+    useEffect(() => {
+        if (show) {
+            profileForm.setData({ name: user?.name || '', email: user?.email || '' });
+            passwordForm.reset();
+        }
+    }, [show]);
+
+    const handleProfileSubmit = (e) => {
+        e.preventDefault();
+        profileForm.patch(route('profile.update'), { onSuccess: () => onClose() });
+    };
+
+    const handlePasswordSubmit = (e) => {
+        e.preventDefault();
+        passwordForm.put(route('password.update'), { onSuccess: () => { passwordForm.reset(); onClose(); } });
+    };
 
     return (
-        <div className="p-6 pt-16 space-y-8">
-            <div className="flex flex-col items-center text-center space-y-4">
-                <div className="relative">
-                    <div className="w-24 h-24 bg-indigo-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-2xl border-4 border-white uppercase">
-                        {user?.name?.substring(0, 3) || 'USR'}
+        <Modal show={show} onClose={onClose} title="Edit Profil">
+            {/* Tab toggle */}
+            <div className="flex bg-slate-100 rounded-2xl p-1 mb-5">
+                <button onClick={() => setTab('profil')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'profil' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}>
+                    Maklumat
+                </button>
+                <button onClick={() => setTab('password')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'password' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}>
+                    Password
+                </button>
+            </div>
+
+            {tab === 'profil' ? (
+                <form onSubmit={handleProfileSubmit} className="space-y-4">
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Paparan</label>
+                        <input type="text" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.name} onChange={e => profileForm.setData('name', e.target.value)} />
+                        <p className="text-[9px] text-amber-500 font-bold ml-1 mt-1">⚠️ Nama ini digunakan untuk assignment bil (Abg/Ayg). Tukar berhati-hati.</p>
                     </div>
-                    <div className="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white shadow-sm"></div>
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Email</label>
+                        <input type="email" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.email} onChange={e => profileForm.setData('email', e.target.value)} />
+                    </div>
+                    {profileForm.errors.name && <p className="text-xs text-red-500 ml-1">{profileForm.errors.name}</p>}
+                    {profileForm.errors.email && <p className="text-xs text-red-500 ml-1">{profileForm.errors.email}</p>}
+                    <button type="submit" disabled={profileForm.processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50">
+                        {profileForm.processing ? 'Saving...' : 'Kemaskini Profil'}
+                    </button>
+                </form>
+            ) : (
+                <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Password Semasa</label>
+                        <input type="password" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.current_password} onChange={e => passwordForm.setData('current_password', e.target.value)} />
+                        {passwordForm.errors.current_password && <p className="text-xs text-red-500 ml-1 mt-1">{passwordForm.errors.current_password}</p>}
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Password Baru</label>
+                        <input type="password" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password} onChange={e => passwordForm.setData('password', e.target.value)} />
+                        {passwordForm.errors.password && <p className="text-xs text-red-500 ml-1 mt-1">{passwordForm.errors.password}</p>}
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Sahkan Password Baru</label>
+                        <input type="password" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password_confirmation} onChange={e => passwordForm.setData('password_confirmation', e.target.value)} />
+                    </div>
+                    <button type="submit" disabled={passwordForm.processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50">
+                        {passwordForm.processing ? 'Saving...' : 'Tukar Password'}
+                    </button>
+                </form>
+            )}
+        </Modal>
+    );
+}
+
+// ─── Profile View ───
+function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEditProfile }) {
+    const totalIncome = summary?.total_income || 0;
+    const totalBills = summary?.total_bills || 0;
+    const totalUnpaid = summary?.total_unpaid || 0;
+    const burnRate = totalIncome > 0 ? Math.round((totalBills / totalIncome) * 100) : 0;
+
+    // Financial Health Score
+    const billsScore = totalBills > 0 ? ((totalBills - totalUnpaid) / totalBills) * 100 : 100;
+    const savingsScore = (savingsGoals || []).length > 0
+        ? (savingsGoals.reduce((a, g) => a + g.pct, 0) / savingsGoals.length)
+        : 50;
+    const debtScore = (activeDebts || []).length > 0
+        ? (activeDebts.reduce((a, d) => a + d.pct, 0) / activeDebts.length)
+        : 100;
+    const healthScore = Math.round(billsScore * 0.5 + savingsScore * 0.25 + debtScore * 0.25);
+
+    const scoreConfig = healthScore >= 90 ? { label: 'Cemerlang', color: 'text-emerald-600', bg: 'bg-emerald-500', ring: 'ring-emerald-200', icon: <Trophy size={20} className="text-emerald-600"/> } :
+                        healthScore >= 75 ? { label: 'Bagus', color: 'text-indigo-600', bg: 'bg-indigo-500', ring: 'ring-indigo-200', icon: <Award size={20} className="text-indigo-600"/> } :
+                        healthScore >= 60 ? { label: 'OK', color: 'text-sky-600', bg: 'bg-sky-400', ring: 'ring-sky-200', icon: <ShieldCheck size={20} className="text-sky-600"/> } :
+                        healthScore >= 40 ? { label: 'Perlu Perhatian', color: 'text-amber-600', bg: 'bg-amber-400', ring: 'ring-amber-200', icon: <AlertTriangle size={20} className="text-amber-600"/> } :
+                                           { label: 'Kritikal', color: 'text-red-600', bg: 'bg-red-500', ring: 'ring-red-200', icon: <Flame size={20} className="text-red-600"/> };
+
+    return (
+        <div className="p-6 pt-16 space-y-6">
+            {/* Avatar + Edit */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-black shadow-xl border-4 border-white uppercase">
+                            {user?.name?.substring(0, 3) || 'USR'}
+                        </div>
+                        <div className="absolute bottom-0 right-0 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-black text-slate-800 tracking-tighter">{user?.name}</h2>
+                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
+                        <div className="flex gap-1.5 mt-1">
+                            <span className="bg-indigo-50 text-indigo-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <ShieldCheck size={9}/> Verified
+                            </span>
+                            <span className="bg-green-50 text-green-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <Users size={9}/> Family
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h2 className="text-2xl font-black text-slate-800 tracking-tighter">{user?.name}</h2>
-                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
+                <button onClick={onEditProfile} className="flex items-center gap-1.5 bg-slate-100 text-slate-600 text-xs font-bold px-3 py-2 rounded-2xl active:scale-95 transition-all">
+                    <UserCog size={14}/> Edit
+                </button>
+            </div>
+
+            {/* Financial Health Score */}
+            <div className={`bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 ring-2 ${scoreConfig.ring}`}>
+                <div className="flex items-center justify-between mb-4">
+                    <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kesihatan Kewangan</p>
+                        <div className="flex items-center gap-2 mt-1">
+                            {scoreConfig.icon}
+                            <span className={`text-lg font-black ${scoreConfig.color}`}>{scoreConfig.label}</span>
+                        </div>
+                    </div>
+                    <div className="relative w-16 h-16">
+                        <svg className="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" strokeWidth="3"/>
+                            <circle cx="18" cy="18" r="15.9" fill="none" strokeWidth="3"
+                                strokeDasharray={`${healthScore} ${100 - healthScore}`}
+                                strokeLinecap="round"
+                                className={`transition-all duration-1000 ${scoreConfig.bg.replace('bg-','stroke-')}`}
+                            />
+                        </svg>
+                        <span className={`absolute inset-0 flex items-center justify-center text-sm font-black ${scoreConfig.color}`}>{healthScore}</span>
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    <span className="bg-indigo-50 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-full border border-indigo-100 flex items-center gap-1 uppercase tracking-tighter">
-                        <ShieldCheck size={12}/> Verified
-                    </span>
-                    <span className="bg-green-50 text-green-600 text-[10px] font-black px-3 py-1 rounded-full border border-green-100 flex items-center gap-1 uppercase tracking-tighter">
-                        <Users size={12}/> Family Linked
-                    </span>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                    {[
+                        { label: 'Bil Bayar', value: Math.round(billsScore), color: 'text-indigo-600' },
+                        { label: 'Simpanan', value: Math.round(savingsScore), color: 'text-emerald-600' },
+                        { label: 'Hutang', value: Math.round(debtScore), color: 'text-orange-500' },
+                    ].map(({ label, value, color }) => (
+                        <div key={label} className="bg-slate-50 rounded-2xl p-2">
+                            <p className={`text-sm font-black ${color}`}>{value}%</p>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase mt-0.5">{label}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
 
+            {/* Stats */}
             <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
                     <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Tahunan</p>
@@ -653,20 +791,31 @@ function ProfileView({ user, summary, isHidden }) {
                 </div>
                 <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
                     <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Burn Rate</p>
-                    <p className="text-sm font-black text-red-500">{burnRate}%</p>
+                    <p className={`text-sm font-black ${burnRate > 80 ? 'text-red-500' : burnRate > 60 ? 'text-amber-500' : 'text-emerald-500'}`}>{burnRate}%</p>
                     <p className="text-[8px] text-slate-300 font-bold mt-1 tracking-tighter">PENDAPATAN DIGUNAKAN</p>
                 </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Settings */}
+            <div className="space-y-3">
                 <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Tetapan</h3>
                 <div className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
+                    <button onClick={onEditProfile} className="w-full p-4 flex items-center justify-between border-b border-slate-50 active:bg-slate-50 transition-colors">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-indigo-50 text-indigo-600 p-2.5 rounded-2xl"><UserCog size={20}/></div>
+                            <div className="text-left">
+                                <p className="text-sm font-bold text-slate-700">Edit Profil</p>
+                                <p className="text-[10px] text-slate-400 font-medium">Nama, email, password</p>
+                            </div>
+                        </div>
+                        <ChevronRight size={16} className="text-slate-300"/>
+                    </button>
                     <div className="p-4 flex items-center justify-between border-b border-slate-50">
                         <div className="flex items-center gap-4">
                             <div className="bg-blue-50 text-blue-600 p-2.5 rounded-2xl"><Bell size={20}/></div>
                             <div>
                                 <p className="text-sm font-bold text-slate-700">Notifikasi</p>
-                                <p className="text-[10px] text-slate-400 font-medium">Auto-remind setiap 25hb</p>
+                                <p className="text-[10px] text-slate-400 font-medium">Auto-remind setiap 29hb</p>
                             </div>
                         </div>
                         <ChevronRight size={16} className="text-slate-300"/>
@@ -691,7 +840,7 @@ function ProfileView({ user, summary, isHidden }) {
                 </div>
 
                 <p className="text-center text-[9px] text-slate-300 font-bold uppercase tracking-widest py-4">
-                    SwiftMoney PWA v1.0.0
+                    SwiftMoney PWA v1.1.0
                 </p>
             </div>
         </div>
@@ -718,6 +867,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     const [selectedIncome, setSelectedIncome] = useState(null);
     const [showReceiptModal, setShowReceiptModal] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null);
+    const [showEditProfile, setShowEditProfile] = useState(false);
 
     // Real-time sync: reload dashboard when family member updates a bill
     useEffect(() => {
@@ -759,6 +909,16 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
         return `${months[parseInt(m)]} ${y}`;
     })() : '';
 
+    const isCurrentMonth = monthYear === new Date().toLocaleDateString('en', { month: '2-digit', year: 'numeric' }).replace('/', '-').split('/').reverse().join('-') ||
+        monthYear === `${String(new Date().getMonth()+1).padStart(2,'0')}-${new Date().getFullYear()}`;
+
+    const navigateMonth = (direction) => {
+        const [m, y] = monthYear.split('-').map(Number);
+        const d = new Date(y, m - 1 + direction, 1);
+        const next = `${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+        router.get(route('dashboard'), { month: next }, { preserveState: false });
+    };
+
     const handleTogglePaid = (recordId) => {
         router.post(route('bills.toggle', recordId), {}, { preserveScroll: true });
     };
@@ -785,6 +945,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                 <PaymentModal show={showPaymentModal} onClose={() => { setShowPaymentModal(false); setSelectedDebt(null); }} debt={selectedDebt} />
                 <HistoryModal show={showHistoryModal} onClose={() => { setShowHistoryModal(false); setSelectedDebt(null); }} debt={selectedDebt} />
                 <ReceiptModal show={showReceiptModal} onClose={() => { setShowReceiptModal(false); setSelectedBill(null); }} bill={selectedBill} />
+                <EditProfileModal show={showEditProfile} onClose={() => setShowEditProfile(false)} user={user} />
 
                 {activeTab === 'home' ? (
                     <>
@@ -794,7 +955,21 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             <div className="flex justify-between items-center mb-6 relative z-10">
                                 <div>
                                     <h1 className="text-white text-2xl font-bold tracking-tight">SwiftMoney</h1>
-                                    <p className="text-indigo-200 text-xs font-medium tracking-wide">{monthLabel} &bull; {isSaya ? user?.name : 'Keluarga'} &bull; RM {Number(s.total_bills).toLocaleString()}</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <button onClick={() => navigateMonth(-1)} className="text-indigo-300 active:scale-90 transition-all p-0.5">
+                                            <ChevronLeft size={16} strokeWidth={3} />
+                                        </button>
+                                        <p className="text-indigo-200 text-xs font-bold tracking-wide">{monthLabel}</p>
+                                        <button onClick={() => navigateMonth(1)} disabled={isCurrentMonth} className="text-indigo-300 active:scale-90 transition-all p-0.5 disabled:opacity-30">
+                                            <ChevronRight size={16} strokeWidth={3} />
+                                        </button>
+                                        {!isCurrentMonth && (
+                                            <button onClick={() => router.get(route('dashboard'))} className="text-[8px] font-black text-indigo-300 bg-white/10 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                                                Hari Ini
+                                            </button>
+                                        )}
+                                    </div>
+                                    <p className="text-indigo-300 text-[10px] font-medium">{isSaya ? user?.name : 'Keluarga'} &bull; RM {Number(s.total_bills).toLocaleString()}</p>
                                 </div>
                                 <div className="flex gap-3 items-center">
                                     <button onClick={() => setIsHidden(!isHidden)} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all">
@@ -1166,7 +1341,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                         )}
                     </div>
                 ) : (
-                    <ProfileView user={user} summary={s} isHidden={isHidden} />
+                    <ProfileView user={user} summary={s} savingsGoals={savings_goals} activeDebts={active_debts} isHidden={isHidden} onEditProfile={() => setShowEditProfile(true)} />
                 )}
 
                 {/* ─── Floating Nav ─── */}
