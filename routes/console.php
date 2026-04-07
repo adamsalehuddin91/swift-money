@@ -8,5 +8,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Auto-generate next month's bill records on the 25th at 8AM
-Schedule::command('bills:generate-monthly')->monthlyOn(25, '08:00');
+// 29hb setiap bulan — jana bills bulan depan + carry recurring income
+Schedule::command('bills:generate-monthly')->monthlyOn(29, '08:00');
+Schedule::command('income:carry-recurring')->monthlyOn(29, '08:05');
