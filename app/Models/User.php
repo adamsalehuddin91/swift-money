@@ -21,6 +21,9 @@ class User extends Authenticatable
         'password',
         'family_id',
         'role',
+        'google_id',
+        'avatar',
+        'email_verified_at',
     ];
 
     public function family(): BelongsTo
