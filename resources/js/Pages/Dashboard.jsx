@@ -754,9 +754,10 @@ function FamilySection({ user, familyMembers, inviteLink }) {
             <div className="bg-white rounded-[32px] p-5 border border-slate-100 shadow-sm space-y-3">
                 {(familyMembers || []).map(m => (
                     <div key={m.id} className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black uppercase flex-shrink-0">
-                            {m.name?.substring(0, 2)}
-                        </div>
+                        {m.avatar
+                            ? <img src={m.avatar} alt={m.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                            : <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black uppercase flex-shrink-0">{m.name?.substring(0, 2)}</div>
+                        }
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-slate-700 truncate">{m.name}</p>
                             <p className="text-[10px] text-slate-400 font-medium uppercase">{m.role}</p>
@@ -827,9 +828,10 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="relative">
-                        <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-black shadow-xl border-4 border-white uppercase">
-                            {user?.name?.substring(0, 3) || 'USR'}
-                        </div>
+                        {user?.avatar
+                            ? <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full object-cover shadow-xl border-4 border-white" />
+                            : <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-black shadow-xl border-4 border-white uppercase">{user?.name?.substring(0, 3) || 'USR'}</div>
+                        }
                         <div className="absolute bottom-0 right-0 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
                     </div>
                     <div>
@@ -1093,9 +1095,10 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                         {isHidden ? <EyeOff size={20} /> : <Eye size={20} />}
                                     </button>
                                     <div className="bg-white p-1 rounded-full border-2 border-indigo-400">
-                                        <div className="bg-indigo-600 text-[10px] text-white font-bold w-8 h-8 rounded-full flex items-center justify-center uppercase">
-                                            {user?.name?.substring(0, 3) || 'USR'}
-                                        </div>
+                                        {user?.avatar
+                                            ? <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+                                            : <div className="bg-indigo-600 text-[10px] text-white font-bold w-8 h-8 rounded-full flex items-center justify-center uppercase">{user?.name?.substring(0, 3) || 'USR'}</div>
+                                        }
                                     </div>
                                 </div>
                             </div>
