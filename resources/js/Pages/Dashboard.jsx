@@ -695,7 +695,73 @@ function EditProfileModal({ show, onClose, user }) {
 }
 
 // ─── Profile View ───
-function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEditProfile }) {
+function FamilySection({ user, familyMembers, inviteLink }) {
+    const { post, processing } = useForm();
+    const [copied, setCopied] = useState(false);
+    const isAdmin = user?.role === 'admin';
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(inviteLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const generateLink = () => {
+        post(route('invite.generate'));
+    };
+
+    return (
+        <div className="space-y-3">
+            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Ahli Keluarga</h3>
+            <div className="bg-white rounded-[32px] p-5 border border-slate-100 shadow-sm space-y-3">
+                {(familyMembers || []).map(m => (
+                    <div key={m.id} className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black uppercase flex-shrink-0">
+                            {m.name?.substring(0, 2)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-slate-700 truncate">{m.name}</p>
+                            <p className="text-[10px] text-slate-400 font-medium uppercase">{m.role}</p>
+                        </div>
+                        {m.id === user?.id && (
+                            <span className="text-[9px] font-black bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full">Saya</span>
+                        )}
+                    </div>
+                ))}
+
+                {isAdmin && (familyMembers || []).length < 2 && (
+                    <div className="border-t border-slate-50 pt-3 space-y-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Jemput Pasangan</p>
+                        {inviteLink ? (
+                            <div className="flex gap-2">
+                                <div className="flex-1 bg-slate-50 rounded-2xl px-3 py-2 text-[10px] text-slate-500 truncate font-mono">
+                                    {inviteLink}
+                                </div>
+                                <button
+                                    onClick={copyLink}
+                                    className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all ${copied ? 'bg-green-100 text-green-600' : 'bg-indigo-50 text-indigo-600 active:scale-95'}`}
+                                >
+                                    {copied ? 'Copied!' : 'Copy'}
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={generateLink}
+                                disabled={processing}
+                                className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white text-xs font-bold py-3 rounded-2xl active:scale-95 transition-all disabled:opacity-50"
+                            >
+                                <Link2 size={14}/> Jana Link Jemputan
+                            </button>
+                        )}
+                        <p className="text-[9px] text-slate-300 font-medium">Link sah selama 7 hari. Satu link satu masa.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEditProfile, familyMembers, inviteLink }) {
     const totalIncome = summary?.total_income || 0;
     const totalBills = summary?.total_bills || 0;
     const totalUnpaid = summary?.total_unpaid || 0;
@@ -796,6 +862,9 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                 </div>
             </div>
 
+            {/* Family Members */}
+            <FamilySection user={user} familyMembers={familyMembers} inviteLink={inviteLink} />
+
             {/* Settings */}
             <div className="space-y-3">
                 <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Tetapan</h3>
@@ -848,7 +917,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
 }
 
 // ─── Main Dashboard ───
-export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, savings_goals }) {
+export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, savings_goals, family_members, invite_link }) {
     const [isHidden, setIsHidden] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
     const [viewMode, setViewMode] = useState('saya'); // 'saya' or 'keluarga'
@@ -1341,7 +1410,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                         )}
                     </div>
                 ) : (
-                    <ProfileView user={user} summary={s} savingsGoals={savings_goals} activeDebts={active_debts} isHidden={isHidden} onEditProfile={() => setShowEditProfile(true)} />
+                    <ProfileView user={user} summary={s} savingsGoals={savings_goals} activeDebts={active_debts} isHidden={isHidden} onEditProfile={() => setShowEditProfile(true)} familyMembers={family_members} inviteLink={invite_link} />
                 )}
 
                 {/* ─── Floating Nav ─── */}

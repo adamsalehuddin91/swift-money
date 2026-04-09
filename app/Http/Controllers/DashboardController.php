@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Debt;
+use App\Models\FamilyInvite;
 use App\Services\BillService;
 use App\Services\DebtService;
 use App\Services\IncomeService;
@@ -82,7 +83,21 @@ class DashboardController extends Controller
             'active_debts'     => $this->debtService->getForFamily($familyId),
             'all_debts'        => Debt::where('family_id', $familyId)->select('id', 'title', 'current_balance')->get(),
             'savings_goals'    => $this->savingsService->getForFamily($familyId),
+            'family_members'   => $user->family->users()->select('id', 'name', 'avatar', 'role')->get(),
+            'invite_link'      => $this->getActiveInviteLink($familyId, $user->role),
         ]);
+    }
+
+    private function getActiveInviteLink(int $familyId, string $role): ?string
+    {
+        if ($role !== 'admin') return null;
+
+        $invite = FamilyInvite::where('family_id', $familyId)
+            ->whereNull('used_at')
+            ->where('expires_at', '>', now())
+            ->first();
+
+        return $invite ? url("/join/{$invite->token}") : null;
     }
 
     public function analytics(Request $request)

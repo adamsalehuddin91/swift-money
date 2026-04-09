@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebtController;
@@ -11,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Google OAuth
+Route::get('/auth/google', [SocialAuthController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialAuthController::class, 'callback'])->name('auth.google.callback');
+
+// Family Invite
+Route::get('/join/{token}', [InviteController::class, 'show'])->name('invite.show');
+Route::post('/invite/generate', [InviteController::class, 'generate'])->name('invite.generate')->middleware('auth');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
