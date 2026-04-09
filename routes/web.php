@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\BillController;
@@ -62,6 +63,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Admin Panel
+Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::get('/search', [AdminController::class, 'search'])->name('search');
+    Route::post('/families/{family}/upgrade', [AdminController::class, 'upgrade'])->name('families.upgrade');
+    Route::post('/families/{family}/downgrade', [AdminController::class, 'downgrade'])->name('families.downgrade');
 });
 
 require __DIR__.'/auth.php';

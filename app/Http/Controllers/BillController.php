@@ -21,6 +21,13 @@ class BillController extends Controller
 
     public function storeTemplate(Request $request)
     {
+        $family = $request->user()->family;
+        if (!$family->isPaid()) {
+            $count = \App\Models\BillTemplate::where('family_id', $family->id)
+                ->where('is_active', true)->count();
+            abort_if($count >= 5, 403, 'upgrade_required');
+        }
+
         $validated = $request->validate([
             'category' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -102,6 +109,7 @@ class BillController extends Controller
     public function uploadReceipt(Request $request, BillRecord $record)
     {
         abort_unless($record->template->family_id === $request->user()->family_id, 403);
+        abort_unless($request->user()->family->isPaid(), 403, 'upgrade_required');
 
         $request->validate([
             'receipt' => 'required|image|max:5120', // 5MB max

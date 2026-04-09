@@ -13,6 +13,7 @@ class DebtController extends Controller
     public function store(Request $request)
     {
         abort_unless($request->user()->family_id, 403, 'Akaun belum dikaitkan dengan family.');
+        abort_unless($request->user()->family->isPaid(), 403, 'upgrade_required');
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',

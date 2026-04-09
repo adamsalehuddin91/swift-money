@@ -1,4 +1,4 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
@@ -695,6 +695,44 @@ function EditProfileModal({ show, onClose, user }) {
 }
 
 // ─── Profile View ───
+// ─── Upgrade Modal ───
+function UpgradeModal({ show, onClose }) {
+    if (!show) return null;
+    return (
+        <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl text-center space-y-4">
+                <div className="bg-indigo-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto">
+                    <span className="text-2xl">🔒</span>
+                </div>
+                <div>
+                    <h3 className="text-xl font-black text-slate-800">Ciri Berbayar</h3>
+                    <p className="text-slate-500 text-sm mt-2">
+                        Ciri ini hanya untuk akaun <span className="font-bold text-indigo-600">SwiftMoney Pro</span>.
+                    </p>
+                </div>
+                <div className="bg-indigo-50 rounded-2xl p-4 text-left space-y-2">
+                    <p className="text-xs font-black text-indigo-700 uppercase tracking-wide">Pro — RM 5/bulan</p>
+                    {['Hutang tracker', 'Simpanan goals', 'Analitik 6 bulan', 'Upload resit', 'Navigasi bulan lepas', 'Bil tanpa had'].map(f => (
+                        <div key={f} className="flex items-center gap-2 text-xs text-slate-600">
+                            <CheckCircle size={13} className="text-emerald-500 flex-shrink-0"/>
+                            {f}
+                        </div>
+                    ))}
+                </div>
+                <a
+                    href="https://wa.me/60YOUR_NUMBER?text=Nak+upgrade+SwiftMoney+Pro"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block w-full bg-indigo-600 text-white font-bold py-3 rounded-2xl text-sm active:scale-95 transition-all"
+                >
+                    Upgrade Sekarang — RM 5/bln
+                </a>
+                <button onClick={onClose} className="text-slate-400 text-xs font-medium">Buat masa ni tak</button>
+            </div>
+        </div>
+    );
+}
+
 function FamilySection({ user, familyMembers, inviteLink }) {
     const { post, processing } = useForm();
     const [copied, setCopied] = useState(false);
@@ -937,6 +975,15 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     const [showReceiptModal, setShowReceiptModal] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null);
     const [showEditProfile, setShowEditProfile] = useState(false);
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+    const { plan } = usePage().props;
+    const isPaid = plan?.is_paid ?? false;
+
+    const requirePaid = (callback) => {
+        if (!isPaid) { setShowUpgradeModal(true); return; }
+        callback();
+    };
 
     // Real-time sync: reload dashboard when family member updates a bill
     useEffect(() => {
@@ -1015,6 +1062,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                 <HistoryModal show={showHistoryModal} onClose={() => { setShowHistoryModal(false); setSelectedDebt(null); }} debt={selectedDebt} />
                 <ReceiptModal show={showReceiptModal} onClose={() => { setShowReceiptModal(false); setSelectedBill(null); }} bill={selectedBill} />
                 <EditProfileModal show={showEditProfile} onClose={() => setShowEditProfile(false)} user={user} />
+                <UpgradeModal show={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
 
                 {activeTab === 'home' ? (
                     <>
@@ -1025,8 +1073,8 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 <div>
                                     <h1 className="text-white text-2xl font-bold tracking-tight">SwiftMoney</h1>
                                     <div className="flex items-center gap-2 mt-1">
-                                        <button onClick={() => navigateMonth(-1)} className="text-indigo-300 active:scale-90 transition-all p-0.5">
-                                            <ChevronLeft size={16} strokeWidth={3} />
+                                        <button onClick={() => requirePaid(() => navigateMonth(-1))} className="text-indigo-300 active:scale-90 transition-all p-0.5">
+                                            {isPaid ? <ChevronLeft size={16} strokeWidth={3} /> : <span className="text-xs">🔒</span>}
                                         </button>
                                         <p className="text-indigo-200 text-xs font-bold tracking-wide">{monthLabel}</p>
                                         <button onClick={() => navigateMonth(1)} disabled={isCurrentMonth} className="text-indigo-300 active:scale-90 transition-all p-0.5 disabled:opacity-30">
@@ -1161,8 +1209,8 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <TrendingDown size={14} className="text-orange-500" /> Pengurangan Hutang
                                     </h3>
-                                    <button onClick={() => setShowDebtModal(true)} className="text-[10px] font-bold text-orange-600 flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg">
-                                        <Plus size={12}/> TAMBAH
+                                    <button onClick={() => requirePaid(() => setShowDebtModal(true))} className="text-[10px] font-bold text-orange-600 flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg">
+                                        {isPaid ? <Plus size={12}/> : <span>🔒</span>} TAMBAH
                                     </button>
                                 </div>
                                 {debts.length === 0 ? (
@@ -1337,7 +1385,16 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                         </div>
                     </>
                 ) : activeTab === 'analytics' ? (
-                    <AnalyticsView familyId={user?.family_id} />
+                    isPaid ? <AnalyticsView familyId={user?.family_id} /> : (
+                        <div className="p-6 pt-20 flex flex-col items-center justify-center space-y-4 text-center">
+                            <span className="text-5xl">📊</span>
+                            <h3 className="text-lg font-black text-slate-700">Analitik — Pro</h3>
+                            <p className="text-slate-400 text-sm">Trend 6 bulan, breakdown kategori dan lebih.</p>
+                            <button onClick={() => setShowUpgradeModal(true)} className="bg-indigo-600 text-white font-bold px-6 py-3 rounded-2xl text-sm active:scale-95 transition-all">
+                                Upgrade untuk akses
+                            </button>
+                        </div>
+                    )
                 ) : activeTab === 'savings' ? (
                     <div className="p-6 pt-16 space-y-6">
                         <div className="flex justify-between items-center">
@@ -1345,8 +1402,8 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 <h2 className="text-xl font-black text-slate-800 tracking-tighter">Simpanan</h2>
                                 <p className="text-slate-400 text-xs mt-1">Sasaran & perkembangan</p>
                             </div>
-                            <button onClick={() => setShowSavingsModal(true)} className="flex items-center gap-1 bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-2xl shadow-md shadow-emerald-200 active:scale-95 transition-all">
-                                <Plus size={14}/> Baru
+                            <button onClick={() => requirePaid(() => setShowSavingsModal(true))} className="flex items-center gap-1 bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-2xl shadow-md shadow-emerald-200 active:scale-95 transition-all">
+                                {isPaid ? <Plus size={14}/> : <span>🔒</span>} Baru
                             </button>
                         </div>
                         {(savings_goals || []).length === 0 ? (

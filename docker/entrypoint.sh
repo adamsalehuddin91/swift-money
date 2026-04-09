@@ -13,6 +13,15 @@ if [ -d /app/storage/app/receipts ]; then
     chmod -R 775 /app/storage/app/receipts
 fi
 
+# Backup SQLite before migration (keep last 7 copies)
+if [ -f /app/storage/db/database.sqlite ]; then
+    BACKUP_DIR=/app/storage/db/backups
+    mkdir -p $BACKUP_DIR
+    cp /app/storage/db/database.sqlite "$BACKUP_DIR/db_$(date +%Y%m%d_%H%M%S).sqlite"
+    # Keep only last 7 backups
+    ls -t $BACKUP_DIR/*.sqlite 2>/dev/null | tail -n +8 | xargs rm -f
+fi
+
 # Run migrations automatically on every deploy
 php artisan migrate --force
 

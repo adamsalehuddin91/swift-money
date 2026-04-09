@@ -7,7 +7,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Family extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'plan', 'plan_expires_at', 'subscribed_at'];
+
+    protected $casts = [
+        'plan_expires_at' => 'datetime',
+        'subscribed_at'   => 'datetime',
+    ];
+
+    public function isPaid(): bool
+    {
+        if ($this->plan !== 'paid') return false;
+        if ($this->plan_expires_at && $this->plan_expires_at->isPast()) return false;
+        return true;
+    }
 
     public function users(): HasMany
     {

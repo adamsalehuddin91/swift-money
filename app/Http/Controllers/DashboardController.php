@@ -34,6 +34,12 @@ class DashboardController extends Controller
 
         $monthYear = $request->get('month', now()->format('m-Y'));
         abort_unless(preg_match('/^\d{2}-\d{4}$/', $monthYear), 422, 'Invalid month format.');
+
+        // Free plan: current month only
+        $currentMonth = now()->format('m-Y');
+        if (!$user->family->isPaid() && $monthYear !== $currentMonth) {
+            $monthYear = $currentMonth;
+        }
         $userName = $user->name;
 
         // Auto-carry recurring incomes from last month (cached)
@@ -105,6 +111,7 @@ class DashboardController extends Controller
         $user = $request->user();
         $familyId = $user->family_id;
         abort_unless($familyId, 403);
+        abort_unless($user->family->isPaid(), 403, 'upgrade_required');
 
         $months = collect();
         for ($i = 5; $i >= 0; $i--) {
