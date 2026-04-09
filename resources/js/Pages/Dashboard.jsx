@@ -801,6 +801,8 @@ function FamilySection({ user, familyMembers, inviteLink }) {
 }
 
 function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEditProfile, familyMembers, inviteLink }) {
+    const { plan } = usePage().props;
+    const isPaid = plan?.is_paid ?? false;
     const totalIncome = summary?.total_income || 0;
     const totalBills = summary?.total_bills || 0;
     const totalUnpaid = summary?.total_unpaid || 0;
@@ -837,13 +839,18 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                     <div>
                         <h2 className="text-xl font-black text-slate-800 tracking-tighter">{user?.name}</h2>
                         <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
-                        <div className="flex gap-1.5 mt-1">
+                        <div className="flex gap-1.5 mt-1 flex-wrap">
                             <span className="bg-indigo-50 text-indigo-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
                                 <ShieldCheck size={9}/> Verified
                             </span>
                             <span className="bg-green-50 text-green-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
                                 <Users size={9}/> Family
                             </span>
+                            {isPaid && (
+                                <span className="bg-amber-100 text-amber-700 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    👑 Pro
+                                </span>
+                            )}
                         </div>
                     </div>
                 </div>
