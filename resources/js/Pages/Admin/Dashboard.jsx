@@ -79,7 +79,7 @@ function FamilyCard({ family, onUpgrade, onDowngrade }) {
                 <form onSubmit={handleUpgrade} className="flex gap-2 items-center bg-amber-50 p-3 rounded-xl">
                     <select
                         value={data.months}
-                        onChange={e => setData('months', e.target.value)}
+                        onChange={e => setData('months', parseInt(e.target.value))}
                         className="flex-1 text-xs bg-white border border-amber-200 rounded-lg px-2 py-1.5 font-medium"
                     >
                         {[1,2,3,6,12].map(m => (

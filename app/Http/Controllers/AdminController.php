@@ -64,17 +64,18 @@ class AdminController extends Controller
 
     public function upgrade(Request $request, Family $family)
     {
-        $request->validate([
-            'months' => 'required|integer|min:1|max:24',
+        $validated = $request->validate([
+            'months' => 'required|numeric|min:1|max:24',
         ]);
 
-        $family->update([
-            'plan'           => 'paid',
-            'plan_expires_at' => now()->addMonths($request->months),
-            'subscribed_at'  => $family->subscribed_at ?? now(),
-        ]);
+        $months = (int) $validated['months'];
 
-        return back()->with('success', "{$family->name} upgraded untuk {$request->months} bulan.");
+        $family->plan            = 'paid';
+        $family->plan_expires_at = now()->addMonths($months);
+        $family->subscribed_at   = $family->subscribed_at ?? now();
+        $family->save();
+
+        return back()->with('success', "{$family->name} upgraded untuk {$months} bulan.");
     }
 
     public function downgrade(Family $family)
