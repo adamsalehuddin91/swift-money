@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'plan'       => $family?->plan ?? 'free',
                 'expires_at' => $family?->plan_expires_at?->toDateString(),
             ],
+            'language' => $user?->language ?? 'ms',
             'flash' => [
                 'upgrade_required' => $request->session()->get('upgrade_required'),
             ],

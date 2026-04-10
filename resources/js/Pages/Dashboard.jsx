@@ -1,4 +1,5 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { useLang } from '@/hooks/useLang';
 import { useState, useEffect } from 'react';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
@@ -736,6 +737,7 @@ function UpgradeModal({ show, onClose }) {
 function FamilySection({ user, familyMembers, inviteLink }) {
     const { post, processing } = useForm();
     const [copied, setCopied] = useState(false);
+    const { t } = useLang();
     const isAdmin = user?.role === 'admin';
 
     const copyLink = () => {
@@ -750,7 +752,7 @@ function FamilySection({ user, familyMembers, inviteLink }) {
 
     return (
         <div className="space-y-3">
-            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Ahli Keluarga</h3>
+            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">{t('family.title')}</h3>
             <div className="bg-white rounded-[32px] p-5 border border-slate-100 shadow-sm space-y-3">
                 {(familyMembers || []).map(m => (
                     <div key={m.id} className="flex items-center gap-3">
@@ -763,15 +765,20 @@ function FamilySection({ user, familyMembers, inviteLink }) {
                             <p className="text-[10px] text-slate-400 font-medium uppercase">{m.role}</p>
                         </div>
                         {m.id === user?.id && (
-                            <span className="text-[9px] font-black bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full">Saya</span>
+                            <span className="text-[9px] font-black bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full">{t('dash.my_view')}</span>
                         )}
                     </div>
                 ))}
 
-                {isAdmin && (familyMembers || []).length < 2 && (
+                {isAdmin && (
                     <div className="border-t border-slate-50 pt-3 space-y-2">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Jemput Pasangan</p>
-                        {inviteLink ? (
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{t('family.invite')}</p>
+                        {(familyMembers || []).length >= 2 ? (
+                            <div className="flex items-center gap-2 bg-slate-50 rounded-2xl px-3 py-2.5">
+                                <Users size={12} className="text-slate-400 shrink-0"/>
+                                <p className="text-[10px] text-slate-400 font-medium">{t('family.full')}</p>
+                            </div>
+                        ) : inviteLink ? (
                             <div className="flex gap-2">
                                 <div className="flex-1 bg-slate-50 rounded-2xl px-3 py-2 text-[10px] text-slate-500 truncate font-mono">
                                     {inviteLink}
@@ -780,7 +787,7 @@ function FamilySection({ user, familyMembers, inviteLink }) {
                                     onClick={copyLink}
                                     className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all ${copied ? 'bg-green-100 text-green-600' : 'bg-indigo-50 text-indigo-600 active:scale-95'}`}
                                 >
-                                    {copied ? 'Copied!' : 'Copy'}
+                                    {copied ? t('family.copied') : t('family.copy')}
                                 </button>
                             </div>
                         ) : (
@@ -789,10 +796,12 @@ function FamilySection({ user, familyMembers, inviteLink }) {
                                 disabled={processing}
                                 className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white text-xs font-bold py-3 rounded-2xl active:scale-95 transition-all disabled:opacity-50"
                             >
-                                <Link2 size={14}/> Jana Link Jemputan
+                                <Link2 size={14}/> {t('family.generate_link')}
                             </button>
                         )}
-                        <p className="text-[9px] text-slate-300 font-medium">Link sah selama 7 hari. Satu link satu masa.</p>
+                        {(familyMembers || []).length < 2 && (
+                            <p className="text-[9px] text-slate-300 font-medium">{t('family.link_valid')}</p>
+                        )}
                     </div>
                 )}
             </div>
@@ -802,6 +811,7 @@ function FamilySection({ user, familyMembers, inviteLink }) {
 
 function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEditProfile, familyMembers, inviteLink }) {
     const { plan } = usePage().props;
+    const { t, lang, setLanguage } = useLang();
     const isPaid = plan?.is_paid ?? false;
     const totalIncome = summary?.total_income || 0;
     const totalBills = summary?.total_bills || 0;
@@ -905,7 +915,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                 <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
                     <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Burn Rate</p>
                     <p className={`text-sm font-black ${burnRate > 80 ? 'text-red-500' : burnRate > 60 ? 'text-amber-500' : 'text-emerald-500'}`}>{burnRate}%</p>
-                    <p className="text-[8px] text-slate-300 font-bold mt-1 tracking-tighter">PENDAPATAN DIGUNAKAN</p>
+                    <p className="text-[8px] text-slate-300 font-bold mt-1 tracking-tighter">{t('profile.income_used').toUpperCase()}</p>
                 </div>
             </div>
 
@@ -914,18 +924,42 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
 
             {/* Settings */}
             <div className="space-y-3">
-                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">Tetapan</h3>
+                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">{t('profile.settings')}</h3>
                 <div className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
                     <button onClick={onEditProfile} className="w-full p-4 flex items-center justify-between border-b border-slate-50 active:bg-slate-50 transition-colors">
                         <div className="flex items-center gap-4">
                             <div className="bg-indigo-50 text-indigo-600 p-2.5 rounded-2xl"><UserCog size={20}/></div>
                             <div className="text-left">
-                                <p className="text-sm font-bold text-slate-700">Edit Profil</p>
-                                <p className="text-[10px] text-slate-400 font-medium">Nama, email, password</p>
+                                <p className="text-sm font-bold text-slate-700">{t('profile.edit')}</p>
+                                <p className="text-[10px] text-slate-400 font-medium">{t('profile.name')}, {t('profile.email')}, password</p>
                             </div>
                         </div>
                         <ChevronRight size={16} className="text-slate-300"/>
                     </button>
+
+                    {/* Language Toggle */}
+                    <div className="p-4 flex items-center justify-between border-b border-slate-50">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-emerald-50 text-emerald-600 p-2.5 rounded-2xl">
+                                <span className="text-sm font-black">{lang === 'ms' ? 'BM' : 'EN'}</span>
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-700">{t('lang.label')}</p>
+                                <p className="text-[10px] text-slate-400 font-medium">{t('lang.ms')} / {t('lang.en')}</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-1 bg-slate-100 rounded-2xl p-1">
+                            <button
+                                onClick={() => setLanguage('ms')}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'ms' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}
+                            >BM</button>
+                            <button
+                                onClick={() => setLanguage('en')}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'en' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}
+                            >EN</button>
+                        </div>
+                    </div>
+
                     <div className="p-4 flex items-center justify-between border-b border-slate-50">
                         <div className="flex items-center gap-4">
                             <div className="bg-blue-50 text-blue-600 p-2.5 rounded-2xl"><Bell size={20}/></div>
@@ -951,7 +985,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                 <div className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
                     <button onClick={() => router.post(route('logout'))} className="w-full p-4 flex items-center gap-4 text-red-500 active:bg-red-50 transition-colors">
                         <div className="bg-red-50 p-2.5 rounded-2xl"><LogOut size={20}/></div>
-                        <p className="text-sm font-bold">Log Keluar</p>
+                        <p className="text-sm font-bold">{t('profile.logout')}</p>
                     </button>
                 </div>
 

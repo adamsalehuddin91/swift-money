@@ -4,6 +4,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { useLang } from '@/hooks/useLang';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Login({ status, canResetPassword }) {
@@ -12,10 +13,10 @@ export default function Login({ status, canResetPassword }) {
         password: '',
         remember: false,
     });
+    const { t } = useLang();
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('login'), {
             onFinish: () => reset('password'),
         });
@@ -23,7 +24,7 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head title={t('auth.login')} />
 
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
@@ -33,8 +34,7 @@ export default function Login({ status, canResetPassword }) {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
+                    <InputLabel htmlFor="email" value={t('auth.email')} />
                     <TextInput
                         id="email"
                         type="email"
@@ -45,13 +45,11 @@ export default function Login({ status, canResetPassword }) {
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
                     />
-
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
+                    <InputLabel htmlFor="password" value={t('auth.password')} />
                     <TextInput
                         id="password"
                         type="password"
@@ -61,7 +59,6 @@ export default function Login({ status, canResetPassword }) {
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                     />
-
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
@@ -70,12 +67,10 @@ export default function Login({ status, canResetPassword }) {
                         <Checkbox
                             name="remember"
                             checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
+                            onChange={(e) => setData('remember', e.target.checked)}
                         />
                         <span className="ms-2 text-sm text-gray-600">
-                            Remember me
+                            {t('auth.remember_me')}
                         </span>
                     </label>
                 </div>
@@ -86,12 +81,11 @@ export default function Login({ status, canResetPassword }) {
                             href={route('password.request')}
                             className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
-                            Forgot your password?
+                            {t('auth.forgot_password')}
                         </Link>
                     )}
-
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
+                        {t('auth.login')}
                     </PrimaryButton>
                 </div>
             </form>
@@ -102,7 +96,7 @@ export default function Login({ status, canResetPassword }) {
                         <div className="w-full border-t border-gray-300" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="bg-white px-2 text-gray-500">atau</span>
+                        <span className="bg-white px-2 text-gray-500">{t('auth.or')}</span>
                     </div>
                 </div>
 
@@ -116,7 +110,7 @@ export default function Login({ status, canResetPassword }) {
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                     </svg>
-                    Teruskan dengan Google
+                    {t('auth.continue_google')}
                 </a>
             </div>
         </GuestLayout>
