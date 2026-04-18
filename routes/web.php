@@ -17,6 +17,11 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Temp: preview onboarding screen (no auth needed, safe to leave)
+Route::get('/preview/onboarding', function () {
+    return inertia('Dashboard', ['needsSetup' => true]);
+});
+
 // Google OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialAuthController::class, 'callback'])->name('auth.google.callback');
