@@ -19,7 +19,7 @@ class BillService
 
     public function getRecordsForMonth(int $familyId, string $monthYear)
     {
-        return BillRecord::whereHas('template', fn ($q) => $q->where('family_id', $familyId))
+        return BillRecord::whereHas('template', fn ($q) => $q->where('family_id', $familyId)->where('is_active', true))
             ->where('month_year', $monthYear)
             ->with(['template.debt'])
             ->get();

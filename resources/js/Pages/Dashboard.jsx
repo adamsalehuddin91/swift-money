@@ -133,9 +133,10 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
 // ─── Bill Template Modal (Add / Edit) ───
 function BillModal({ show, onClose, allDebts, editTemplate }) {
     const isEdit = !!editTemplate;
-    const { data, setData, post, put, delete: destroy, processing, reset } = useForm({
+    const { data, setData, post, put, processing, reset } = useForm({
         title: '', default_amount: '', category: 'Rumah', assigned_to: 'Abg', debt_id: '',
     });
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         if (editTemplate) {
@@ -198,8 +199,14 @@ function BillModal({ show, onClose, allDebts, editTemplate }) {
                     {processing ? 'Saving...' : isEdit ? 'Kemaskini Komitmen' : 'Tambah Komitmen'}
                 </button>
                 {isEdit && (
-                    <button type="button" disabled={processing} onClick={() => destroy(route('bills.templates.destroy', editTemplate.id), { onSuccess: () => { reset(); onClose(); } })} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all disabled:opacity-50">
-                        Padam Komitmen
+                    <button type="button" disabled={processing || deleting} onClick={() => {
+                        setDeleting(true);
+                        router.delete(route('bills.templates.destroy', editTemplate.id), {
+                            onSuccess: () => { reset(); onClose(); },
+                            onFinish: () => setDeleting(false),
+                        });
+                    }} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all disabled:opacity-50">
+                        {deleting ? 'Memadamkan...' : 'Padam Komitmen'}
                     </button>
                 )}
             </form>
