@@ -1,6 +1,7 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useLang } from '@/hooks/useLang';
 import { useState, useEffect } from 'react';
+import BrowserGate from '@/Components/BrowserGate';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
     Zap, Heart, User, Plus, ChevronRight,
@@ -1161,6 +1162,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     return (
         <>
             <Head title="Dashboard" />
+            <BrowserGate />
             <div className="max-w-md mx-auto bg-slate-50 min-h-screen pb-28 font-sans text-slate-900 overflow-x-hidden relative">
 
                 <IncomeModal show={showIncomeModal} onClose={() => { setShowIncomeModal(false); setSelectedIncome(null); }} monthYear={monthYear} editIncome={selectedIncome} />
