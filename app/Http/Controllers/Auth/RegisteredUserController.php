@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Family;
+use App\Models\FamilyInvite;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -37,14 +39,38 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $inviteToken = session('invite_token');
+        $invite = $inviteToken
+            ? FamilyInvite::where('token', $inviteToken)->first()
+            : null;
 
+        if ($invite && $invite->isValid()) {
+            // Join existing family via invite
+            $user = User::create([
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'password'  => Hash::make($request->password),
+                'family_id' => $invite->family_id,
+                'role'      => 'member',
+            ]);
+            $invite->update(['used_at' => now()]);
+        } else {
+            // New user — auto-create their own family
+            $family = Family::create([
+                'name' => $request->name . "'s Family",
+                'plan' => 'free',
+            ]);
+            $user = User::create([
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'password'  => Hash::make($request->password),
+                'family_id' => $family->id,
+                'role'      => 'admin',
+            ]);
+        }
+
+        session()->forget('invite_token');
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

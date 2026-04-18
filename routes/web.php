@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebtController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavingsController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::get('/join/{token}', [InviteController::class, 'show'])->name('invite.sho
 Route::post('/invite/generate', [InviteController::class, 'generate'])->name('invite.generate')->middleware('auth');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Onboarding — for users registered without a family
+    Route::post('/setup/family', [OnboardingController::class, 'setupFamily'])->name('setup.family');
+
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [DashboardController::class, 'analytics'])->name('analytics');

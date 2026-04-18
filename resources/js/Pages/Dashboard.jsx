@@ -997,6 +997,64 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
     );
 }
 
+// ─── Onboarding Screen (user registered but has no family yet) ───
+function OnboardingScreen() {
+    const { data, setData, post, processing, errors } = useForm({ family_name: '' });
+
+    const submit = (e) => {
+        e.preventDefault();
+        post(route('setup.family'));
+    };
+
+    return (
+        <>
+            <Head title="Sediakan Akaun" />
+            <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-6">
+                <div className="bg-white rounded-[32px] p-8 shadow-xl w-full max-w-sm space-y-6">
+                    <div className="text-center space-y-3">
+                        <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                            <Wallet size={32} className="text-indigo-600" />
+                        </div>
+                        <h2 className="text-xl font-black text-slate-800">Selamat Datang!</h2>
+                        <p className="text-slate-500 text-sm">Namakan rumahtangga anda untuk mula guna SwiftMoney.</p>
+                    </div>
+
+                    <form onSubmit={submit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">
+                                Nama Rumahtangga / Keluarga
+                            </label>
+                            <input
+                                type="text"
+                                value={data.family_name}
+                                onChange={e => setData('family_name', e.target.value)}
+                                placeholder="cth: Keluarga Ahmad, Rumahtangga Zulaikha..."
+                                className="w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                autoFocus
+                            />
+                            {errors.family_name && (
+                                <p className="text-red-500 text-xs mt-1">{errors.family_name}</p>
+                            )}
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={processing || !data.family_name.trim()}
+                            className="w-full bg-indigo-600 text-white font-bold py-3 rounded-2xl text-sm hover:bg-indigo-700 active:scale-95 transition disabled:opacity-50"
+                        >
+                            {processing ? 'Menyediakan...' : 'Mula Sekarang →'}
+                        </button>
+                    </form>
+
+                    <p className="text-center text-xs text-slate-400">
+                        Nama boleh ditukar kemudian dalam tetapan profil.
+                    </p>
+                </div>
+            </div>
+        </>
+    );
+}
+
 // ─── Main Dashboard ───
 export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, savings_goals, family_members, invite_link }) {
     const [isHidden, setIsHidden] = useState(false);
@@ -1039,20 +1097,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     }, [user?.family_id]);
 
     if (needsSetup) {
-        return (
-            <>
-                <Head title="Setup" />
-                <div className="max-w-md mx-auto bg-slate-50 min-h-screen flex items-center justify-center p-6">
-                    <div className="bg-white rounded-[32px] p-8 shadow-xl text-center space-y-4">
-                        <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-                            <Wallet size={32} className="text-indigo-600" />
-                        </div>
-                        <h2 className="text-xl font-black text-slate-800">Selamat Datang!</h2>
-                        <p className="text-slate-500 text-sm">Sila hubungi admin untuk link akaun anda ke family.</p>
-                    </div>
-                </div>
-            </>
-        );
+        return <OnboardingScreen />;
     }
 
     const isSaya = viewMode === 'saya';
