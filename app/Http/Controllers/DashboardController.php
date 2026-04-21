@@ -32,6 +32,12 @@ class DashboardController extends Controller
             ]);
         }
 
+        if ($user->family->isSuspended()) {
+            return Inertia::render('Dashboard', [
+                'isSuspended' => true,
+            ]);
+        }
+
         $monthYear = $request->get('month', now()->format('m-Y'));
         abort_unless(preg_match('/^\d{2}-\d{4}$/', $monthYear), 422, 'Invalid month format.');
 

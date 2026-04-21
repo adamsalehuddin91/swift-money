@@ -55,8 +55,9 @@ class SocialAuthController extends Controller
         if ($user) {
             // Existing user — update google_id + avatar if missing
             $user->update([
-                'google_id' => $googleUser->getId(),
-                'avatar'    => $googleUser->getAvatar(),
+                'google_id'     => $googleUser->getId(),
+                'avatar'        => $googleUser->getAvatar(),
+                'last_login_at' => now(),
             ]);
 
             // If user has no family yet + valid invite → join that family

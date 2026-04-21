@@ -1081,8 +1081,33 @@ function OnboardingScreen() {
     );
 }
 
+// ─── Suspended Screen ───
+function SuspendedScreen() {
+    return (
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+            <div className="bg-white rounded-[32px] p-8 shadow-xl max-w-sm w-full text-center space-y-5">
+                <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                    <span className="text-3xl">🚫</span>
+                </div>
+                <div>
+                    <h2 className="text-xl font-black text-slate-800">Akaun Digantung</h2>
+                    <p className="text-slate-500 text-sm mt-2">Akaun anda telah digantung sementara. Sila hubungi kami untuk maklumat lanjut.</p>
+                </div>
+                <a
+                    href="https://wa.me/60132094577?text=Hi%20Adam%2C%20akaun%20SwiftMoney%20saya%20telah%20digantung."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-green-500 text-white text-sm font-bold px-5 py-3 rounded-2xl hover:bg-green-600 active:scale-95 transition w-full justify-center"
+                >
+                    Hubungi Admin
+                </a>
+            </div>
+        </div>
+    );
+}
+
 // ─── Main Dashboard ───
-export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, savings_goals, family_members, invite_link }) {
+export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link }) {
     const [isHidden, setIsHidden] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
     const [viewMode, setViewMode] = useState('saya'); // 'saya' or 'keluarga'
@@ -1122,9 +1147,8 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
         return () => channel.stopListening('.bill.updated');
     }, [user?.family_id]);
 
-    if (needsSetup) {
-        return <OnboardingScreen />;
-    }
+    if (needsSetup) return <OnboardingScreen />;
+    if (isSuspended) return <SuspendedScreen />;
 
     const isSaya = viewMode === 'saya';
     const s = (isSaya ? my_summary : summary) || { net_balance: 0, total_income: 0, total_unpaid: 0, total_bills: 0, progress_pct: 0 };

@@ -1,6 +1,6 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { Search, Users, Crown, Unlock, Lock, CheckCircle, ChevronDown } from 'lucide-react';
+import { Search, Users, Crown, Lock, CheckCircle, ChevronDown, Trash2, Mail, PauseCircle, PlayCircle, RefreshCw } from 'lucide-react';
 
 function StatCard({ label, value, color }) {
     return (
@@ -11,8 +11,177 @@ function StatCard({ label, value, color }) {
     );
 }
 
-function FamilyCard({ family, onUpgrade, onDowngrade }) {
+function LastActiveBadge({ lastLoginAt }) {
+    if (!lastLoginAt) {
+        return <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-400">Tak pernah login</span>;
+    }
+
+    const days = Math.floor((Date.now() - new Date(lastLoginAt)) / 86400000);
+
+    if (days <= 7) {
+        return <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600">🟢 Aktif ({days === 0 ? 'Hari ini' : `${days}h lalu`})</span>;
+    }
+    if (days <= 30) {
+        return <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600">🟡 {days}h lalu</span>;
+    }
+    return <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">⚫ {days}h lalu</span>;
+}
+
+function EmailModal({ show, family, onClose }) {
+    const { data, setData, post, processing, reset, errors } = useForm({ subject: '', body: '' });
+
+    if (!show) return null;
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('admin.families.email', family.id), {
+            onSuccess: () => { reset(); onClose(); },
+        });
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-sm rounded-[28px] p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-base font-black text-slate-800">Hantar Email</h3>
+                    <p className="text-xs text-slate-400">{family.name}</p>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-3">
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Subject</label>
+                        <input
+                            type="text"
+                            value={data.subject}
+                            onChange={e => setData('subject', e.target.value)}
+                            placeholder="e.g. Akaun anda telah diaktifkan"
+                            className="w-full bg-slate-50 border-none rounded-2xl p-3 mt-1 text-sm focus:ring-2 focus:ring-indigo-300 outline-none"
+                        />
+                        {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject}</p>}
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Mesej</label>
+                        <textarea
+                            value={data.body}
+                            onChange={e => setData('body', e.target.value)}
+                            placeholder="Tulis mesej anda di sini..."
+                            rows={5}
+                            className="w-full bg-slate-50 border-none rounded-2xl p-3 mt-1 text-sm focus:ring-2 focus:ring-indigo-300 outline-none resize-none"
+                        />
+                        {errors.body && <p className="text-xs text-red-500 mt-1">{errors.body}</p>}
+                    </div>
+                    <p className="text-[10px] text-slate-400">
+                        Email akan dihantar ke {family.users.length} ahli: {family.users.map(u => u.email).join(', ')}
+                    </p>
+                    <div className="flex gap-2">
+                        <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm font-bold text-slate-500 bg-slate-100 rounded-2xl active:scale-95 transition-all">
+                            Batal
+                        </button>
+                        <button type="submit" disabled={processing} className="flex-1 py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-2xl active:scale-95 transition-all disabled:opacity-50">
+                            {processing ? 'Menghantar...' : 'Hantar'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+function DeleteConfirm({ show, family, onClose }) {
+    const [confirmed, setConfirmed] = useState(false);
+
+    if (!show) return null;
+
+    const handleDelete = () => {
+        router.delete(route('admin.families.delete', family.id), {
+            onSuccess: () => onClose(),
+        });
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-sm rounded-[28px] p-6 shadow-2xl space-y-4 text-center">
+                <div className="bg-red-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto">
+                    <Trash2 size={24} className="text-red-600" />
+                </div>
+                <div>
+                    <h3 className="text-base font-black text-slate-800">Padam Akaun</h3>
+                    <p className="text-sm text-slate-500 mt-1">
+                        Akaun <span className="font-bold text-slate-700">{family.name}</span> dan semua data akan dipadam kekal.
+                    </p>
+                </div>
+                <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer justify-center">
+                    <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} className="rounded" />
+                    Saya faham tindakan ini tidak boleh diundur
+                </label>
+                <div className="flex gap-2">
+                    <button onClick={onClose} className="flex-1 py-2.5 text-sm font-bold text-slate-500 bg-slate-100 rounded-2xl active:scale-95 transition-all">
+                        Batal
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        disabled={!confirmed}
+                        className="flex-1 py-2.5 text-sm font-bold text-white bg-red-500 rounded-2xl active:scale-95 transition-all disabled:opacity-40"
+                    >
+                        Padam
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ExtendModal({ show, family, onClose }) {
+    const { data, setData, post, processing } = useForm({ months: 1 });
+
+    if (!show) return null;
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('admin.families.extend', family.id), {
+            onSuccess: () => onClose(),
+        });
+    };
+
+    const currentExpiry = family.plan_expires_at
+        ? `Expire sekarang: ${family.plan_expires_at}`
+        : 'Belum ada expiry';
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-sm rounded-[28px] p-6 shadow-2xl space-y-4">
+                <div>
+                    <h3 className="text-base font-black text-slate-800">Lanjut Tempoh</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">{family.name} · {currentExpiry}</p>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-3">
+                    <select
+                        value={data.months}
+                        onChange={e => setData('months', parseInt(e.target.value))}
+                        className="w-full bg-slate-50 border-none rounded-2xl p-3 text-sm font-medium"
+                    >
+                        {[1,2,3,6,12].map(m => (
+                            <option key={m} value={m}>+{m} bulan</option>
+                        ))}
+                    </select>
+                    <div className="flex gap-2">
+                        <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm font-bold text-slate-500 bg-slate-100 rounded-2xl active:scale-95 transition-all">
+                            Batal
+                        </button>
+                        <button type="submit" disabled={processing} className="flex-1 py-2.5 text-sm font-bold text-white bg-emerald-500 rounded-2xl active:scale-95 transition-all disabled:opacity-50">
+                            {processing ? '...' : 'Lanjut'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+function FamilyCard({ family }) {
     const [showUpgrade, setShowUpgrade] = useState(false);
+    const [showExtend, setShowExtend] = useState(false);
+    const [showEmail, setShowEmail] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const { data, setData, post, processing } = useForm({ months: 1 });
 
     const handleUpgrade = (e) => {
@@ -22,80 +191,137 @@ function FamilyCard({ family, onUpgrade, onDowngrade }) {
         });
     };
 
+    const handleSuspend = () => {
+        router.post(route('admin.families.suspend', family.id), {}, { preserveScroll: true });
+    };
+
     return (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-3">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <div className="flex items-center gap-2">
-                        <p className="font-bold text-slate-800 text-sm">{family.name}</p>
-                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${family.is_paid ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}>
-                            {family.is_paid ? '👑 PRO' : 'FREE'}
-                        </span>
+        <>
+            <EmailModal show={showEmail} family={family} onClose={() => setShowEmail(false)} />
+            <DeleteConfirm show={showDelete} family={family} onClose={() => setShowDelete(false)} />
+            <ExtendModal show={showExtend} family={family} onClose={() => setShowExtend(false)} />
+
+            <div className={`bg-white rounded-2xl p-4 shadow-sm border space-y-3 ${family.is_suspended ? 'border-red-200 bg-red-50/30' : 'border-slate-100'}`}>
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-bold text-slate-800 text-sm">{family.name}</p>
+                            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${family.is_paid ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}>
+                                {family.is_paid ? '👑 PRO' : 'FREE'}
+                            </span>
+                            {family.is_suspended && (
+                                <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-red-100 text-red-600">
+                                    🚫 SUSPENDED
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-[10px] text-slate-400 font-medium">ID: {family.id}</p>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-medium">ID: {family.id}</p>
+                    <div className="text-right">
+                        {family.is_paid && family.plan_expires_at && (
+                            <p className="text-[10px] text-slate-400">Expire: {family.plan_expires_at}</p>
+                        )}
+                        {family.subscribed_at && (
+                            <p className="text-[10px] text-slate-300">Since: {family.subscribed_at}</p>
+                        )}
+                    </div>
                 </div>
-                <div className="text-right">
-                    {family.is_paid && family.plan_expires_at && (
-                        <p className="text-[10px] text-slate-400">Expire: {family.plan_expires_at}</p>
+
+                {/* Members + Last Active */}
+                <div className="space-y-1.5">
+                    {family.users.map(u => (
+                        <div key={u.id} className="flex items-center justify-between text-xs gap-2 flex-wrap">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${u.role === 'admin' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-500'}`}>
+                                    {u.role}
+                                </span>
+                                <span className="text-slate-700 truncate">{u.name}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                                <LastActiveBadge lastLoginAt={u.last_login_at} />
+                            </div>
+                            <span className="text-slate-300 font-mono text-[10px] w-full truncate">{u.email}</span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Actions Row 1 */}
+                <div className="flex gap-2 pt-1 border-t border-slate-50">
+                    {!family.is_paid ? (
+                        <button
+                            onClick={() => setShowUpgrade(!showUpgrade)}
+                            className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 py-2 rounded-xl active:scale-95 transition-all"
+                        >
+                            <Crown size={11}/> Upgrade <ChevronDown size={11}/>
+                        </button>
+                    ) : (
+                        <>
+                            <button
+                                onClick={() => setShowExtend(true)}
+                                className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 py-2 rounded-xl active:scale-95 transition-all"
+                            >
+                                <RefreshCw size={11}/> Lanjut
+                            </button>
+                            <button
+                                onClick={() => router.post(route('admin.families.downgrade', family.id))}
+                                className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-slate-600 bg-slate-100 py-2 rounded-xl active:scale-95 transition-all"
+                            >
+                                <Lock size={11}/> Free
+                            </button>
+                        </>
                     )}
                 </div>
-            </div>
 
-            {/* Members */}
-            <div className="space-y-1">
-                {family.users.map(u => (
-                    <div key={u.id} className="flex items-center justify-between text-xs">
-                        <span className="text-slate-600">{u.name}</span>
-                        <span className="text-slate-400 font-mono">{u.email}</span>
-                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-500'}`}>
-                            {u.role}
-                        </span>
-                    </div>
-                ))}
-            </div>
+                {/* Actions Row 2 */}
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setShowEmail(true)}
+                        className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 py-2 rounded-xl active:scale-95 transition-all"
+                    >
+                        <Mail size={11}/> Email
+                    </button>
+                    <button
+                        onClick={handleSuspend}
+                        className={`flex-1 flex items-center justify-center gap-1 text-xs font-bold py-2 rounded-xl active:scale-95 transition-all ${
+                            family.is_suspended
+                                ? 'text-emerald-700 bg-emerald-50'
+                                : 'text-orange-600 bg-orange-50'
+                        }`}
+                    >
+                        {family.is_suspended ? <><PlayCircle size={11}/> Aktif</> : <><PauseCircle size={11}/> Suspend</>}
+                    </button>
+                    <button
+                        onClick={() => setShowDelete(true)}
+                        className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-red-600 bg-red-50 py-2 rounded-xl active:scale-95 transition-all"
+                    >
+                        <Trash2 size={11}/> Padam
+                    </button>
+                </div>
 
-            {/* Actions */}
-            <div className="flex gap-2 pt-1 border-t border-slate-50">
-                {family.is_paid ? (
-                    <button
-                        onClick={() => router.post(route('admin.families.downgrade', family.id))}
-                        className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold text-red-600 bg-red-50 py-2 rounded-xl active:scale-95 transition-all"
-                    >
-                        <Lock size={12}/> Turun ke Free
-                    </button>
-                ) : (
-                    <button
-                        onClick={() => setShowUpgrade(!showUpgrade)}
-                        className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-50 py-2 rounded-xl active:scale-95 transition-all"
-                    >
-                        <Crown size={12}/> Upgrade Pro <ChevronDown size={12}/>
-                    </button>
+                {/* Upgrade form */}
+                {showUpgrade && (
+                    <form onSubmit={handleUpgrade} className="flex gap-2 items-center bg-amber-50 p-3 rounded-xl">
+                        <select
+                            value={data.months}
+                            onChange={e => setData('months', parseInt(e.target.value))}
+                            className="flex-1 text-xs bg-white border border-amber-200 rounded-lg px-2 py-1.5 font-medium"
+                        >
+                            {[1,2,3,6,12].map(m => (
+                                <option key={m} value={m}>{m} bulan</option>
+                            ))}
+                        </select>
+                        <button
+                            type="submit"
+                            disabled={processing}
+                            className="text-xs font-bold bg-amber-500 text-white px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-50"
+                        >
+                            {processing ? '...' : 'Confirm'}
+                        </button>
+                    </form>
                 )}
             </div>
-
-            {/* Upgrade form */}
-            {showUpgrade && (
-                <form onSubmit={handleUpgrade} className="flex gap-2 items-center bg-amber-50 p-3 rounded-xl">
-                    <select
-                        value={data.months}
-                        onChange={e => setData('months', parseInt(e.target.value))}
-                        className="flex-1 text-xs bg-white border border-amber-200 rounded-lg px-2 py-1.5 font-medium"
-                    >
-                        {[1,2,3,6,12].map(m => (
-                            <option key={m} value={m}>{m} bulan</option>
-                        ))}
-                    </select>
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        className="text-xs font-bold bg-amber-500 text-white px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-50"
-                    >
-                        {processing ? '...' : 'Confirm'}
-                    </button>
-                </form>
-            )}
-        </div>
+        </>
     );
 }
 
@@ -128,11 +354,12 @@ export default function AdminDashboard({ stats, families, query }) {
                 )}
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 gap-3">
-                    <StatCard label="Total Keluarga" value={stats.total_families} color="text-indigo-600" />
-                    <StatCard label="Pro Users" value={stats.paid_families} color="text-amber-600" />
-                    <StatCard label="Free Users" value={stats.free_families} color="text-slate-600" />
-                    <StatCard label="Total Pengguna" value={stats.total_users} color="text-emerald-600" />
+                <div className="grid grid-cols-3 gap-3">
+                    <StatCard label="Total Family" value={stats.total_families} color="text-indigo-600" />
+                    <StatCard label="Pro" value={stats.paid_families} color="text-amber-600" />
+                    <StatCard label="Free" value={stats.free_families} color="text-slate-600" />
+                    <StatCard label="Total Users" value={stats.total_users} color="text-emerald-600" />
+                    <StatCard label="Suspended" value={stats.suspended_families} color="text-red-500" />
                 </div>
 
                 {/* Search */}

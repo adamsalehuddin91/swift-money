@@ -83,7 +83,11 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::get('/search', [AdminController::class, 'search'])->name('search');
     Route::post('/families/{family}/upgrade', [AdminController::class, 'upgrade'])->name('families.upgrade');
+    Route::post('/families/{family}/extend', [AdminController::class, 'extend'])->name('families.extend');
     Route::post('/families/{family}/downgrade', [AdminController::class, 'downgrade'])->name('families.downgrade');
+    Route::post('/families/{family}/suspend', [AdminController::class, 'suspend'])->name('families.suspend');
+    Route::delete('/families/{family}', [AdminController::class, 'deleteFamily'])->name('families.delete');
+    Route::post('/families/{family}/email', [AdminController::class, 'sendEmail'])->name('families.email');
 });
 
 require __DIR__.'/auth.php';

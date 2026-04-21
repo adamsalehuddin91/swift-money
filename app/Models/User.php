@@ -25,6 +25,7 @@ class User extends Authenticatable
         'avatar',
         'language',
         'email_verified_at',
+        'last_login_at',
     ];
 
     public function family(): BelongsTo
@@ -56,7 +57,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'last_login_at'     => 'datetime',
+            'password'          => 'hashed',
         ];
     }
 }
