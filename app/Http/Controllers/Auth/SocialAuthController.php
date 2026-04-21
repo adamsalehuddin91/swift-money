@@ -30,6 +30,7 @@ class SocialAuthController extends Controller
             'family_id'         => $family->id,
             'role'              => 'admin',
             'email_verified_at' => now(),
+            'last_login_at'     => now(),
         ]);
     }
 
@@ -78,6 +79,7 @@ class SocialAuthController extends Controller
                         'family_id'         => $invite->family_id,
                         'role'              => 'member',
                         'email_verified_at' => now(),
+                        'last_login_at'     => now(),
                     ]);
 
                     $invite->update(['used_at' => now()]);
