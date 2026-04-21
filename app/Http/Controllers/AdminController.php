@@ -149,7 +149,8 @@ class AdminController extends Controller
                 Mail::raw($validated['body'], function ($message) use ($user, $validated) {
                     $message->to($user->email, $user->name)
                             ->subject($validated['subject'])
-                            ->from(config('mail.from.address', 'noreply@swiftmoney.my'), 'SwiftMoney');
+                            ->from(config('mail.from.address', 'noreply@swiftapps.my'), 'SwiftMoney')
+                            ->replyTo(config('mail.reply_to', 'adamsalehuddin91@gmail.com'), 'Adam');
                 });
                 $sent++;
             } catch (\Throwable $e) {
