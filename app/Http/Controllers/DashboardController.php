@@ -48,6 +48,11 @@ class DashboardController extends Controller
         }
         $userName = $user->name;
 
+        // Track last active — update once per day
+        if (!$user->last_login_at || $user->last_login_at->isYesterday() || $user->last_login_at->lt(now()->startOfDay())) {
+            $user->update(['last_login_at' => now()]);
+        }
+
         // Auto-carry recurring incomes from last month (cached)
         $this->incomeService->carryRecurring($familyId, $monthYear);
 
