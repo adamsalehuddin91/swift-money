@@ -141,15 +141,37 @@ class AdminController extends Controller
 
         $family->load('users');
 
+        $sent = 0;
+        $failed = [];
+
         foreach ($family->users as $user) {
-            Mail::raw($validated['body'], function ($message) use ($user, $validated) {
-                $message->to($user->email, $user->name)
-                        ->subject($validated['subject'])
-                        ->from(config('mail.from.address', 'noreply@swiftmoney.my'), 'SwiftMoney');
-            });
+            try {
+                Mail::raw($validated['body'], function ($message) use ($user, $validated) {
+                    $message->to($user->email, $user->name)
+                            ->subject($validated['subject'])
+                            ->from(config('mail.from.address', 'noreply@swiftmoney.my'), 'SwiftMoney');
+                });
+                $sent++;
+            } catch (\Throwable $e) {
+                $failed[] = $user->email;
+                \Illuminate\Support\Facades\Log::error('Admin sendEmail failed', [
+                    'to'    => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
-        return back()->with('success', "Email dihantar ke {$family->users->count()} ahli {$family->name}.");
+        if ($sent === 0) {
+            $reason = !empty($failed) ? 'Semak konfigurasi SMTP/Resend dan domain verification.' : 'Tiada ahli dalam keluarga ini.';
+            return back()->with('error', "Gagal hantar email. {$reason}");
+        }
+
+        $msg = "Email dihantar ke {$sent} ahli {$family->name}.";
+        if (!empty($failed)) {
+            $msg .= " Gagal: " . implode(', ', $failed);
+        }
+
+        return back()->with('success', $msg);
     }
 
     private function formatFamily(Family $family): array

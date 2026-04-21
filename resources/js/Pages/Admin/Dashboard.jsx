@@ -352,6 +352,12 @@ export default function AdminDashboard({ stats, families, query }) {
                         <p className="text-sm text-emerald-700 font-medium">{flash.success}</p>
                     </div>
                 )}
+                {flash?.error && (
+                    <div className="bg-red-50 border border-red-200 rounded-2xl p-3 flex items-center gap-2">
+                        <span className="text-base">⚠️</span>
+                        <p className="text-sm text-red-700 font-medium">{flash.error}</p>
+                    </div>
+                )}
 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-3">
