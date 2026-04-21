@@ -133,10 +133,10 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
 }
 
 // ─── Bill Template Modal (Add / Edit) ───
-function BillModal({ show, onClose, allDebts, editTemplate }) {
+function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
     const isEdit = !!editTemplate;
     const { data, setData, post, put, processing, reset } = useForm({
-        title: '', default_amount: '', category: 'Rumah', assigned_to: 'Abg', debt_id: '',
+        title: '', default_amount: '', category: 'Rumah', assigned_to: '', debt_id: '',
     });
     const [deleting, setDeleting] = useState(false);
 
@@ -151,6 +151,7 @@ function BillModal({ show, onClose, allDebts, editTemplate }) {
             });
         } else {
             reset();
+            setData('assigned_to', familyMembers?.[0]?.name || '');
         }
     }, [editTemplate, show]);
 
@@ -185,8 +186,9 @@ function BillModal({ show, onClose, allDebts, editTemplate }) {
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">PIC</label>
                         <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.assigned_to} onChange={(e) => setData('assigned_to', e.target.value)}>
-                            <option value="Abg">Abang</option>
-                            <option value="Ayg">Sayang</option>
+                            {(familyMembers || []).map(m => (
+                                <option key={m.id} value={m.name}>{m.name}</option>
+                            ))}
                         </select>
                     </div>
                     <div>
@@ -667,7 +669,7 @@ function EditProfileModal({ show, onClose, user }) {
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Paparan</label>
                         <input type="text" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.name} onChange={e => profileForm.setData('name', e.target.value)} />
-                        <p className="text-[9px] text-amber-500 font-bold ml-1 mt-1">⚠️ Nama ini digunakan untuk assignment bil (Abg/Ayg). Tukar berhati-hati.</p>
+                        <p className="text-[9px] text-amber-500 font-bold ml-1 mt-1">⚠️ Nama ini digunakan untuk assignment bil. Tukar nama akan ubah PIC pada semua komitmen.</p>
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Email</label>
@@ -1153,7 +1155,10 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
 
     const handleToggleAssign = (e, templateId, currentAssigned) => {
         e.stopPropagation();
-        const newAssigned = currentAssigned === 'Abg' ? 'Ayg' : 'Abg';
+        const names = (family_members || []).map(m => m.name);
+        if (names.length < 2) return;
+        const idx = names.indexOf(currentAssigned);
+        const newAssigned = names[(idx + 1) % names.length];
         router.put(route('bills.templates.assign', templateId), { assigned_to: newAssigned }, { preserveScroll: true });
     };
 
@@ -1168,7 +1173,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
             <div className="max-w-md mx-auto bg-slate-50 min-h-screen pb-28 font-sans text-slate-900 overflow-x-hidden relative">
 
                 <IncomeModal show={showIncomeModal} onClose={() => { setShowIncomeModal(false); setSelectedIncome(null); }} monthYear={monthYear} editIncome={selectedIncome} />
-                <BillModal show={showBillModal} onClose={() => { setShowBillModal(false); setSelectedTemplate(null); }} allDebts={all_debts} editTemplate={selectedTemplate} />
+                <BillModal show={showBillModal} onClose={() => { setShowBillModal(false); setSelectedTemplate(null); }} allDebts={all_debts} editTemplate={selectedTemplate} familyMembers={family_members} />
                 <DebtModal show={showDebtModal} onClose={() => { setShowDebtModal(false); setEditDebt(null); }} editDebt={editDebt} />
                 <SavingsModal show={showSavingsModal} onClose={() => { setShowSavingsModal(false); setEditGoal(null); }} editGoal={editGoal} />
                 <SavingsContributeModal show={showContributeModal} onClose={() => { setShowContributeModal(false); setSelectedGoal(null); }} goal={selectedGoal} />
@@ -1465,7 +1470,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                                 <button
                                                                     onClick={(e) => handleToggleAssign(e, bill.template_id, bill.assigned)}
                                                                     className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase active:scale-90 transition-all ${
-                                                                    bill.assigned === 'Abg' ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
+                                                                    (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
                                                                 }`}>
                                                                     {bill.assigned}
                                                                 </button>

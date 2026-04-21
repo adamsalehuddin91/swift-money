@@ -64,6 +64,7 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'user' => [
                 'name'      => $userName,
+                'email'     => $user->email,
                 'role'      => $user->role,
                 'family_id' => $familyId,
                 'avatar'    => $user->avatar,
