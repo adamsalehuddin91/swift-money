@@ -150,7 +150,7 @@ class AdminController extends Controller
                     $message->to($user->email, $user->name)
                             ->subject($validated['subject'])
                             ->from(config('mail.from.address', 'noreply@swiftapps.my'), 'SwiftMoney')
-                            ->replyTo(config('mail.reply_to', 'adamsalehuddin91@gmail.com'), 'Adam');
+                            ->replyTo(config('mail.reply_to', 'admin@swiftapps.my'), 'Adam SwiftMoney');
                 });
                 $sent++;
             } catch (\Throwable $e) {
