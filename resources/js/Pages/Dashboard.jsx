@@ -732,7 +732,7 @@ function UpgradeModal({ show, onClose }) {
                     ))}
                 </div>
                 <a
-                    href="https://wa.me/60YOUR_NUMBER?text=Nak+upgrade+SwiftMoney+Pro"
+                    href="https://wa.me/60132094577?text=Hi+Adam%2C+saya+nak+upgrade+SwiftMoney+ke+Pro+plan.+Boleh+bantu%3F"
                     target="_blank"
                     rel="noreferrer"
                     className="block w-full bg-indigo-600 text-white font-bold py-3 rounded-2xl text-sm active:scale-95 transition-all"
