@@ -25,6 +25,18 @@ class BillService
             ->get();
     }
 
+    private function computeUrgency(BillRecord $record): ?string
+    {
+        $dueDay = $record->template->due_day;
+        if (!$dueDay || $record->is_paid || $record->is_skipped) return null;
+
+        $daysUntil = $dueDay - now()->day;
+        if ($daysUntil < 0) return 'overdue';
+        if ($daysUntil <= 3) return 'urgent';
+        if ($daysUntil <= 7) return 'soon';
+        return null;
+    }
+
     public function skipRecord(BillRecord $record): void
     {
         $record->update(['is_skipped' => true, 'is_paid' => false, 'paid_at' => null]);
@@ -56,7 +68,11 @@ class BillService
                 'receipt_path' => $r->receipt_path,
                 'default_amount' => (float) $r->template->default_amount,
                 'is_skipped' => $r->is_skipped,
-            ])->values())
+                'due_day' => $r->template->due_day,
+                'urgency' => $this->computeUrgency($r),
+            ])->sortBy(fn ($b) => $b['is_skipped'] ? 99 : ($b['paid'] ? 50 : match($b['urgency']) {
+                'overdue' => 0, 'urgent' => 1, 'soon' => 2, default => 10,
+            }))->values())
             ->toArray();
     }
 

@@ -6,6 +6,7 @@ use App\Models\Debt;
 use App\Models\FamilyInvite;
 use App\Services\BillService;
 use App\Services\DebtService;
+use App\Services\ExpenseService;
 use App\Services\IncomeService;
 use App\Services\SavingsService;
 use Carbon\Carbon;
@@ -19,6 +20,7 @@ class DashboardController extends Controller
         private BillService $billService,
         private DebtService $debtService,
         private SavingsService $savingsService,
+        private ExpenseService $expenseService,
     ) {}
 
     public function index(Request $request)
@@ -62,15 +64,20 @@ class DashboardController extends Controller
         // Fetch records once — reused by summary + categorized calls below
         $records = $this->billService->getRecordsForMonth($familyId, $monthYear);
 
+        // Expenses
+        $expenses = $this->expenseService->getForMonth($familyId, $monthYear);
+        $totalExpenses = $this->expenseService->getTotalForMonth($familyId, $monthYear);
+
         // Personal data
         $myIncome = $this->incomeService->getTotalForUser($user->id, $monthYear);
         $mySummary = $this->billService->getBillSummary($records, $userName);
-        $myNetBalance = $myIncome - $mySummary['paid_bills'];
+        $myExpenses = array_sum(array_column(array_filter($expenses, fn($e) => $e['user_id'] === $user->id), 'amount'));
+        $myNetBalance = $myIncome - $mySummary['paid_bills'] - $myExpenses;
 
         // Family data
         $familyIncome = $this->incomeService->getTotalForFamily($familyId, $monthYear);
         $familySummary = $this->billService->getBillSummary($records);
-        $familyNetBalance = $familyIncome - $familySummary['paid_bills'];
+        $familyNetBalance = $familyIncome - $familySummary['paid_bills'] - $totalExpenses;
 
         return Inertia::render('Dashboard', [
             'user' => [
@@ -102,6 +109,7 @@ class DashboardController extends Controller
             'active_debts'     => $this->debtService->getForFamily($familyId),
             'all_debts'        => Debt::where('family_id', $familyId)->select('id', 'title', 'current_balance')->get(),
             'savings_goals'    => $this->savingsService->getForFamily($familyId),
+            'expenses'         => $expenses,
             'family_members'   => $user->family->users()->select('id', 'name', 'avatar', 'role')->get(),
             'invite_link'      => $this->getActiveInviteLink($familyId, $user->role),
         ]);

@@ -22,6 +22,7 @@ class SavingsService
                 'remaining'  => $g->remaining,
                 'pct'        => $g->progress_percent,
                 'deadline'   => $g->deadline?->toDateString(),
+                'on_track'   => $this->computeOnTrack($g),
             ])
             ->toArray();
     }
@@ -56,6 +57,27 @@ class SavingsService
 
             return $contribution;
         });
+    }
+
+    private function computeOnTrack(SavingsGoal $goal): ?string
+    {
+        if (!$goal->deadline) return null;
+        $today    = now()->startOfDay();
+        $deadline = $goal->deadline->startOfDay();
+        if ((float) $goal->current_amount >= (float) $goal->target_amount) return 'done';
+        if ($today->gte($deadline)) return 'overdue';
+
+        $created   = $goal->created_at->startOfDay();
+        $totalDays = max(1, $created->diffInDays($deadline));
+        $elapsed   = $created->diffInDays($today);
+        $expectedPct = $elapsed / $totalDays;
+        $actualPct   = $goal->target_amount > 0
+            ? (float) $goal->current_amount / (float) $goal->target_amount
+            : 0;
+
+        if ($actualPct >= $expectedPct - 0.05) return 'on_track';
+        if ($actualPct >= $expectedPct - 0.15) return 'behind';
+        return 'far_behind';
     }
 
     public function getHistory(SavingsGoal $goal): array

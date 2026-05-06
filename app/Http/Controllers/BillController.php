@@ -35,6 +35,7 @@ class BillController extends Controller
             'title' => 'required|string|max:255',
             'default_amount' => 'required|numeric|min:0.01',
             'assigned_to' => 'required|string|max:255',
+            'due_day' => 'nullable|integer|min:1|max:31',
             'debt_id' => [
                 'nullable',
                 Rule::exists('debts', 'id')->where('family_id', $request->user()->family_id),
@@ -88,6 +89,7 @@ class BillController extends Controller
             'default_amount' => 'sometimes|required|numeric|min:0.01',
             'category'       => 'sometimes|required|string|max:255',
             'assigned_to'    => 'sometimes|required|string|max:255',
+            'due_day'        => 'sometimes|nullable|integer|min:1|max:31',
             'debt_id'        => ['sometimes', 'nullable', Rule::exists('debts', 'id')->where('family_id', $request->user()->family_id)],
         ]);
 

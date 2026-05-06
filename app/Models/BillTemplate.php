@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class BillTemplate extends Model
 {
     protected $fillable = [
-        'family_id', 'category', 'title', 'default_amount', 'assigned_to', 'is_active', 'debt_id',
+        'family_id', 'category', 'title', 'default_amount', 'assigned_to', 'is_active', 'debt_id', 'due_day',
     ];
 
     protected $casts = [

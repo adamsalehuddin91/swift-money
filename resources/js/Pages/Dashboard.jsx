@@ -9,6 +9,7 @@ import {
     TrendingDown, TrendingUp, Eye, EyeOff, Wallet, ArrowUpRight, X, ChevronLeft,
     LogOut, Users, FileText, Bell, ShieldCheck,
     Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil, Ban, RotateCcw,
+    MessageCircle, AlertCircle, Receipt,
     Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
     PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar,
     KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame
@@ -136,7 +137,7 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
 function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
     const isEdit = !!editTemplate;
     const { data, setData, post, put, processing, reset } = useForm({
-        title: '', default_amount: '', category: 'Rumah', assigned_to: '', debt_id: '',
+        title: '', default_amount: '', category: 'Rumah', assigned_to: '', debt_id: '', due_day: '',
     });
     const [deleting, setDeleting] = useState(false);
 
@@ -148,6 +149,7 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                 category: editTemplate.category,
                 assigned_to: editTemplate.assigned_to,
                 debt_id: editTemplate.debt_id || '',
+                due_day: editTemplate.due_day || '',
             });
         } else {
             reset();
@@ -192,12 +194,16 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                         </select>
                     </div>
                     <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Link Hutang</label>
-                        <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
-                            <option value="">Tiada</option>
-                            {(allDebts || []).map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
-                        </select>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Due Hari Ke-</label>
+                        <input type="number" min="1" max="31" placeholder="cth: 15" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.due_day} onChange={(e) => setData('due_day', e.target.value)} />
                     </div>
+                </div>
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Link Hutang</label>
+                    <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
+                        <option value="">Tiada</option>
+                        {(allDebts || []).map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
+                    </select>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Saving...' : isEdit ? 'Kemaskini Komitmen' : 'Tambah Komitmen'}
@@ -211,6 +217,71 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                         });
                     }} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all disabled:opacity-50">
                         {deleting ? 'Memadamkan...' : 'Padam Komitmen'}
+                    </button>
+                )}
+            </form>
+        </Modal>
+    );
+}
+
+// ─── One-Time Expense Modal ───
+function ExpenseModal({ show, onClose, monthYear, editExpense }) {
+    const isEdit = !!editExpense;
+    const { data, setData, post, put, delete: destroy, processing, reset } = useForm({
+        title: '', amount: '', category: 'Lain2', note: '', month_year: monthYear,
+    });
+    const [deleting, setDeleting] = useState(false);
+
+    useEffect(() => {
+        if (editExpense) {
+            setData({ title: editExpense.title, amount: editExpense.amount, category: editExpense.category, note: editExpense.note || '', month_year: monthYear });
+        } else {
+            reset();
+            setData('month_year', monthYear);
+        }
+    }, [editExpense, show]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (isEdit) {
+            put(route('expenses.update', editExpense.id), { onSuccess: () => { reset(); onClose(); } });
+        } else {
+            post(route('expenses.store'), { onSuccess: () => { reset(); onClose(); } });
+        }
+    };
+
+    return (
+        <Modal show={show} onClose={onClose} title={isEdit ? 'Edit Perbelanjaan' : 'Tambah Perbelanjaan'}>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Perkara</label>
+                    <input type="text" placeholder="e.g. Beli TV, Duit raya" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
+                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
+                        <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
+                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nota (optional)</label>
+                    <input type="text" placeholder="Kenapa beli, untuk siapa..." className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
+                </div>
+                <button type="submit" disabled={processing} className="w-full bg-violet-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-violet-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
+                    {processing ? 'Saving...' : isEdit ? 'Kemaskini' : 'Tambah Perbelanjaan'}
+                </button>
+                {isEdit && (
+                    <button type="button" disabled={deleting} onClick={() => {
+                        setDeleting(true);
+                        destroy(route('expenses.destroy', editExpense.id), { onSuccess: () => { reset(); onClose(); }, onFinish: () => setDeleting(false) });
+                    }} className="w-full text-red-500 font-bold text-sm p-3 rounded-2xl bg-red-50 active:scale-95 transition-all">
+                        {deleting ? 'Memadamkan...' : 'Padam'}
                     </button>
                 )}
             </form>
@@ -1107,7 +1178,7 @@ function SuspendedScreen() {
 }
 
 // ─── Main Dashboard ───
-export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link }) {
+export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link, expenses }) {
     const [isHidden, setIsHidden] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
     const [viewMode, setViewMode] = useState('saya'); // 'saya' or 'keluarga'
@@ -1128,6 +1199,8 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     const [selectedBill, setSelectedBill] = useState(null);
     const [showEditProfile, setShowEditProfile] = useState(false);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const [showExpenseModal, setShowExpenseModal] = useState(false);
+    const [editExpense, setEditExpense] = useState(null);
 
     const { plan } = usePage().props;
     const isPaid = plan?.is_paid ?? false;
@@ -1207,6 +1280,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                 <ReceiptModal show={showReceiptModal} onClose={() => { setShowReceiptModal(false); setSelectedBill(null); }} bill={selectedBill} />
                 <EditProfileModal show={showEditProfile} onClose={() => setShowEditProfile(false)} user={user} />
                 <UpgradeModal show={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
+                <ExpenseModal show={showExpenseModal} onClose={() => { setShowExpenseModal(false); setEditExpense(null); }} monthYear={monthYear} editExpense={editExpense} />
 
                 {activeTab === 'home' ? (
                     <>
@@ -1233,6 +1307,9 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <p className="text-indigo-300 text-[10px] font-medium">{isSaya ? user?.name : 'Keluarga'} &bull; RM {Number(s.total_bills).toLocaleString()}</p>
                                 </div>
                                 <div className="flex gap-3 items-center">
+                                    <button onClick={() => router.get(route('summary.index'), { month: monthYear })} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all" title="Ringkasan bulanan">
+                                        <FileText size={20} />
+                                    </button>
                                     <button onClick={() => setIsHidden(!isHidden)} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all">
                                         {isHidden ? <EyeOff size={20} /> : <Eye size={20} />}
                                     </button>
@@ -1348,6 +1425,39 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 </div>
                             </section>
 
+                            {/* One-Time Expenses */}
+                            <section>
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                        <Receipt size={14} className="text-violet-500" /> Perbelanjaan Lain
+                                    </h3>
+                                    <button onClick={() => { setEditExpense(null); setShowExpenseModal(true); }} className="text-[10px] font-bold text-violet-600 flex items-center gap-1 bg-violet-50 px-2 py-1 rounded-lg">
+                                        <Plus size={12}/> TAMBAH
+                                    </button>
+                                </div>
+                                <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+                                    {(expenses || []).length === 0 ? (
+                                        <p className="text-slate-400 text-xs text-center">Tiada perbelanjaan lain bulan ini</p>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {(expenses || []).map(exp => (
+                                                <div key={exp.id} onClick={() => { setEditExpense(exp); setShowExpenseModal(true); }} className="flex items-center justify-between cursor-pointer active:scale-[0.98] transition-all">
+                                                    <div>
+                                                        <p className="text-[13px] font-bold text-slate-700">{exp.title}</p>
+                                                        <p className="text-[10px] text-slate-400">{exp.category}{exp.note ? ` · ${exp.note}` : ''} · {exp.by}</p>
+                                                    </div>
+                                                    <p className="text-sm font-black text-violet-600">{formatMoney(exp.amount, isHidden, true)}</p>
+                                                </div>
+                                            ))}
+                                            <div className="border-t pt-2 mt-1 flex justify-between">
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase">Jumlah</p>
+                                                <p className="text-[12px] font-black text-violet-600">{formatMoney((expenses||[]).reduce((a,e)=>a+e.amount,0), isHidden, true)}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </section>
+
                             {/* Debt Tracker */}
                             <section>
                                 <div className="flex justify-between items-center mb-4">
@@ -1443,7 +1553,13 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <p className="text-[11px] font-black text-emerald-600">{goal.pct}%</p>
+                                                    <div className="text-right">
+                                                        <p className="text-[11px] font-black text-emerald-600">{goal.pct}%</p>
+                                                        {goal.on_track === 'on_track' && <span className="text-[8px] font-bold text-emerald-500 bg-emerald-50 px-1.5 py-0.5 rounded-md">On track 🟢</span>}
+                                                        {goal.on_track === 'behind' && <span className="text-[8px] font-bold text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded-md">Perlu kejar 🟡</span>}
+                                                        {goal.on_track === 'far_behind' && <span className="text-[8px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-md">Jauh ketinggalan 🔴</span>}
+                                                        {goal.on_track === 'overdue' && <span className="text-[8px] font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded-md">Tarikh lepas!</span>}
+                                                    </div>
                                                 </div>
                                                 <div className="w-full bg-slate-50 h-2 rounded-full overflow-hidden border border-slate-100/50">
                                                     <div className="bg-emerald-400 h-full rounded-full transition-all duration-1000" style={{ width: `${goal.pct}%` }}></div>
@@ -1498,9 +1614,14 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     <div className="flex items-center gap-4">
                                                         {bill.paid ? <CheckCircle size={26} className="text-green-500" /> : <Circle size={26} className="text-slate-200" />}
                                                         <div>
-                                                            <h4 className={`text-[13px] font-bold leading-tight ${bill.paid ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
-                                                                {bill.title}
-                                                            </h4>
+                                                            <div className="flex items-center gap-2">
+                                                                <h4 className={`text-[13px] font-bold leading-tight ${bill.paid ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
+                                                                    {bill.title}
+                                                                </h4>
+                                                                {!bill.paid && bill.urgency === 'overdue' && <span className="text-[8px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded-md uppercase animate-pulse">Lewat!</span>}
+                                                                {!bill.paid && bill.urgency === 'urgent' && <span className="text-[8px] font-black bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-md uppercase">{bill.due_day - new Date().getDate()}h lagi</span>}
+                                                                {!bill.paid && bill.urgency === 'soon' && <span className="text-[8px] font-black bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded-md uppercase">{bill.due_day - new Date().getDate()}h lagi</span>}
+                                                            </div>
                                                             <div className="flex items-center gap-2 mt-1">
                                                                 <span className={`text-xs font-black ${bill.paid ? 'text-slate-400' : 'text-indigo-600'}`}>
                                                                     {formatMoney(bill.amount)}
@@ -1529,6 +1650,17 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-2">
+                                                        {!bill.paid && (
+                                                            <a
+                                                                href={`https://wa.me/?text=${encodeURIComponent(`Hei 😊 boleh settlekan ${bill.title} RM${Number(bill.amount).toFixed(2)} bulan ni? TQ!`)}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                className="p-1.5 rounded-xl bg-green-50 text-green-500 active:scale-90 transition-all"
+                                                            >
+                                                                <MessageCircle size={14} />
+                                                            </a>
+                                                        )}
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); setSelectedBill(bill); setShowReceiptModal(true); }}
                                                             className={`p-1.5 rounded-xl active:scale-90 transition-all ${bill.receipt_path ? 'bg-green-50 text-green-500' : 'bg-slate-50 text-slate-300'}`}
@@ -1537,7 +1669,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                         </button>
                                                         {isAdmin && (
                                                             <button
-                                                                onClick={(e) => { e.stopPropagation(); setSelectedTemplate({ id: bill.template_id, title: bill.title, default_amount: bill.default_amount, category: bill.category, assigned_to: bill.assigned, debt_id: bill.debt_id || '' }); setShowBillModal(true); }}
+                                                                onClick={(e) => { e.stopPropagation(); setSelectedTemplate({ id: bill.template_id, title: bill.title, default_amount: bill.default_amount, category: bill.category, assigned_to: bill.assigned, debt_id: bill.debt_id || '', due_day: bill.due_day || '' }); setShowBillModal(true); }}
                                                                 className="p-1.5 rounded-xl bg-slate-50 text-slate-400 active:scale-90 transition-all"
                                                             >
                                                                 <Pencil size={14} />
