@@ -21,6 +21,8 @@ class BillController extends Controller
 
     public function storeTemplate(Request $request)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
+
         $family = $request->user()->family;
         if (!$family->isPaid()) {
             $count = \App\Models\BillTemplate::where('family_id', $family->id)
@@ -78,6 +80,7 @@ class BillController extends Controller
 
     public function updateTemplate(Request $request, BillTemplate $template)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($template->family_id === $request->user()->family_id, 403);
 
         $validated = $request->validate([
@@ -95,6 +98,7 @@ class BillController extends Controller
 
     public function updateAmount(Request $request, BillRecord $record)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($record->template->family_id === $request->user()->family_id, 403);
 
         $validated = $request->validate([
@@ -148,6 +152,7 @@ class BillController extends Controller
 
     public function archiveTemplate(Request $request, BillTemplate $template)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($template->family_id === $request->user()->family_id, 403);
 
         $template->update(['is_active' => false]);

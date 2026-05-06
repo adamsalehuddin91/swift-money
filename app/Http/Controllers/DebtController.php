@@ -12,6 +12,7 @@ class DebtController extends Controller
 
     public function store(Request $request)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($request->user()->family_id, 403, 'Akaun belum dikaitkan dengan family.');
         abort_unless($request->user()->family->isPaid(), 403, 'upgrade_required');
 
@@ -43,6 +44,7 @@ class DebtController extends Controller
 
     public function update(Request $request, Debt $debt)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($debt->family_id === $request->user()->family_id, 403);
 
         $validated = $request->validate([
@@ -62,6 +64,7 @@ class DebtController extends Controller
 
     public function settle(Request $request, Debt $debt)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($debt->family_id === $request->user()->family_id, 403);
 
         if ((float) $debt->current_balance > 0) {
@@ -73,6 +76,7 @@ class DebtController extends Controller
 
     public function destroy(Request $request, Debt $debt)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($debt->family_id === $request->user()->family_id, 403);
 
         $debt->delete();

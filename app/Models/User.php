@@ -28,6 +28,11 @@ class User extends Authenticatable
         'last_login_at',
     ];
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class);

@@ -1131,6 +1131,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
 
     const { plan } = usePage().props;
     const isPaid = plan?.is_paid ?? false;
+    const isAdmin = user?.role === 'admin';
 
     const requirePaid = (callback) => {
         if (!isPaid) { setShowUpgradeModal(true); return; }
@@ -1353,9 +1354,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <TrendingDown size={14} className="text-orange-500" /> Pengurangan Hutang
                                     </h3>
-                                    <button onClick={() => requirePaid(() => setShowDebtModal(true))} className="text-[10px] font-bold text-orange-600 flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg">
-                                        {isPaid ? <Plus size={12}/> : <span>🔒</span>} TAMBAH
-                                    </button>
+                                    {isAdmin && (
+                                        <button onClick={() => requirePaid(() => setShowDebtModal(true))} className="text-[10px] font-bold text-orange-600 flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg">
+                                            {isPaid ? <Plus size={12}/> : <span>🔒</span>} TAMBAH
+                                        </button>
+                                    )}
                                 </div>
                                 {debts.length === 0 ? (
                                     <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
@@ -1391,12 +1394,16 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     <button onClick={() => openHistory(debt)} className="flex-1 text-[10px] font-bold text-slate-500 bg-slate-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                         <Clock size={12}/> Sejarah
                                                     </button>
-                                                    <button onClick={() => { setEditDebt(debt); setShowDebtModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
-                                                        <Pencil size={12}/> Edit
-                                                    </button>
-                                                    <button onClick={() => { if (confirm('Mark hutang ini selesai?')) router.post(route('debts.settle', debt.id), {}, { preserveScroll: true }); }} className="flex-1 text-[10px] font-bold text-green-600 bg-green-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
-                                                        <CheckCheck size={12}/> Selesai
-                                                    </button>
+                                                    {isAdmin && (
+                                                        <button onClick={() => { setEditDebt(debt); setShowDebtModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                            <Pencil size={12}/> Edit
+                                                        </button>
+                                                    )}
+                                                    {isAdmin && (
+                                                        <button onClick={() => { if (confirm('Mark hutang ini selesai?')) router.post(route('debts.settle', debt.id), {}, { preserveScroll: true }); }} className="flex-1 text-[10px] font-bold text-green-600 bg-green-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                            <CheckCheck size={12}/> Selesai
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -1410,9 +1417,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                         <PiggyBank size={14} className="text-emerald-500" /> Simpanan
                                     </h3>
-                                    <button onClick={() => setShowSavingsModal(true)} className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg">
-                                        <Plus size={12}/> TAMBAH
-                                    </button>
+                                    {isAdmin && (
+                                        <button onClick={() => setShowSavingsModal(true)} className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg">
+                                            <Plus size={12}/> TAMBAH
+                                        </button>
+                                    )}
                                 </div>
                                 {(savings_goals || []).length === 0 ? (
                                     <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 text-center">
@@ -1447,9 +1456,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                         <Plus size={12}/> Tambah
                                                     </button>
-                                                    <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
-                                                        <Pencil size={12}/> Edit
-                                                    </button>
+                                                    {isAdmin && (
+                                                        <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                            <Pencil size={12}/> Edit
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -1491,13 +1502,21 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                                 <span className={`text-xs font-black ${bill.paid ? 'text-slate-400' : 'text-indigo-600'}`}>
                                                                     {formatMoney(bill.amount)}
                                                                 </span>
-                                                                <button
-                                                                    onClick={(e) => handleToggleAssign(e, bill.template_id, bill.assigned)}
-                                                                    className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase active:scale-90 transition-all ${
-                                                                    (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
-                                                                }`}>
-                                                                    {bill.assigned}
-                                                                </button>
+                                                                {isAdmin ? (
+                                                                    <button
+                                                                        onClick={(e) => handleToggleAssign(e, bill.template_id, bill.assigned)}
+                                                                        className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase active:scale-90 transition-all ${
+                                                                        (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
+                                                                    }`}>
+                                                                        {bill.assigned}
+                                                                    </button>
+                                                                ) : (
+                                                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase ${
+                                                                        (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
+                                                                    }`}>
+                                                                        {bill.assigned}
+                                                                    </span>
+                                                                )}
                                                                 {bill.debt_title && (
                                                                     <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-500 uppercase flex items-center gap-0.5">
                                                                         <Link2 size={8}/> {bill.debt_title}
@@ -1513,12 +1532,14 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                         >
                                                             {bill.receipt_path ? <Image size={14} /> : <Camera size={14} />}
                                                         </button>
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); setSelectedTemplate({ id: bill.template_id, title: bill.title, default_amount: bill.default_amount, category: bill.category, assigned_to: bill.assigned, debt_id: bill.debt_id || '' }); setShowBillModal(true); }}
-                                                            className="p-1.5 rounded-xl bg-slate-50 text-slate-400 active:scale-90 transition-all"
-                                                        >
-                                                            <Pencil size={14} />
-                                                        </button>
+                                                        {isAdmin && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); setSelectedTemplate({ id: bill.template_id, title: bill.title, default_amount: bill.default_amount, category: bill.category, assigned_to: bill.assigned, debt_id: bill.debt_id || '' }); setShowBillModal(true); }}
+                                                                className="p-1.5 rounded-xl bg-slate-50 text-slate-400 active:scale-90 transition-all"
+                                                            >
+                                                                <Pencil size={14} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             ))}
@@ -1546,17 +1567,21 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 <h2 className="text-xl font-black text-slate-800 tracking-tighter">Simpanan</h2>
                                 <p className="text-slate-400 text-xs mt-1">Sasaran & perkembangan</p>
                             </div>
-                            <button onClick={() => requirePaid(() => setShowSavingsModal(true))} className="flex items-center gap-1 bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-2xl shadow-md shadow-emerald-200 active:scale-95 transition-all">
-                                {isPaid ? <Plus size={14}/> : <span>🔒</span>} Baru
-                            </button>
+                            {isAdmin && (
+                                <button onClick={() => requirePaid(() => setShowSavingsModal(true))} className="flex items-center gap-1 bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-2xl shadow-md shadow-emerald-200 active:scale-95 transition-all">
+                                    {isPaid ? <Plus size={14}/> : <span>🔒</span>} Baru
+                                </button>
+                            )}
                         </div>
                         {(savings_goals || []).length === 0 ? (
                             <div className="bg-white rounded-[28px] p-10 shadow-sm border border-slate-100 text-center space-y-3">
                                 <span className="text-5xl">🐷</span>
                                 <p className="text-slate-400 text-sm font-medium">Belum ada sasaran simpanan</p>
-                                <button onClick={() => setShowSavingsModal(true)} className="text-emerald-600 font-bold text-xs bg-emerald-50 px-4 py-2 rounded-xl">
-                                    Tambah Pertama
-                                </button>
+                                {isAdmin && (
+                                    <button onClick={() => setShowSavingsModal(true)} className="text-emerald-600 font-bold text-xs bg-emerald-50 px-4 py-2 rounded-xl">
+                                        Tambah Pertama
+                                    </button>
+                                )}
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -1601,9 +1626,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                             <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                 <Plus size={12}/> Tambah Simpanan
                                             </button>
-                                            <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="px-4 text-[10px] font-bold text-slate-500 bg-slate-50 py-2.5 rounded-xl flex items-center justify-center active:scale-95 transition-all">
-                                                <Pencil size={12}/>
-                                            </button>
+                                            {isAdmin && (
+                                                <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="px-4 text-[10px] font-bold text-slate-500 bg-slate-50 py-2.5 rounded-xl flex items-center justify-center active:scale-95 transition-all">
+                                                    <Pencil size={12}/>
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -1625,9 +1652,13 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             <BarChart2 size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Analitik</span>
                         </button>
-                        <button onClick={() => setShowBillModal(true)} className="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg shadow-indigo-200 -mt-12 active:scale-90 transition-all border-4 border-slate-50">
-                            <Plus size={24} strokeWidth={3} />
-                        </button>
+                        {isAdmin ? (
+                            <button onClick={() => setShowBillModal(true)} className="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg shadow-indigo-200 -mt-12 active:scale-90 transition-all border-4 border-slate-50">
+                                <Plus size={24} strokeWidth={3} />
+                            </button>
+                        ) : (
+                            <div className="w-14" />
+                        )}
                         <button onClick={() => setActiveTab('savings')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'savings' ? 'text-emerald-600' : 'text-slate-400'}`}>
                             <PiggyBank size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Simpan</span>

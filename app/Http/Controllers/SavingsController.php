@@ -12,6 +12,7 @@ class SavingsController extends Controller
 
     public function store(Request $request)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($request->user()->family_id, 403, 'Akaun belum dikaitkan dengan family.');
         abort_unless($request->user()->family->isPaid(), 403, 'upgrade_required');
 
@@ -33,6 +34,7 @@ class SavingsController extends Controller
 
     public function update(Request $request, SavingsGoal $savingsGoal)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($savingsGoal->family_id === $request->user()->family_id, 403);
 
         $validated = $request->validate([
@@ -49,6 +51,7 @@ class SavingsController extends Controller
 
     public function destroy(Request $request, SavingsGoal $savingsGoal)
     {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
         abort_unless($savingsGoal->family_id === $request->user()->family_id, 403);
 
         $this->savingsService->destroy($savingsGoal);
