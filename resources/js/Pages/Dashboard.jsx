@@ -8,7 +8,7 @@ import {
     Zap, Heart, User, Plus, ChevronRight,
     TrendingDown, TrendingUp, Eye, EyeOff, Wallet, ArrowUpRight, X, ChevronLeft,
     LogOut, Users, FileText, Bell, ShieldCheck,
-    Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil, Ban,
+    Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil, Ban, RotateCcw,
     Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
     PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar,
     KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame
@@ -1472,6 +1472,9 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             {CATEGORIES.map(cat => {
                                 const catBills = bills[cat];
                                 if (!catBills || catBills.length === 0) return null;
+                                const activeBills = catBills.filter(b => !b.is_skipped);
+                                const skippedBills = catBills.filter(b => b.is_skipped);
+                                if (activeBills.length === 0 && skippedBills.length === 0) return null;
                                 return (
                                     <section key={cat}>
                                         <div className="flex justify-between items-center mb-4 text-[11px] font-black text-slate-800 uppercase tracking-widest">
@@ -1479,10 +1482,10 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                 {categoryIcons[cat]}
                                                 {cat}
                                             </span>
-                                            <span className="text-[9px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">{catBills.length} ITEM</span>
+                                            <span className="text-[9px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">{activeBills.length} ITEM</span>
                                         </div>
                                         <div className="space-y-3">
-                                            {catBills.map(bill => (
+                                            {activeBills.map(bill => (
                                                 <div
                                                     key={bill.id}
                                                     onClick={() => handleTogglePaid(bill.id)}
@@ -1552,6 +1555,27 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     </div>
                                                 </div>
                                             ))}
+                                            {skippedBills.length > 0 && isAdmin && (
+                                                <div className="mt-1 space-y-2">
+                                                    {skippedBills.map(bill => (
+                                                        <div key={bill.id} className="flex items-center justify-between px-4 py-3 rounded-[18px] bg-slate-100/60 border border-dashed border-slate-200 opacity-60">
+                                                            <div className="flex items-center gap-3">
+                                                                <Ban size={16} className="text-slate-400 shrink-0" />
+                                                                <div>
+                                                                    <p className="text-[12px] font-bold text-slate-400 line-through">{bill.title}</p>
+                                                                    <p className="text-[9px] text-slate-400 font-bold uppercase">Dilangkau bulan ini</p>
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => router.post(route('bills.unskip', bill.id), {}, { preserveScroll: true })}
+                                                                className="flex items-center gap-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2.5 py-1.5 rounded-xl active:scale-90 transition-all opacity-100"
+                                                            >
+                                                                <RotateCcw size={11} /> Pulihkan
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     </section>
                                 );

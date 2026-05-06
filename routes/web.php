@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/bills/templates/{template}', [BillController::class, 'archiveTemplate'])->name('bills.templates.destroy');
     Route::post('/bills/{record}/toggle', [BillController::class, 'togglePaid'])->name('bills.toggle');
     Route::post('/bills/{record}/skip', [BillController::class, 'skipRecord'])->name('bills.skip');
+    Route::post('/bills/{record}/unskip', [BillController::class, 'unskipRecord'])->name('bills.unskip');
     Route::put('/bills/{record}/amount', [BillController::class, 'updateAmount'])->name('bills.amount.update');
     Route::get('/bills/{record}/receipt', [BillController::class, 'viewReceipt'])->name('bills.receipt.view');
     Route::post('/bills/{record}/receipt', [BillController::class, 'uploadReceipt'])->name('bills.receipt.upload');

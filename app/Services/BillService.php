@@ -21,7 +21,6 @@ class BillService
     {
         return BillRecord::whereHas('template', fn ($q) => $q->where('family_id', $familyId)->where('is_active', true))
             ->where('month_year', $monthYear)
-            ->where('is_skipped', false)
             ->with(['template.debt'])
             ->get();
     }
@@ -29,6 +28,11 @@ class BillService
     public function skipRecord(BillRecord $record): void
     {
         $record->update(['is_skipped' => true, 'is_paid' => false, 'paid_at' => null]);
+    }
+
+    public function unskipRecord(BillRecord $record): void
+    {
+        $record->update(['is_skipped' => false]);
     }
 
     public function getCategorizedBills(Collection $records, ?string $assignedTo = null): array
@@ -51,12 +55,14 @@ class BillService
                 'debt_title' => $r->template->debt?->title,
                 'receipt_path' => $r->receipt_path,
                 'default_amount' => (float) $r->template->default_amount,
+                'is_skipped' => $r->is_skipped,
             ])->values())
             ->toArray();
     }
 
     public function getBillSummary(Collection $records, ?string $assignedTo = null): array
     {
+        $records = $records->filter(fn ($r) => !$r->is_skipped);
         if ($assignedTo) {
             $records = $records->filter(fn ($r) => $r->template->assigned_to === $assignedTo);
         }

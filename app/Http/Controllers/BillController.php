@@ -160,6 +160,16 @@ class BillController extends Controller
         return back();
     }
 
+    public function unskipRecord(Request $request, BillRecord $record)
+    {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
+        abort_unless($record->template->family_id === $request->user()->family_id, 403);
+
+        $this->billService->unskipRecord($record);
+
+        return back();
+    }
+
     public function archiveTemplate(Request $request, BillTemplate $template)
     {
         abort_unless($request->user()->isAdmin(), 403, 'admin_required');
