@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $stats = [
             'total_families'     => Family::count(),
@@ -20,10 +20,28 @@ class AdminController extends Controller
             'suspended_families' => Family::whereNotNull('suspended_at')->count(),
         ];
 
+        $filter   = $request->get('filter', '');
+        $families = collect();
+
+        if ($filter) {
+            $query = Family::query();
+
+            match ($filter) {
+                'paid'      => $query->where('plan', 'paid'),
+                'free'      => $query->where('plan', 'free'),
+                'suspended' => $query->whereNotNull('suspended_at'),
+                'all'       => null,
+                default     => null,
+            };
+
+            $families = $query->get()->map(fn($f) => $this->formatFamily($f));
+        }
+
         return Inertia::render('Admin/Dashboard', [
             'stats'    => $stats,
-            'families' => [],
+            'families' => $families->values(),
             'query'    => '',
+            'filter'   => $filter,
         ]);
     }
 

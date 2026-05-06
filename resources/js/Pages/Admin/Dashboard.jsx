@@ -2,12 +2,20 @@ import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Search, Users, Crown, Lock, CheckCircle, ChevronDown, Trash2, Mail, PauseCircle, PlayCircle, RefreshCw, Send } from 'lucide-react';
 
-function StatCard({ label, value, color }) {
+function StatCard({ label, value, color, filterKey, activeFilter }) {
+    const isActive = activeFilter === filterKey;
     return (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
-            <p className={`text-2xl font-black ${color}`}>{value}</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mt-1">{label}</p>
-        </div>
+        <button
+            onClick={() => router.get(route('admin.index'), filterKey ? { filter: isActive ? '' : filterKey } : {}, { preserveState: false })}
+            className={`rounded-2xl p-4 shadow-sm border text-center w-full transition-all active:scale-95 ${
+                isActive
+                    ? 'bg-indigo-600 border-indigo-600'
+                    : 'bg-white border-slate-100 hover:border-indigo-200'
+            }`}
+        >
+            <p className={`text-2xl font-black ${isActive ? 'text-white' : color}`}>{value}</p>
+            <p className={`text-[10px] font-bold uppercase tracking-wide mt-1 ${isActive ? 'text-indigo-200' : 'text-slate-400'}`}>{label}</p>
+        </button>
     );
 }
 
@@ -325,7 +333,7 @@ function FamilyCard({ family }) {
     );
 }
 
-export default function AdminDashboard({ stats, families, query }) {
+export default function AdminDashboard({ stats, families, query, filter }) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(query || '');
 
@@ -375,12 +383,17 @@ export default function AdminDashboard({ stats, families, query }) {
 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-3">
-                    <StatCard label="Total Family" value={stats.total_families} color="text-indigo-600" />
-                    <StatCard label="Pro" value={stats.paid_families} color="text-amber-600" />
-                    <StatCard label="Free" value={stats.free_families} color="text-slate-600" />
+                    <StatCard label="Total Family" value={stats.total_families} color="text-indigo-600" filterKey="all" activeFilter={filter} />
+                    <StatCard label="Pro" value={stats.paid_families} color="text-amber-600" filterKey="paid" activeFilter={filter} />
+                    <StatCard label="Free" value={stats.free_families} color="text-slate-600" filterKey="free" activeFilter={filter} />
                     <StatCard label="Total Users" value={stats.total_users} color="text-emerald-600" />
-                    <StatCard label="Suspended" value={stats.suspended_families} color="text-red-500" />
+                    <StatCard label="Suspended" value={stats.suspended_families} color="text-red-500" filterKey="suspended" activeFilter={filter} />
                 </div>
+                {filter && (
+                    <p className="text-[11px] font-black text-indigo-500 uppercase tracking-widest -mt-1">
+                        Menunjukkan: {filter === 'paid' ? '👑 Pro' : filter === 'free' ? 'Free' : filter === 'suspended' ? '🚫 Suspended' : 'Semua'} — {families.length} keluarga
+                    </p>
+                )}
 
                 {/* Search */}
                 <form onSubmit={handleSearch} className="flex gap-2">
@@ -405,25 +418,22 @@ export default function AdminDashboard({ stats, families, query }) {
                 {/* Results */}
                 {families.length > 0 && (
                     <div className="space-y-3">
-                        <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                            {families.length} keputusan
-                        </p>
                         {families.map(f => (
                             <FamilyCard key={f.id} family={f} />
                         ))}
                     </div>
                 )}
 
-                {query && families.length === 0 && (
+                {(query || filter) && families.length === 0 && (
                     <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-slate-100">
-                        <p className="text-slate-400 text-sm">Tiada hasil untuk "<span className="font-bold">{query}</span>"</p>
+                        <p className="text-slate-400 text-sm">Tiada hasil ditemui.</p>
                     </div>
                 )}
 
-                {!query && (
+                {!query && !filter && (
                     <div className="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100 space-y-2">
                         <Users size={32} className="text-slate-300 mx-auto"/>
-                        <p className="text-slate-400 text-sm">Cari email atau nama pengguna di atas.</p>
+                        <p className="text-slate-400 text-sm">Klik kad stat di atas atau cari nama / email.</p>
                     </div>
                 )}
 
