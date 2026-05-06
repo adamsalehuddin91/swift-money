@@ -22,6 +22,12 @@ if [ -f /app/storage/db/database.sqlite ]; then
     ls -t $BACKUP_DIR/*.sqlite 2>/dev/null | tail -n +8 | xargs rm -f
 fi
 
+# Cache config/routes/views now that env vars are available
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan storage:link --quiet 2>/dev/null || true
+
 # Run migrations automatically on every deploy
 php artisan migrate --force
 
