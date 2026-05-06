@@ -100,6 +100,8 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->grou
     Route::post('/families/{family}/suspend', [AdminController::class, 'suspend'])->name('families.suspend');
     Route::delete('/families/{family}', [AdminController::class, 'deleteFamily'])->name('families.delete');
     Route::post('/families/{family}/email', [AdminController::class, 'sendEmail'])->name('families.email');
+    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+    Route::post('/bulk-email', [AdminController::class, 'bulkEmail'])->name('bulk-email');
 });
 
 require __DIR__.'/auth.php';

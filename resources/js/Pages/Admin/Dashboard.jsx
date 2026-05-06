@@ -1,6 +1,6 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { Search, Users, Crown, Lock, CheckCircle, ChevronDown, Trash2, Mail, PauseCircle, PlayCircle, RefreshCw } from 'lucide-react';
+import { Search, Users, Crown, Lock, CheckCircle, ChevronDown, Trash2, Mail, PauseCircle, PlayCircle, RefreshCw, Send } from 'lucide-react';
 
 function StatCard({ label, value, color }) {
     return (
@@ -358,6 +358,20 @@ export default function AdminDashboard({ stats, families, query }) {
                         <p className="text-sm text-red-700 font-medium">{flash.error}</p>
                     </div>
                 )}
+
+                {/* Bulk Email shortcut */}
+                <button
+                    onClick={() => router.get(route('admin.users.index'))}
+                    className="w-full flex items-center gap-3 bg-indigo-600 text-white rounded-2xl p-4 active:scale-95 transition-all"
+                >
+                    <div className="bg-white/20 p-2 rounded-xl">
+                        <Send size={16} />
+                    </div>
+                    <div className="text-left">
+                        <p className="font-black text-sm">Blast Email</p>
+                        <p className="text-indigo-200 text-xs">Pilih & hantar email ke pengguna terpilih</p>
+                    </div>
+                </button>
 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-3">

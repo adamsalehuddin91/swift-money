@@ -175,6 +175,71 @@ class AdminController extends Controller
         return back()->with('success', $msg);
     }
 
+    public function users()
+    {
+        $users = User::with('family')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn($u) => [
+                'id'            => $u->id,
+                'name'          => $u->name,
+                'email'         => $u->email,
+                'role'          => $u->role,
+                'plan'          => $u->family?->plan ?? 'free',
+                'family_name'   => $u->family?->name ?? '—',
+                'last_login_at' => $u->last_login_at?->toDateString(),
+                'created_at'    => $u->created_at->toDateString(),
+            ]);
+
+        return Inertia::render('Admin/Users', [
+            'users' => $users,
+        ]);
+    }
+
+    public function bulkEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'user_ids'   => 'required|array|min:1',
+            'user_ids.*' => 'integer|exists:users,id',
+            'subject'    => 'required|string|max:255',
+            'body'       => 'required|string|max:10000',
+        ]);
+
+        $users = User::whereIn('id', $validated['user_ids'])->get();
+
+        $sent   = 0;
+        $failed = [];
+
+        foreach ($users as $user) {
+            try {
+                Mail::raw($validated['body'], function ($message) use ($user, $validated) {
+                    $message->to($user->email, $user->name)
+                            ->subject($validated['subject'])
+                            ->from(config('mail.from.address', 'noreply@swiftapps.my'), 'SwiftMoney')
+                            ->replyTo('admin@swiftapps.my', 'Adam SwiftMoney');
+                });
+                $sent++;
+            } catch (\Throwable $e) {
+                $failed[] = $user->email;
+                \Illuminate\Support\Facades\Log::error('Bulk email failed', [
+                    'to'    => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($sent === 0) {
+            return back()->with('error', 'Gagal hantar semua email. Semak SMTP/Resend config.');
+        }
+
+        $msg = "Email dihantar ke {$sent} pengguna.";
+        if (!empty($failed)) {
+            $msg .= ' Gagal: ' . implode(', ', $failed);
+        }
+
+        return back()->with('success', $msg);
+    }
+
     private function formatFamily(Family $family): array
     {
         $family->load('users');
