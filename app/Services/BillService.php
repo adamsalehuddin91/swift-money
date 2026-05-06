@@ -21,8 +21,14 @@ class BillService
     {
         return BillRecord::whereHas('template', fn ($q) => $q->where('family_id', $familyId)->where('is_active', true))
             ->where('month_year', $monthYear)
+            ->where('is_skipped', false)
             ->with(['template.debt'])
             ->get();
+    }
+
+    public function skipRecord(BillRecord $record): void
+    {
+        $record->update(['is_skipped' => true, 'is_paid' => false, 'paid_at' => null]);
     }
 
     public function getCategorizedBills(Collection $records, ?string $assignedTo = null): array

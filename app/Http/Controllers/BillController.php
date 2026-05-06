@@ -150,6 +150,16 @@ class BillController extends Controller
         return \Illuminate\Support\Facades\Storage::disk('local')->response($record->receipt_path);
     }
 
+    public function skipRecord(Request $request, BillRecord $record)
+    {
+        abort_unless($request->user()->isAdmin(), 403, 'admin_required');
+        abort_unless($record->template->family_id === $request->user()->family_id, 403);
+
+        $this->billService->skipRecord($record);
+
+        return back();
+    }
+
     public function archiveTemplate(Request $request, BillTemplate $template)
     {
         abort_unless($request->user()->isAdmin(), 403, 'admin_required');

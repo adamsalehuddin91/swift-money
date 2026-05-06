@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class BillRecord extends Model
 {
     protected $fillable = [
-        'bill_template_id', 'month_year', 'actual_amount', 'is_paid', 'paid_at', 'receipt_path',
+        'bill_template_id', 'month_year', 'actual_amount', 'is_paid', 'paid_at', 'receipt_path', 'is_skipped',
     ];
 
     protected $casts = [
         'actual_amount' => 'decimal:2',
         'is_paid' => 'boolean',
         'paid_at' => 'datetime',
+        'is_skipped' => 'boolean',
     ];
 
     public function template(): BelongsTo

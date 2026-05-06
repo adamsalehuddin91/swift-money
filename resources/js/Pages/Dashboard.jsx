@@ -8,7 +8,7 @@ import {
     Zap, Heart, User, Plus, ChevronRight,
     TrendingDown, TrendingUp, Eye, EyeOff, Wallet, ArrowUpRight, X, ChevronLeft,
     LogOut, Users, FileText, Bell, ShieldCheck,
-    Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil,
+    Clock, DollarSign, Link2, Camera, Image, Trash2, Pencil, Ban,
     Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
     PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar,
     KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame
@@ -1538,6 +1538,15 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                                 className="p-1.5 rounded-xl bg-slate-50 text-slate-400 active:scale-90 transition-all"
                                                             >
                                                                 <Pencil size={14} />
+                                                            </button>
+                                                        )}
+                                                        {isAdmin && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); if (confirm(`Langkau "${bill.title}" bulan ini sahaja?\n\nBulan depan akan kekal seperti biasa.`)) router.post(route('bills.skip', bill.id), {}, { preserveScroll: true }); }}
+                                                                className="p-1.5 rounded-xl bg-red-50 text-red-400 active:scale-90 transition-all"
+                                                                title="Langkau bulan ini sahaja"
+                                                            >
+                                                                <Ban size={14} />
                                                             </button>
                                                         )}
                                                     </div>
