@@ -106,11 +106,11 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Sumber</label>
-                    <input type="text" placeholder="e.g. Bonus, Felda" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.source} onChange={(e) => setData('source', e.target.value)} />
+                    <input type="text" placeholder="e.g. Bonus, Felda" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.source} onChange={(e) => setData('source', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
                 <button
                     type="button"
@@ -172,39 +172,39 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Tajuk</label>
-                    <input type="text" placeholder="e.g. Astro, Bil Air" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Astro, Bil Air" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah</label>
-                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.default_amount} onChange={(e) => setData('default_amount', e.target.value)} />
+                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.default_amount} onChange={(e) => setData('default_amount', e.target.value)} />
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
-                        <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
-                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
+                            {CATEGORIES.map(c => <option className="text-slate-900" key={c} value={c}>{c}</option>)}
                         </select>
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">PIC</label>
-                        <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.assigned_to} onChange={(e) => setData('assigned_to', e.target.value)}>
+                        <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.assigned_to} onChange={(e) => setData('assigned_to', e.target.value)}>
                             {(familyMembers || []).map(m => (
-                                <option key={m.id} value={m.name}>{m.name}</option>
+                                <option className="text-slate-900" key={m.id} value={m.name}>{m.name}</option>
                             ))}
                         </select>
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Due Hari Ke-</label>
-                        <input type="number" min="1" max="31" placeholder="cth: 15" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.due_day} onChange={(e) => setData('due_day', e.target.value)} />
+                        <input type="number" min="1" max="31" placeholder="cth: 15" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.due_day} onChange={(e) => setData('due_day', e.target.value)} />
                     </div>
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Link Hutang</label>
-                    <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
-                        <option value="">Tiada</option>
-                        {(allDebts || []).map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
+                    <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
+                        <option className="text-slate-900" value="">Tiada</option>
+                        {(allDebts || []).map(d => <option className="text-slate-900" key={d.id} value={d.id}>{d.title}</option>)}
                     </select>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
@@ -257,23 +257,23 @@ function ExpenseModal({ show, onClose, monthYear, editExpense }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Perkara</label>
-                    <input type="text" placeholder="e.g. Beli TV, Duit raya" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Beli TV, Duit raya" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
-                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
-                        <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
-                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
+                            {CATEGORIES.map(c => <option className="text-slate-900" key={c} value={c}>{c}</option>)}
                         </select>
                     </div>
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nota (optional)</label>
-                    <input type="text" placeholder="Kenapa beli, untuk siapa..." className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
+                    <input type="text" placeholder="Kenapa beli, untuk siapa..." className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-violet-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-violet-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Saving...' : isEdit ? 'Kemaskini' : 'Tambah Perbelanjaan'}
@@ -319,17 +319,17 @@ function DebtModal({ show, onClose, editDebt }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Hutang</label>
-                    <input type="text" placeholder="e.g. Hutang Kereta, CC Bank" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Hutang Kereta, CC Bank" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah Asal (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.total_amount} onChange={(e) => setData('total_amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.total_amount} onChange={(e) => setData('total_amount', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jenis Bayaran</label>
-                    <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.type} onChange={(e) => setData('type', e.target.value)}>
-                        <option value="fixed">Tetap (Fixed)</option>
-                        <option value="flexible">Fleksibel</option>
+                    <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.type} onChange={(e) => setData('type', e.target.value)}>
+                        <option className="text-slate-900" value="fixed">Tetap (Fixed)</option>
+                        <option className="text-slate-900" value="flexible">Fleksibel</option>
                     </select>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-orange-500 text-white font-bold p-4 rounded-2xl shadow-lg shadow-orange-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
@@ -364,7 +364,7 @@ function PaymentModal({ show, onClose, debt }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah Bayaran (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-orange-500 text-white font-bold p-4 rounded-2xl shadow-lg shadow-orange-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Processing...' : 'Rekod Bayaran'}
@@ -548,16 +548,16 @@ function SavingsModal({ show, onClose, editGoal }) {
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Simpanan</label>
-                    <input type="text" placeholder="e.g. Dana Kecemasan, DP Rumah" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Dana Kecemasan, DP Rumah" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Target (RM)</label>
-                        <input type="number" step="1" placeholder="10000" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.target_amount} onChange={(e) => setData('target_amount', e.target.value)} />
+                        <input type="number" step="1" placeholder="10000" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.target_amount} onChange={(e) => setData('target_amount', e.target.value)} />
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Tarikh Target</label>
-                        <input type="date" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} />
+                        <input type="date" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} />
                     </div>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-emerald-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
@@ -592,11 +592,11 @@ function SavingsContributeModal({ show, onClose, goal }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nota (optional)</label>
-                    <input type="text" placeholder="e.g. Lebihan gaji" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
+                    <input type="text" placeholder="e.g. Lebihan gaji" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-emerald-200 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Saving...' : 'Tambah Simpanan'}
@@ -741,12 +741,12 @@ function EditProfileModal({ show, onClose, user }) {
                 <form onSubmit={handleProfileSubmit} className="space-y-4">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Paparan</label>
-                        <input type="text" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.name} onChange={e => profileForm.setData('name', e.target.value)} />
+                        <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.name} onChange={e => profileForm.setData('name', e.target.value)} />
                         <p className="text-[9px] text-amber-500 font-bold ml-1 mt-1">⚠️ Nama ini digunakan untuk assignment bil. Tukar nama akan ubah PIC pada semua komitmen.</p>
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Email</label>
-                        <input type="email" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.email} onChange={e => profileForm.setData('email', e.target.value)} />
+                        <input type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.email} onChange={e => profileForm.setData('email', e.target.value)} />
                     </div>
                     {profileForm.errors.name && <p className="text-xs text-red-500 ml-1">{profileForm.errors.name}</p>}
                     {profileForm.errors.email && <p className="text-xs text-red-500 ml-1">{profileForm.errors.email}</p>}
@@ -758,17 +758,17 @@ function EditProfileModal({ show, onClose, user }) {
                 <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Password Semasa</label>
-                        <input type="password" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.current_password} onChange={e => passwordForm.setData('current_password', e.target.value)} />
+                        <input type="password" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.current_password} onChange={e => passwordForm.setData('current_password', e.target.value)} />
                         {passwordForm.errors.current_password && <p className="text-xs text-red-500 ml-1 mt-1">{passwordForm.errors.current_password}</p>}
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Password Baru</label>
-                        <input type="password" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password} onChange={e => passwordForm.setData('password', e.target.value)} />
+                        <input type="password" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password} onChange={e => passwordForm.setData('password', e.target.value)} />
                         {passwordForm.errors.password && <p className="text-xs text-red-500 ml-1 mt-1">{passwordForm.errors.password}</p>}
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Sahkan Password Baru</label>
-                        <input type="password" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password_confirmation} onChange={e => passwordForm.setData('password_confirmation', e.target.value)} />
+                        <input type="password" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password_confirmation} onChange={e => passwordForm.setData('password_confirmation', e.target.value)} />
                     </div>
                     <button type="submit" disabled={passwordForm.processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50">
                         {passwordForm.processing ? 'Saving...' : 'Tukar Password'}
