@@ -630,7 +630,7 @@ function AnalyticsView({ familyId }) {
     return (
         <div className="p-6 pt-16 space-y-8">
             <div>
-                <h2 className="text-xl font-black text-slate-800 tracking-tighter">Analitik</h2>
+                <h2 className="font-display text-xl font-semibold text-white tracking-tight">Analitik</h2>
                 <p className="text-slate-400 text-xs font-medium mt-1">6 bulan terakhir</p>
             </div>
 
@@ -931,7 +931,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                         <div className="absolute bottom-0 right-0 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
                     </div>
                     <div>
-                        <h2 className="text-xl font-black text-slate-800 tracking-tighter">{user?.name}</h2>
+                        <h2 className="font-display text-xl font-semibold text-white tracking-tight">{user?.name}</h2>
                         <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
                         <div className="flex gap-1.5 mt-1 flex-wrap">
                             <span className="bg-indigo-50 text-indigo-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -1280,7 +1280,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
             <Head title="Dashboard" />
             <BrowserGate />
             <IOSInstallGuide />
-            <div className="max-w-md mx-auto bg-slate-50 min-h-screen pb-28 font-sans text-slate-900 overflow-x-hidden relative">
+            <div className="max-w-md mx-auto luxe-screen min-h-screen pb-28 overflow-x-hidden relative">
 
                 <IncomeModal show={showIncomeModal} onClose={() => { setShowIncomeModal(false); setSelectedIncome(null); }} monthYear={monthYear} editIncome={selectedIncome} />
                 <BillModal show={showBillModal} onClose={() => { setShowBillModal(false); setSelectedTemplate(null); }} allDebts={all_debts} editTemplate={selectedTemplate} familyMembers={family_members} />
@@ -1297,11 +1297,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                 {activeTab === 'home' ? (
                     <>
                         {/* ─── HEADER ─── */}
-                        <div className="bg-indigo-700 pt-10 pb-28 px-6 rounded-b-[48px] shadow-2xl relative">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                        <div className="bg-gradient-to-br from-[#16223C] to-[#0B1120] border-b border-white/[0.06] pt-10 pb-28 px-6 rounded-b-[48px] shadow-2xl relative">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                             <div className="flex justify-between items-center mb-6 relative z-10">
                                 <div>
-                                    <h1 className="text-white text-2xl font-bold tracking-tight">SwiftMoney</h1>
+                                    <h1 className="font-display text-white text-2xl font-semibold tracking-tight">SwiftMoney</h1>
                                     <div className="flex items-center gap-2 mt-1">
                                         <button onClick={() => requirePaid(() => navigateMonth(-1))} className="text-indigo-300 active:scale-90 transition-all p-0.5">
                                             {isPaid ? <ChevronLeft size={16} strokeWidth={3} /> : <span className="text-xs">🔒</span>}
@@ -1361,7 +1361,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                         <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
                                             <Wallet size={12} className="text-indigo-500" /> Baki Bersih (Net)
                                         </p>
-                                        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">
+                                        <h2 className="text-3xl luxe-figure text-slate-900 tracking-tight">
                                             {formatMoney(s.net_balance, isHidden, true)}
                                         </h2>
                                     </div>
@@ -1425,7 +1425,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             {/* Income Sources */}
                             <section>
                                 <div className="flex justify-between items-center mb-3">
-                                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
                                         <ArrowUpRight size={14} className="text-green-500" /> Sumber Pendapatan
                                     </h3>
                                     <button onClick={() => { setSelectedIncome(null); setShowIncomeModal(true); }} className="text-[10px] font-bold text-indigo-600 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded-lg">
@@ -1447,7 +1447,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             {/* One-Time Expenses */}
                             <section>
                                 <div className="flex justify-between items-center mb-3">
-                                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
                                         <Receipt size={14} className="text-violet-500" /> Perbelanjaan Lain
                                     </h3>
                                     <button onClick={() => { setEditExpense(null); setShowExpenseModal(true); }} className="text-[10px] font-bold text-violet-600 flex items-center gap-1 bg-violet-50 px-2 py-1 rounded-lg">
@@ -1486,7 +1486,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             {/* Debt Tracker */}
                             <section>
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
                                         <TrendingDown size={14} className="text-orange-500" /> Pengurangan Hutang
                                     </h3>
                                     {isAdmin && (
@@ -1549,7 +1549,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             {/* Savings Goals */}
                             <section>
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
                                         <PiggyBank size={14} className="text-emerald-500" /> Simpanan
                                     </h3>
                                     {isAdmin && (
@@ -1618,12 +1618,12 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 if (activeBills.length === 0 && skippedBills.length === 0) return null;
                                 return (
                                     <section key={cat}>
-                                        <div className="flex justify-between items-center mb-4 text-[11px] font-black text-slate-800 uppercase tracking-widest">
+                                        <div className="flex justify-between items-center mb-4 text-[11px] font-black text-slate-200 uppercase tracking-widest">
                                             <span className="flex items-center gap-2">
                                                 {categoryIcons[cat]}
                                                 {cat}
                                             </span>
-                                            <span className="text-[9px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">{activeBills.length} ITEM</span>
+                                            <span className="text-[9px] luxe-chip text-slate-300 px-2 py-0.5 rounded-full">{activeBills.length} ITEM</span>
                                         </div>
                                         <div className="space-y-3">
                                             {activeBills.map(bill => (
@@ -1743,9 +1743,9 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                     isPaid ? <AnalyticsView familyId={user?.family_id} /> : (
                         <div className="p-6 pt-20 flex flex-col items-center justify-center space-y-4 text-center">
                             <span className="text-5xl">📊</span>
-                            <h3 className="text-lg font-black text-slate-700">Analitik — Pro</h3>
+                            <h3 className="font-display text-lg font-semibold text-white">Analitik — Pro</h3>
                             <p className="text-slate-400 text-sm">Trend 6 bulan, breakdown kategori dan lebih.</p>
-                            <button onClick={() => setShowUpgradeModal(true)} className="bg-indigo-600 text-white font-bold px-6 py-3 rounded-2xl text-sm active:scale-95 transition-all">
+                            <button onClick={() => setShowUpgradeModal(true)} className="luxe-btn-gold px-6 py-3 text-sm">
                                 Upgrade untuk akses
                             </button>
                         </div>
@@ -1754,7 +1754,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                     <div className="p-6 pt-16 space-y-6">
                         <div className="flex justify-between items-center">
                             <div>
-                                <h2 className="text-xl font-black text-slate-800 tracking-tighter">Simpanan</h2>
+                                <h2 className="font-display text-xl font-semibold text-white tracking-tight">Simpanan</h2>
                                 <p className="text-slate-400 text-xs mt-1">Sasaran & perkembangan</p>
                             </div>
                             {isAdmin && (
@@ -1833,7 +1833,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
 
                 {/* ─── Floating Nav ─── */}
                 <div className="fixed bottom-6 left-6 right-6 max-w-[calc(448px-3rem)] mx-auto z-50">
-                    <div className="bg-white/80 backdrop-blur-2xl border border-white/40 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-[32px] flex justify-around items-center p-3">
+                    <div className="bg-ink-soft/85 backdrop-blur-2xl border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[32px] flex justify-around items-center p-3">
                         <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'home' ? 'text-indigo-600' : 'text-slate-400'}`}>
                             <Home size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Home</span>
@@ -1843,7 +1843,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Analitik</span>
                         </button>
                         {isAdmin ? (
-                            <button onClick={() => setShowBillModal(true)} className="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg shadow-indigo-200 -mt-12 active:scale-90 transition-all border-4 border-slate-50">
+                            <button onClick={() => setShowBillModal(true)} className="bg-gold text-ink p-4 rounded-2xl shadow-lg shadow-gold/30 -mt-12 active:scale-90 transition-all border-4 border-ink-soft">
                                 <Plus size={24} strokeWidth={3} />
                             </button>
                         ) : (
