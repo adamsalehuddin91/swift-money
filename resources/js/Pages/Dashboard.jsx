@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import BrowserGate from '@/Components/BrowserGate';
 import IOSInstallGuide from '@/Components/IOSInstallGuide';
 import BudgetSection from '@/Components/BudgetSection';
+import ForecastCard from '@/Components/ForecastCard';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
     Zap, Heart, User, Plus, ChevronRight,
@@ -13,7 +14,7 @@ import {
     MessageCircle, AlertCircle, Receipt,
     Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
     PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar,
-    KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame, Landmark
+    KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame, Landmark, HandCoins, Scale
 } from 'lucide-react';
 import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis,
@@ -1178,8 +1179,18 @@ function SuspendedScreen() {
     );
 }
 
+// Quick-access tool button (Cukai / Zakat / Nilai Bersih)
+function ToolButton({ icon: Icon, label, onClick }) {
+    return (
+        <button onClick={onClick} className="flex flex-col items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl py-3 text-white backdrop-blur-md active:scale-95 transition-all">
+            <Icon size={20} />
+            <span className="text-[10px] font-bold tracking-wide">{label}</span>
+        </button>
+    );
+}
+
 // ─── Main Dashboard ───
-export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link, expenses, budgets = [] }) {
+export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link, expenses, budgets = [], forecast = null, my_forecast = null }) {
     const [isHidden, setIsHidden] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
     const [viewMode, setViewMode] = useState('saya'); // 'saya' or 'keluarga'
@@ -1308,9 +1319,6 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <p className="text-indigo-300 text-[10px] font-medium">{isSaya ? user?.name : 'Keluarga'} &bull; RM {Number(s.total_bills).toLocaleString()}</p>
                                 </div>
                                 <div className="flex gap-3 items-center">
-                                    <button onClick={() => router.get(route('tax.index'))} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all" title="Cukai / LHDN">
-                                        <Landmark size={20} />
-                                    </button>
                                     <button onClick={() => router.get(route('summary.index'), { month: monthYear })} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all" title="Ringkasan bulanan">
                                         <FileText size={20} />
                                     </button>
@@ -1337,6 +1345,13 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                         <span className="bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full ml-1 animate-pulse">!</span>
                                     )}
                                 </button>
+                            </div>
+
+                            {/* Quick tools */}
+                            <div className="grid grid-cols-3 gap-2 mb-4 relative z-10">
+                                <ToolButton icon={Landmark} label="Cukai" onClick={() => router.get(route('tax.index'))} />
+                                <ToolButton icon={HandCoins} label="Zakat" onClick={() => router.get(route('zakat.index'))} />
+                                <ToolButton icon={Scale} label="Nilai Bersih" onClick={() => router.get(route('networth.index'))} />
                             </div>
 
                             {/* Summary Card */}
@@ -1461,6 +1476,9 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     )}
                                 </div>
                             </section>
+
+                            {/* Cash flow forecast */}
+                            <ForecastCard forecast={isSaya ? my_forecast : forecast} />
 
                             {/* Budget per category */}
                             <BudgetSection budgets={budgets} categories={CATEGORIES} />

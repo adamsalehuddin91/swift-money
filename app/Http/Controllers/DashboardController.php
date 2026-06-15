@@ -8,6 +8,7 @@ use App\Services\BillService;
 use App\Services\BudgetService;
 use App\Services\DebtService;
 use App\Services\ExpenseService;
+use App\Services\ForecastService;
 use App\Services\IncomeService;
 use App\Services\SavingsService;
 use Carbon\Carbon;
@@ -23,6 +24,7 @@ class DashboardController extends Controller
         private SavingsService $savingsService,
         private ExpenseService $expenseService,
         private BudgetService $budgetService,
+        private ForecastService $forecastService,
     ) {}
 
     public function index(Request $request)
@@ -113,6 +115,8 @@ class DashboardController extends Controller
             'savings_goals'    => $this->savingsService->getForFamily($familyId),
             'expenses'         => $expenses,
             'budgets'          => $this->budgetService->getForMonth($familyId, $monthYear),
+            'my_forecast'      => $this->forecastService->project($myNetBalance, $mySummary['unpaid_bills'], $myExpenses, $monthYear),
+            'forecast'         => $this->forecastService->project($familyNetBalance, $familySummary['unpaid_bills'], $totalExpenses, $monthYear),
             'family_members'   => $user->family->users()->select('id', 'name', 'avatar', 'role')->get(),
             'invite_link'      => $this->getActiveInviteLink($familyId, $user->role),
         ]);

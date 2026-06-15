@@ -15,6 +15,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavingsController;
 use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\TaxController;
+use App\Http\Controllers\ZakatController;
+use App\Http\Controllers\NetWorthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -103,6 +105,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cukai/items/{item}/receipt', [TaxController::class, 'uploadReceipt'])->name('tax.receipt.upload');
     Route::delete('/cukai/items/{item}/receipt', [TaxController::class, 'deleteReceipt'])->name('tax.receipt.delete');
     Route::put('/cukai/categories/{category}', [TaxController::class, 'updateCategory'])->name('tax.categories.update');
+
+    // Zakat calculator (records paid zakat as a tax rebate)
+    Route::get('/zakat', [ZakatController::class, 'index'])->name('zakat.index');
+    Route::post('/zakat/record', [ZakatController::class, 'record'])->name('zakat.record');
+
+    // Net worth (assets vs liabilities + monthly snapshots)
+    Route::get('/networth', [NetWorthController::class, 'index'])->name('networth.index');
+    Route::post('/networth/assets', [NetWorthController::class, 'storeAsset'])->name('networth.assets.store');
+    Route::put('/networth/assets/{asset}', [NetWorthController::class, 'updateAsset'])->name('networth.assets.update');
+    Route::delete('/networth/assets/{asset}', [NetWorthController::class, 'destroyAsset'])->name('networth.assets.destroy');
+    Route::post('/networth/capture', [NetWorthController::class, 'capture'])->name('networth.capture');
 
     // Language preference
     Route::post('/language', [LanguageController::class, 'update'])->name('language.update');
