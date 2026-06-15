@@ -3,6 +3,7 @@ import { useLang } from '@/hooks/useLang';
 import { useState, useEffect } from 'react';
 import BrowserGate from '@/Components/BrowserGate';
 import IOSInstallGuide from '@/Components/IOSInstallGuide';
+import BudgetSection from '@/Components/BudgetSection';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
     Zap, Heart, User, Plus, ChevronRight,
@@ -1178,7 +1179,7 @@ function SuspendedScreen() {
 }
 
 // ─── Main Dashboard ───
-export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link, expenses }) {
+export default function Dashboard({ user, summary, my_summary, incomes, my_incomes, categorized_bills, my_bills, active_debts, all_debts, monthYear, needsSetup, isSuspended, savings_goals, family_members, invite_link, expenses, budgets = [] }) {
     const [isHidden, setIsHidden] = useState(false);
     const [activeTab, setActiveTab] = useState('home');
     const [viewMode, setViewMode] = useState('saya'); // 'saya' or 'keluarga'
@@ -1457,6 +1458,9 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     )}
                                 </div>
                             </section>
+
+                            {/* Budget per category */}
+                            <BudgetSection budgets={budgets} categories={CATEGORIES} />
 
                             {/* Debt Tracker */}
                             <section>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Debt;
 use App\Models\FamilyInvite;
 use App\Services\BillService;
+use App\Services\BudgetService;
 use App\Services\DebtService;
 use App\Services\ExpenseService;
 use App\Services\IncomeService;
@@ -21,6 +22,7 @@ class DashboardController extends Controller
         private DebtService $debtService,
         private SavingsService $savingsService,
         private ExpenseService $expenseService,
+        private BudgetService $budgetService,
     ) {}
 
     public function index(Request $request)
@@ -110,6 +112,7 @@ class DashboardController extends Controller
             'all_debts'        => Debt::where('family_id', $familyId)->select('id', 'title', 'current_balance')->get(),
             'savings_goals'    => $this->savingsService->getForFamily($familyId),
             'expenses'         => $expenses,
+            'budgets'          => $this->budgetService->getForMonth($familyId, $monthYear),
             'family_members'   => $user->family->users()->select('id', 'name', 'avatar', 'role')->get(),
             'invite_link'      => $this->getActiveInviteLink($familyId, $user->role),
         ]);
