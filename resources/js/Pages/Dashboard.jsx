@@ -1182,9 +1182,11 @@ function SuspendedScreen() {
 // Quick-access tool button (Cukai / Zakat / Nilai Bersih)
 function ToolButton({ icon: Icon, label, onClick }) {
     return (
-        <button onClick={onClick} className="flex flex-col items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl py-3 text-white backdrop-blur-md active:scale-95 transition-all">
-            <Icon size={20} />
-            <span className="text-[10px] font-bold tracking-wide">{label}</span>
+        <button onClick={onClick} className="group flex flex-col items-center gap-2 bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] rounded-2xl py-3.5 backdrop-blur-xl active:scale-95 transition-all">
+            <span className="grid place-items-center w-9 h-9 rounded-full bg-gold/10 border border-gold/30 text-gold shadow-[0_0_18px_-6px_rgba(200,162,75,0.6)] group-active:scale-90 transition-all">
+                <Icon size={17} strokeWidth={2} />
+            </span>
+            <span className="text-[10px] font-semibold tracking-wide text-slate-300">{label}</span>
         </button>
     );
 }
@@ -1354,40 +1356,41 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 <ToolButton icon={Scale} label="Nilai Bersih" onClick={() => router.get(route('networth.index'))} />
                             </div>
 
-                            {/* Summary Card */}
-                            <div className="bg-white rounded-[32px] p-6 shadow-2xl relative z-10">
-                                <div className="flex justify-between items-start mb-4">
+                            {/* Summary Card — dark glass hero */}
+                            <div className="luxe-card rounded-[32px] p-6 relative z-10 overflow-hidden ring-1 ring-gold/15">
+                                <div className="absolute -top-16 -right-16 w-44 h-44 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+                                <div className="flex justify-between items-start mb-4 relative">
                                     <div>
-                                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
-                                            <Wallet size={12} className="text-indigo-500" /> Baki Bersih (Net)
+                                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.18em] mb-1.5 flex items-center gap-1.5">
+                                            <Wallet size={12} className="text-gold" /> Baki Bersih (Net)
                                         </p>
-                                        <h2 className="text-3xl luxe-figure text-slate-900 tracking-tight">
+                                        <h2 className="text-4xl luxe-figure text-white tracking-tight">
                                             {formatMoney(s.net_balance, isHidden, true)}
                                         </h2>
                                     </div>
-                                    <div className={`${s.net_balance >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} p-2 rounded-2xl shadow-sm`}>
+                                    <div className={`${s.net_balance >= 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'} p-2 rounded-2xl border border-white/10`}>
                                         <ArrowUpRight size={20} />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-50">
+                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10 relative">
                                     <div>
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Pendapatan</p>
-                                        <p className="text-sm font-black text-green-600">{formatMoney(s.total_income, isHidden, true)}</p>
+                                        <p className="text-sm font-bold text-emerald-400">{formatMoney(s.total_income, isHidden, true)}</p>
                                     </div>
-                                    <div className="text-right border-l border-slate-50 pl-4">
+                                    <div className="text-right border-l border-white/10 pl-4">
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Baki Bil</p>
-                                        <p className="text-sm font-black text-red-500">{formatMoney(s.total_unpaid)}</p>
+                                        <p className="text-sm font-bold text-red-400">{formatMoney(s.total_unpaid)}</p>
                                     </div>
                                 </div>
 
-                                <div className="mt-6">
+                                <div className="mt-6 relative">
                                     <div className="flex justify-between text-[10px] font-bold text-slate-400 mb-2 uppercase">
                                         <span>Progress Bayaran</span>
-                                        <span className="text-indigo-600">{s.progress_pct}%</span>
+                                        <span className="text-gold">{s.progress_pct}%</span>
                                     </div>
-                                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                        <div className="h-full bg-indigo-600 rounded-full transition-all duration-1000 ease-out" style={{ width: `${s.progress_pct}%` }}></div>
+                                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                        <div className="h-full bg-gradient-to-r from-gold-deep to-gold rounded-full transition-all duration-1000 ease-out" style={{ width: `${s.progress_pct}%` }}></div>
                                     </div>
                                 </div>
                             </div>

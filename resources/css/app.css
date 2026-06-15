@@ -8,7 +8,14 @@
 
     .luxe-screen {
         @apply min-h-screen bg-ink text-slate-200 font-sans;
-        background-image: radial-gradient(120% 80% at 50% -10%, #16223C 0%, #0B1120 55%);
+        /* Islamic geometric lattice over a soft top-lit gradient */
+        background-image:
+            url('/islamic-pattern.svg'),
+            radial-gradient(120% 80% at 50% -10%, #16223C 0%, #0B1120 55%);
+        background-size: 96px 96px, cover;
+        background-repeat: repeat, no-repeat;
+        background-attachment: fixed, fixed;
+        background-position: center top, center top;
     }
 
     /* Glassy raised card */
