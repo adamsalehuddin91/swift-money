@@ -276,19 +276,7 @@ export default function Login({ status, canResetPassword }) {
                     {t('auth.continue_google')}
                 </a>
 
-                {/* Register trigger */}
-                <div className="mt-4 text-center">
-                    <p className="text-sm text-gray-500">
-                        Belum ada akaun?{' '}
-                        <button
-                            type="button"
-                            onClick={() => setShowRegister(true)}
-                            className="font-bold text-indigo-600 hover:text-indigo-800 underline underline-offset-2"
-                        >
-                            Daftar sekarang
-                        </button>
-                    </p>
-                </div>
+                {/* Register trigger removed — registration closed (private mode) */}
             </div>
 
             {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}

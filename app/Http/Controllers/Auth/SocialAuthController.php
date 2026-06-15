@@ -66,30 +66,27 @@ class SocialAuthController extends Controller
                 $this->acceptInvite($user, $inviteToken);
             }
         } else {
-            if ($inviteToken) {
-                // New user via invite — join existing family as member
-                $invite = FamilyInvite::where('token', $inviteToken)->first();
+            // REGISTRATION CLOSED (private mode, 2026-06-15) — only allow NEW
+            // accounts via a VALID invite (so Adam can still invite his wife).
+            $invite = $inviteToken ? FamilyInvite::where('token', $inviteToken)->first() : null;
 
-                if ($invite && $invite->isValid()) {
-                    $user = User::create([
-                        'name'              => $googleUser->getName(),
-                        'email'             => $googleUser->getEmail(),
-                        'google_id'         => $googleUser->getId(),
-                        'avatar'            => $googleUser->getAvatar(),
-                        'family_id'         => $invite->family_id,
-                        'role'              => 'member',
-                        'email_verified_at' => now(),
-                        'last_login_at'     => now(),
-                    ]);
+            if ($invite && $invite->isValid()) {
+                $user = User::create([
+                    'name'              => $googleUser->getName(),
+                    'email'             => $googleUser->getEmail(),
+                    'google_id'         => $googleUser->getId(),
+                    'avatar'            => $googleUser->getAvatar(),
+                    'family_id'         => $invite->family_id,
+                    'role'              => 'member',
+                    'email_verified_at' => now(),
+                    'last_login_at'     => now(),
+                ]);
 
-                    $invite->update(['used_at' => now()]);
-                } else {
-                    // Invite invalid — create own family
-                    $user = $this->createWithFamily($googleUser);
-                }
+                $invite->update(['used_at' => now()]);
             } else {
-                // Brand new user, no invite — create own family
-                $user = $this->createWithFamily($googleUser);
+                // No valid invite + no existing account → registration closed.
+                session()->forget('invite_token');
+                return redirect()->route('login')->withErrors(['email' => 'Pendaftaran ditutup buat masa ini.']);
             }
         }
 
