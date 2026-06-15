@@ -34,7 +34,7 @@ export default function Cukai({ ya, scope, available_yas, summary, items }) {
                 <div className="flex gap-2 mb-5">
                     <select value={ya} onChange={(e) => reload({ ya: e.target.value })}
                         className="luxe-chip text-xs font-bold px-3 py-1.5 focus:ring-0 border-0">
-                        {available_yas.map((y) => <option key={y} value={y} className="text-slate-800">YA {y}</option>)}
+                        {available_yas.map((y) => <option key={y} value={y} className="bg-ink-soft text-slate-100">YA {y}</option>)}
                     </select>
                     <div className="flex luxe-chip p-0.5">
                         <button onClick={() => reload({ scope: 'me' })} className={`flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-bold ${scope === 'me' ? 'bg-gold text-ink' : 'text-slate-300'}`}>
@@ -199,7 +199,7 @@ function ItemForm({ ya, categories, item, onClose }) {
 
                 <Field label="Kategori pelepasan" error={errors.tax_relief_category_id}>
                     <select value={data.tax_relief_category_id} onChange={(e) => setData('tax_relief_category_id', e.target.value)} className="luxe-input">
-                        {categories.map((c) => <option key={c.id} value={c.id} className="text-slate-800">{c.name}</option>)}
+                        {categories.map((c) => <option key={c.id} value={c.id} className="bg-ink-soft text-slate-100">{c.name}</option>)}
                     </select>
                 </Field>
 

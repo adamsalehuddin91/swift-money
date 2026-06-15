@@ -182,7 +182,7 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
                         <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
-                            {CATEGORIES.map(c => <option className="text-slate-900" key={c} value={c}>{c}</option>)}
+                            {CATEGORIES.map(c => <option className="bg-ink-soft text-slate-100" key={c} value={c}>{c}</option>)}
                         </select>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">PIC</label>
                         <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.assigned_to} onChange={(e) => setData('assigned_to', e.target.value)}>
                             {(familyMembers || []).map(m => (
-                                <option className="text-slate-900" key={m.id} value={m.name}>{m.name}</option>
+                                <option className="bg-ink-soft text-slate-100" key={m.id} value={m.name}>{m.name}</option>
                             ))}
                         </select>
                     </div>
@@ -203,8 +203,8 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Link Hutang</label>
                     <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
-                        <option className="text-slate-900" value="">Tiada</option>
-                        {(allDebts || []).map(d => <option className="text-slate-900" key={d.id} value={d.id}>{d.title}</option>)}
+                        <option className="bg-ink-soft text-slate-100" value="">Tiada</option>
+                        {(allDebts || []).map(d => <option className="bg-ink-soft text-slate-100" key={d.id} value={d.id}>{d.title}</option>)}
                     </select>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
@@ -267,7 +267,7 @@ function ExpenseModal({ show, onClose, monthYear, editExpense }) {
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
                         <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
-                            {CATEGORIES.map(c => <option className="text-slate-900" key={c} value={c}>{c}</option>)}
+                            {CATEGORIES.map(c => <option className="bg-ink-soft text-slate-100" key={c} value={c}>{c}</option>)}
                         </select>
                     </div>
                 </div>
@@ -328,8 +328,8 @@ function DebtModal({ show, onClose, editDebt }) {
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jenis Bayaran</label>
                     <select className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-1 text-slate-100 placeholder-slate-500 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.type} onChange={(e) => setData('type', e.target.value)}>
-                        <option className="text-slate-900" value="fixed">Tetap (Fixed)</option>
-                        <option className="text-slate-900" value="flexible">Fleksibel</option>
+                        <option className="bg-ink-soft text-slate-100" value="fixed">Tetap (Fixed)</option>
+                        <option className="bg-ink-soft text-slate-100" value="flexible">Fleksibel</option>
                     </select>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-orange-500 text-white font-bold p-4 rounded-2xl shadow-lg shadow-orange-200 mt-2 active:scale-95 transition-all disabled:opacity-50">

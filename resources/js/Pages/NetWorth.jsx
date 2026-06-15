@@ -158,7 +158,7 @@ function AssetForm({ types, asset, onClose }) {
                 <div className="grid grid-cols-2 gap-3">
                     <Field label="Jenis" error={errors.type}>
                         <select value={data.type} onChange={(e) => setData('type', e.target.value)} className="luxe-input">
-                            {types.map((t) => <option key={t} value={t} className="text-slate-800">{TYPE_LABEL[t]}</option>)}
+                            {types.map((t) => <option key={t} value={t} className="bg-ink-soft text-slate-100">{TYPE_LABEL[t]}</option>)}
                         </select>
                     </Field>
                     <Field label="Nilai (RM)" error={errors.value}>
