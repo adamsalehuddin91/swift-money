@@ -51,14 +51,24 @@ class TaxController extends Controller
             'amount'                 => 'required|numeric|min:0',
             'date'                   => 'nullable|date',
             'note'                   => 'nullable|string|max:500',
+            'receipt'                => 'nullable|image|max:5120', // 5MB
         ]);
 
-        TaxReliefItem::create([
-            ...$validated,
-            'family_id' => $familyId,
-            'user_id'   => $user->id,
-            'source'    => 'manual',
+        $item = TaxReliefItem::create([
+            'ya'                     => $validated['ya'],
+            'tax_relief_category_id' => $validated['tax_relief_category_id'],
+            'title'                  => $validated['title'],
+            'amount'                 => $validated['amount'],
+            'date'                   => $validated['date'] ?? null,
+            'note'                   => $validated['note'] ?? null,
+            'family_id'              => $familyId,
+            'user_id'                => $user->id,
+            'source'                 => 'manual',
         ]);
+
+        if ($request->hasFile('receipt')) {
+            $item->update(['receipt_path' => $request->file('receipt')->store('tax-receipts', 'local')]);
+        }
 
         return back();
     }
@@ -73,9 +83,23 @@ class TaxController extends Controller
             'amount'                 => 'required|numeric|min:0',
             'date'                   => 'nullable|date',
             'note'                   => 'nullable|string|max:500',
+            'receipt'                => 'nullable|image|max:5120', // 5MB
         ]);
 
-        $item->update($validated);
+        $item->update([
+            'tax_relief_category_id' => $validated['tax_relief_category_id'],
+            'title'                  => $validated['title'],
+            'amount'                 => $validated['amount'],
+            'date'                   => $validated['date'] ?? null,
+            'note'                   => $validated['note'] ?? null,
+        ]);
+
+        if ($request->hasFile('receipt')) {
+            if ($item->receipt_path) {
+                Storage::disk('local')->delete($item->receipt_path);
+            }
+            $item->update(['receipt_path' => $request->file('receipt')->store('tax-receipts', 'local')]);
+        }
 
         return back();
     }

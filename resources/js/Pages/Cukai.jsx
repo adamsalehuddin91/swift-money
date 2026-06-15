@@ -167,20 +167,26 @@ function ItemRow({ item, onEdit }) {
 }
 
 function ItemForm({ ya, categories, item, onClose }) {
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         ya,
         tax_relief_category_id: item?.category_id || categories[0]?.id || '',
         title: item?.title || '',
         amount: item?.amount || '',
         date: item?.date || '',
         note: item?.note || '',
+        receipt: null,
     });
 
     const submit = (e) => {
         e.preventDefault();
-        const opts = { preserveScroll: true, onSuccess: onClose };
-        if (item) put(route('tax.items.update', item.id), opts);
-        else post(route('tax.items.store'), opts);
+        const opts = { preserveScroll: true, forceFormData: true, onSuccess: onClose };
+        if (item) {
+            // method-spoof PUT so the image can ride along as multipart
+            transform((d) => ({ ...d, _method: 'put' }));
+            post(route('tax.items.update', item.id), opts);
+        } else {
+            post(route('tax.items.store'), opts);
+        }
     };
 
     return (
@@ -212,6 +218,12 @@ function ItemForm({ ya, categories, item, onClose }) {
 
                 <Field label="Nota (pilihan)" error={errors.note}>
                     <input type="text" value={data.note} onChange={(e) => setData('note', e.target.value)} className="luxe-input" />
+                </Field>
+
+                <Field label="Resit (gambar, pilihan)" error={errors.receipt}>
+                    <input type="file" accept="image/*" onChange={(e) => setData('receipt', e.target.files[0] || null)}
+                        className="luxe-input file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-gold/20 file:text-gold file:font-bold file:text-xs" />
+                    {item?.has_receipt && !data.receipt && <p className="text-[10px] text-emerald-400 mt-1">Resit sedia ada — pilih gambar baru untuk ganti.</p>}
                 </Field>
 
                 <button type="submit" disabled={processing} className="w-full luxe-btn-gold py-3 disabled:opacity-50">
