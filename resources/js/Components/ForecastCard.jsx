@@ -5,9 +5,9 @@ function fmt(v) {
 }
 
 const THEME = {
-    safe:  { bar: 'bg-emerald-500', text: 'text-emerald-600', soft: 'bg-emerald-50', border: 'border-emerald-100', icon: ShieldCheck,    label: 'Selamat sampai hujung bulan' },
-    tight: { bar: 'bg-amber-500',   text: 'text-amber-600',   soft: 'bg-amber-50',   border: 'border-amber-100',   icon: CalendarClock,  label: 'Ketat — jaga perbelanjaan' },
-    risk:  { bar: 'bg-red-500',     text: 'text-red-500',     soft: 'bg-red-50',     border: 'border-red-100',     icon: AlertTriangle,  label: 'Risiko kurang sebelum gaji' },
+    safe:  { ring: 'ring-emerald-500/20', text: 'text-emerald-400', icon: ShieldCheck,   label: 'Selamat sampai hujung bulan' },
+    tight: { ring: 'ring-gold/25',        text: 'text-gold',        icon: CalendarClock, label: 'Ketat — jaga perbelanjaan' },
+    risk:  { ring: 'ring-red-500/25',     text: 'text-red-400',     icon: AlertTriangle, label: 'Risiko kurang sebelum gaji' },
 };
 
 export default function ForecastCard({ forecast }) {
@@ -18,19 +18,15 @@ export default function ForecastCard({ forecast }) {
 
     return (
         <section>
-            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-4">
-                <TrendingUp size={14} /> Unjuran Tunai
-            </h3>
+            <h3 className="luxe-heading mb-4"><TrendingUp size={14} className="text-gold" /> Unjuran Tunai</h3>
 
-            <div className={`rounded-3xl border ${t.border} ${t.soft} p-5`}>
+            <div className={`luxe-card ring-1 ${t.ring} p-5`}>
                 <div className="flex items-center justify-between mb-3">
                     <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Anggaran baki 30 hb</p>
-                        <p className={`text-3xl font-black ${t.text}`}>{fmt(forecast.projected_end)}</p>
+                        <p className="luxe-label">Anggaran baki 30 hb</p>
+                        <p className={`text-3xl luxe-figure ${t.text}`}>{fmt(forecast.projected_end)}</p>
                     </div>
-                    <div className={`flex flex-col items-center gap-1 ${t.text}`}>
-                        <Icon size={26} />
-                    </div>
+                    <Icon size={26} className={t.text} />
                 </div>
 
                 <p className={`text-xs font-bold ${t.text} mb-4`}>{t.label}</p>
@@ -41,7 +37,7 @@ export default function ForecastCard({ forecast }) {
                     <Mini label={`Belanja ~${forecast.days_remaining} hr`} value={fmt(forecast.projected_spend)} />
                 </div>
 
-                <p className="text-[10px] text-slate-400 text-center mt-3">
+                <p className="text-[10px] text-slate-500 text-center mt-3">
                     Berdasarkan purata belanja RM{Number(forecast.daily_avg).toFixed(0)}/hari bulan ini · anggaran sahaja
                 </p>
             </div>
@@ -51,9 +47,9 @@ export default function ForecastCard({ forecast }) {
 
 function Mini({ label, value }) {
     return (
-        <div className="bg-white/70 rounded-2xl py-2 px-1">
-            <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">{label}</p>
-            <p className="text-sm font-black text-slate-700">{value}</p>
+        <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl py-2 px-1">
+            <p className="text-[9px] font-bold uppercase tracking-wide text-slate-500">{label}</p>
+            <p className="text-sm font-bold text-slate-100">{value}</p>
         </div>
     );
 }

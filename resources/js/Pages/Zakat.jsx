@@ -22,67 +22,54 @@ export default function Zakat({ prefill }) {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+        <div className="luxe-screen pb-10">
             <Head title="Kalkulator Zakat" />
 
             {/* Header */}
-            <div className="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-5 pb-10">
-                <div className="flex items-center justify-between mb-5">
-                    <button onClick={() => router.get(route('dashboard'))} className="flex items-center gap-1.5 text-emerald-200 text-sm font-bold">
+            <div className="px-5 pt-6 pb-2">
+                <div className="flex items-center justify-between mb-6">
+                    <button onClick={() => router.get(route('dashboard'))} className="flex items-center gap-1.5 text-slate-400 text-sm font-bold">
                         <ArrowLeft size={16} /> Balik
                     </button>
-                    <h1 className="font-black tracking-wide">Kalkulator Zakat</h1>
+                    <h1 className="font-display text-lg font-semibold text-white tracking-wide">Kalkulator Zakat</h1>
                     <span className="w-12" />
                 </div>
                 <div className="text-center">
-                    <p className="text-[10px] text-emerald-200 font-bold uppercase tracking-widest">Jumlah zakat ({prefill.year})</p>
-                    <p className="text-4xl font-black">{fmt(total)}</p>
-                    <p className="text-emerald-300 text-xs mt-1">kadar {(rate * 100).toFixed(1)}% · nisab {fmt(nisab)}</p>
+                    <p className="luxe-label">Jumlah zakat ({prefill.year})</p>
+                    <p className="text-5xl luxe-figure mt-1">{fmt(total)}</p>
+                    <p className="text-slate-400 text-xs mt-2">kadar {(rate * 100).toFixed(1)}% · nisab {fmt(nisab)}</p>
                 </div>
             </div>
 
-            <div className="max-w-xl mx-auto p-4 -mt-5 space-y-4">
+            <div className="max-w-xl mx-auto px-4 mt-4 space-y-4">
                 {/* Inputs */}
-                <div className="bg-white rounded-2xl border border-slate-100 p-4 space-y-4">
+                <div className="luxe-card p-4 space-y-4">
                     <NumField label="Pendapatan setahun" value={income} onChange={setIncome} hint="diisi auto dari rekod pendapatan" />
                     <NumField label="Simpanan / harta (≥ 1 haul)" value={savings} onChange={setSavings} hint="termasuk ASB, tunai, emas — sahkan sendiri" />
                     <NumField label="Nisab semasa" value={nisab} onChange={setNisab} hint="≈ 85g emas — sahkan dengan pihak zakat" />
                 </div>
 
                 {/* Breakdown */}
-                <div className="bg-white rounded-2xl border border-slate-100 p-4 space-y-3">
-                    <ResultRow
-                        title="Zakat Pendapatan"
-                        base={income}
-                        nisab={nisab}
-                        amount={zIncome}
-                        onRecord={() => record('pendapatan', zIncome)}
-                    />
-                    <div className="border-t border-slate-100" />
-                    <ResultRow
-                        title="Zakat Simpanan / Harta"
-                        base={savings}
-                        nisab={nisab}
-                        amount={zSavings}
-                        onRecord={() => record('simpanan', zSavings)}
-                    />
-                    <div className="border-t border-slate-100 pt-3 flex items-center justify-between">
-                        <span className="font-black text-slate-700">Jumlah Zakat</span>
-                        <span className="font-black text-emerald-600 text-lg">{fmt(total)}</span>
+                <div className="luxe-card p-4 space-y-3">
+                    <ResultRow title="Zakat Pendapatan" base={income} nisab={nisab} amount={zIncome} onRecord={() => record('pendapatan', zIncome)} />
+                    <div className="border-t border-white/[0.06]" />
+                    <ResultRow title="Zakat Simpanan / Harta" base={savings} nisab={nisab} amount={zSavings} onRecord={() => record('simpanan', zSavings)} />
+                    <div className="border-t border-white/[0.06] pt-3 flex items-center justify-between">
+                        <span className="font-display font-semibold text-slate-100">Jumlah Zakat</span>
+                        <span className="font-bold text-gold text-lg">{fmt(total)}</span>
                     </div>
                     {total > 0 && (
-                        <button onClick={() => record('gabungan', total)}
-                            className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white font-black py-3 rounded-2xl">
+                        <button onClick={() => record('gabungan', total)} className="w-full flex items-center justify-center gap-2 luxe-btn-gold py-3">
                             <Landmark size={16} /> Rekod sebagai rebat cukai (LHDN)
                         </button>
                     )}
                 </div>
 
                 {/* Note */}
-                <div className="flex gap-2 bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-emerald-800">
-                    <Info size={16} className="shrink-0 mt-0.5" />
+                <div className="flex gap-2 luxe-card p-3 text-slate-300">
+                    <Info size={16} className="shrink-0 mt-0.5 text-gold" />
                     <p className="text-xs leading-relaxed">
-                        Zakat yang dibayar = <b>rebat cukai</b> (tolak terus dari cukai, bukan pelepasan). Rekod di sini terus masuk modul Cukai/LHDN.
+                        Zakat yang dibayar = <b className="text-slate-100">rebat cukai</b> (tolak terus dari cukai, bukan pelepasan). Rekod di sini terus masuk modul Cukai/LHDN.
                         Anggaran sahaja — sahkan nisab & kaedah kiraan dengan pihak zakat negeri.
                     </p>
                 </div>
@@ -94,14 +81,14 @@ export default function Zakat({ prefill }) {
 function NumField({ label, value, onChange, hint }) {
     return (
         <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">{label}</label>
-            <div className="flex items-center border border-slate-200 rounded-xl px-3 py-2 focus-within:border-emerald-500">
-                <span className="text-slate-400 font-bold text-sm mr-2">RM</span>
+            <label className="block luxe-label mb-1">{label}</label>
+            <div className="flex items-center luxe-input">
+                <span className="text-slate-500 font-bold text-sm mr-2">RM</span>
                 <input type="number" step="0.01" value={value}
                     onChange={(e) => onChange(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                    className="flex-1 border-0 p-0 font-bold text-slate-700 focus:ring-0 text-sm" />
+                    className="flex-1 bg-transparent border-0 p-0 font-bold text-slate-100 focus:ring-0 text-sm" />
             </div>
-            {hint && <p className="text-[10px] text-slate-400 mt-1">{hint}</p>}
+            {hint && <p className="text-[10px] text-slate-500 mt-1">{hint}</p>}
         </div>
     );
 }
@@ -111,15 +98,15 @@ function ResultRow({ title, base, nisab, amount, onRecord }) {
     return (
         <div className="flex items-center justify-between">
             <div>
-                <p className="font-bold text-sm text-slate-700">{title}</p>
+                <p className="font-semibold text-sm text-slate-200">{title}</p>
                 {belowNisab
-                    ? <p className="text-[11px] text-slate-400">Bawah nisab — tiada zakat</p>
-                    : <p className="text-[11px] text-slate-400">2.5% × {fmt(base)}</p>}
+                    ? <p className="text-[11px] text-slate-500">Bawah nisab — tiada zakat</p>
+                    : <p className="text-[11px] text-slate-500">2.5% × {fmt(base)}</p>}
             </div>
             <div className="flex items-center gap-3">
-                <span className="font-black text-slate-700">{fmt(amount)}</span>
+                <span className="font-bold text-slate-100">{fmt(amount)}</span>
                 {amount > 0 && (
-                    <button onClick={onRecord} className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg uppercase">
+                    <button onClick={onRecord} className="text-[10px] font-black text-gold bg-gold/15 px-2 py-1 rounded-lg uppercase">
                         Rekod
                     </button>
                 )}
