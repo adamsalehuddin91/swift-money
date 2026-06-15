@@ -14,6 +14,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavingsController;
 use App\Http\Controllers\SummaryController;
+use App\Http\Controllers\TaxController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -91,6 +92,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Monthly summary (print/PDF)
     Route::get('/summary', [SummaryController::class, 'index'])->name('summary.index');
+
+    // Cukai / LHDN — tax relief tracking + e-Filing prep
+    Route::get('/cukai', [TaxController::class, 'index'])->name('tax.index');
+    Route::get('/cukai/ringkasan', [TaxController::class, 'summary'])->name('tax.summary');
+    Route::post('/cukai/items', [TaxController::class, 'storeItem'])->name('tax.items.store');
+    Route::put('/cukai/items/{item}', [TaxController::class, 'updateItem'])->name('tax.items.update');
+    Route::delete('/cukai/items/{item}', [TaxController::class, 'destroyItem'])->name('tax.items.destroy');
+    Route::get('/cukai/items/{item}/receipt', [TaxController::class, 'viewReceipt'])->name('tax.receipt.view');
+    Route::post('/cukai/items/{item}/receipt', [TaxController::class, 'uploadReceipt'])->name('tax.receipt.upload');
+    Route::delete('/cukai/items/{item}/receipt', [TaxController::class, 'deleteReceipt'])->name('tax.receipt.delete');
+    Route::put('/cukai/categories/{category}', [TaxController::class, 'updateCategory'])->name('tax.categories.update');
 
     // Language preference
     Route::post('/language', [LanguageController::class, 'update'])->name('language.update');

@@ -13,7 +13,7 @@ import {
     MessageCircle, AlertCircle, Receipt,
     Car, Smartphone, Wifi, ShoppingCart, Activity, Tv, Droplets, Fuel,
     PiggyBank, Target, BarChart2, RefreshCw, CheckCheck, Calendar,
-    KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame
+    KeyRound, UserCog, Award, Trophy, AlertTriangle, Flame, Landmark
 } from 'lucide-react';
 import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis,
@@ -1308,6 +1308,9 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <p className="text-indigo-300 text-[10px] font-medium">{isSaya ? user?.name : 'Keluarga'} &bull; RM {Number(s.total_bills).toLocaleString()}</p>
                                 </div>
                                 <div className="flex gap-3 items-center">
+                                    <button onClick={() => router.get(route('tax.index'))} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all" title="Cukai / LHDN">
+                                        <Landmark size={20} />
+                                    </button>
                                     <button onClick={() => router.get(route('summary.index'), { month: monthYear })} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all" title="Ringkasan bulanan">
                                         <FileText size={20} />
                                     </button>
