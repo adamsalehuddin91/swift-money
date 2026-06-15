@@ -5,6 +5,7 @@ import BrowserGate from '@/Components/BrowserGate';
 import IOSInstallGuide from '@/Components/IOSInstallGuide';
 import BudgetSection from '@/Components/BudgetSection';
 import ForecastCard from '@/Components/ForecastCard';
+import PushToggle from '@/Components/PushToggle';
 import {
     CheckCircle, Circle, Home, CreditCard, GraduationCap,
     Zap, Heart, User, Plus, ChevronRight,
@@ -1044,16 +1045,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                         </div>
                     </div>
 
-                    <div className="p-4 flex items-center justify-between border-b border-slate-50">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-blue-50 text-blue-600 p-2.5 rounded-2xl"><Bell size={20}/></div>
-                            <div>
-                                <p className="text-sm font-bold text-slate-100">Notifikasi</p>
-                                <p className="text-[10px] text-slate-400 font-medium">Auto-remind setiap 29hb</p>
-                            </div>
-                        </div>
-                        <ChevronRight size={16} className="text-slate-300"/>
-                    </div>
+                    <PushToggle />
                     <div className="p-4 flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="bg-white/5 text-slate-300 p-2.5 rounded-2xl"><FileText size={20}/></div>

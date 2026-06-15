@@ -17,6 +17,7 @@ use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\ZakatController;
 use App\Http\Controllers\NetWorthController;
+use App\Http\Controllers\PushController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -116,6 +117,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/networth/assets/{asset}', [NetWorthController::class, 'updateAsset'])->name('networth.assets.update');
     Route::delete('/networth/assets/{asset}', [NetWorthController::class, 'destroyAsset'])->name('networth.assets.destroy');
     Route::post('/networth/capture', [NetWorthController::class, 'capture'])->name('networth.capture');
+
+    // Web Push subscriptions
+    Route::post('/push/subscribe', [PushController::class, 'subscribe'])->name('push.subscribe');
+    Route::post('/push/unsubscribe', [PushController::class, 'unsubscribe'])->name('push.unsubscribe');
 
     // Language preference
     Route::post('/language', [LanguageController::class, 'update'])->name('language.update');

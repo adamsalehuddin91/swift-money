@@ -17,8 +17,8 @@ export default defineConfig({
                 name: 'SwiftMoney',
                 short_name: 'SwiftMoney',
                 description: 'Tracker kewangan keluarga',
-                theme_color: '#4338ca',
-                background_color: '#f8fafc',
+                theme_color: '#0B1120',
+                background_color: '#0B1120',
                 display: 'standalone',
                 orientation: 'portrait',
                 start_url: '/dashboard',
@@ -31,6 +31,7 @@ export default defineConfig({
             },
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+                importScripts: ['/push-sw.js'],
                 runtimeCaching: [
                     {
                         urlPattern: /^https?:\/\/.*\/dashboard/,
