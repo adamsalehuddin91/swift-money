@@ -60,7 +60,7 @@ function Modal({ show, onClose, title, children }) {
     if (!show) return null;
     return (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div className="bg-ink-soft border border-white/10 w-full max-w-sm rounded-[32px] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-bold">{title}</h3>
                     <button onClick={onClose} className="p-2 bg-white/10 rounded-full"><X size={20}/></button>
@@ -412,7 +412,7 @@ function HistoryModal({ show, onClose, debt }) {
                     </div>
                 </div>
                 <div className="mt-3">
-                    <div className="h-2 bg-white rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                         <div className="h-full bg-orange-400 rounded-full transition-all" style={{ width: `${debt?.pct || 0}%` }}></div>
                     </div>
                     <p className="text-center text-[9px] font-bold text-slate-400 mt-1">{debt?.pct || 0}% selesai</p>
@@ -729,10 +729,10 @@ function EditProfileModal({ show, onClose, user }) {
         <Modal show={show} onClose={onClose} title="Edit Profil">
             {/* Tab toggle */}
             <div className="flex bg-white/10 rounded-2xl p-1 mb-5">
-                <button onClick={() => setTab('profil')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'profil' ? 'bg-white shadow-sm text-indigo-300' : 'text-slate-400'}`}>
+                <button onClick={() => setTab('profil')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'profil' ? 'bg-gold text-ink shadow-sm' : 'text-slate-400'}`}>
                     Maklumat
                 </button>
-                <button onClick={() => setTab('password')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'password' ? 'bg-white shadow-sm text-indigo-300' : 'text-slate-400'}`}>
+                <button onClick={() => setTab('password')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'password' ? 'bg-gold text-ink shadow-sm' : 'text-slate-400'}`}>
                     Password
                 </button>
             </div>
@@ -785,7 +785,7 @@ function UpgradeModal({ show, onClose }) {
     if (!show) return null;
     return (
         <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl text-center space-y-4">
+            <div className="bg-ink-soft border border-white/10 w-full max-w-sm rounded-[32px] p-6 shadow-2xl text-center space-y-4">
                 <div className="bg-indigo-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto">
                     <span className="text-2xl">🔒</span>
                 </div>
@@ -1035,11 +1035,11 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                         <div className="flex gap-1 bg-white/10 rounded-2xl p-1">
                             <button
                                 onClick={() => setLanguage('ms')}
-                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'ms' ? 'bg-white text-indigo-300 shadow-sm' : 'text-slate-400'}`}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'ms' ? 'bg-gold text-ink shadow-sm' : 'text-slate-400'}`}
                             >BM</button>
                             <button
                                 onClick={() => setLanguage('en')}
-                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'en' ? 'bg-white text-indigo-300 shadow-sm' : 'text-slate-400'}`}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'en' ? 'bg-gold text-ink shadow-sm' : 'text-slate-400'}`}
                             >EN</button>
                         </div>
                     </div>
@@ -1094,7 +1094,7 @@ function OnboardingScreen() {
         <>
             <Head title="Sediakan Akaun" />
             <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-6">
-                <div className="bg-white rounded-[32px] p-8 shadow-xl w-full max-w-sm space-y-6">
+                <div className="bg-ink-soft border border-white/10 rounded-[32px] p-8 shadow-xl w-full max-w-sm space-y-6">
                     <div className="text-center space-y-3">
                         <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
                             <Wallet size={32} className="text-indigo-300" />
@@ -1158,7 +1158,7 @@ function OnboardingScreen() {
 function SuspendedScreen() {
     return (
         <div className="min-h-screen bg-white/5 flex items-center justify-center p-6">
-            <div className="bg-white rounded-[32px] p-8 shadow-xl max-w-sm w-full text-center space-y-5">
+            <div className="bg-ink-soft border border-white/10 rounded-[32px] p-8 shadow-xl max-w-sm w-full text-center space-y-5">
                 <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
                     <span className="text-3xl">🚫</span>
                 </div>
@@ -1327,7 +1327,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <button onClick={() => setIsHidden(!isHidden)} className="bg-white/10 p-2.5 rounded-2xl text-white backdrop-blur-md border border-white/10 active:scale-90 transition-all">
                                         {isHidden ? <EyeOff size={20} /> : <Eye size={20} />}
                                     </button>
-                                    <div className="bg-white p-1 rounded-full border-2 border-indigo-400">
+                                    <div className="bg-white/10 p-1 rounded-full border-2 border-gold/40">
                                         {user?.avatar
                                             ? <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
                                             : <div className="bg-indigo-600 text-[10px] text-white font-bold w-8 h-8 rounded-full flex items-center justify-center uppercase">{user?.name?.substring(0, 3) || 'USR'}</div>
@@ -1338,10 +1338,10 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
 
                             {/* View Mode Toggle */}
                             <div className="flex gap-2 mb-4 relative z-10">
-                                <button onClick={() => setViewMode('saya')} className={`flex-1 py-2 rounded-2xl text-xs font-black uppercase tracking-wider transition-all ${isSaya ? 'bg-white text-indigo-700 shadow-md' : 'bg-white/10 text-indigo-200 border border-white/10'}`}>
+                                <button onClick={() => setViewMode('saya')} className={`flex-1 py-2 rounded-2xl text-xs font-black uppercase tracking-wider transition-all ${isSaya ? 'bg-gold text-ink shadow-md' : 'bg-white/10 text-indigo-200 border border-white/10'}`}>
                                     {user?.name || 'Saya'}
                                 </button>
-                                <button onClick={() => setViewMode('keluarga')} className={`flex-1 py-2 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${!isSaya ? 'bg-white text-indigo-700 shadow-md' : 'bg-white/10 text-indigo-200 border border-white/10'}`}>
+                                <button onClick={() => setViewMode('keluarga')} className={`flex-1 py-2 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${!isSaya ? 'bg-gold text-ink shadow-md' : 'bg-white/10 text-indigo-200 border border-white/10'}`}>
                                     <Users size={14} /> Keluarga
                                     {familyS.total_unpaid > 0 && isSaya && (
                                         <span className="bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full ml-1 animate-pulse">!</span>
@@ -1403,7 +1403,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             {isSaya && (
                                 <div className={`p-4 rounded-3xl border shadow-sm flex items-center gap-3 ${
                                     familyS.total_unpaid > 0
-                                        ? 'bg-amber-50 border-amber-100'
+                                        ? 'bg-amber-500/10 border-amber-500/25'
                                         : 'bg-green-500/15 border-green-100'
                                 }`}>
                                     <div className={`p-2 rounded-2xl ${familyS.total_unpaid > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
