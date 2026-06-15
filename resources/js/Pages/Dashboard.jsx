@@ -63,7 +63,7 @@ function Modal({ show, onClose, title, children }) {
             <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-bold">{title}</h3>
-                    <button onClick={onClose} className="p-2 bg-slate-100 rounded-full"><X size={20}/></button>
+                    <button onClick={onClose} className="p-2 bg-white/10 rounded-full"><X size={20}/></button>
                 </div>
                 {children}
             </div>
@@ -106,16 +106,16 @@ function IncomeModal({ show, onClose, monthYear, editIncome }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Sumber</label>
-                    <input type="text" placeholder="e.g. Bonus, Felda" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.source} onChange={(e) => setData('source', e.target.value)} />
+                    <input type="text" placeholder="e.g. Bonus, Felda" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.source} onChange={(e) => setData('source', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
                 <button
                     type="button"
                     onClick={() => setData('is_recurring', !data.is_recurring)}
-                    className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${data.is_recurring ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-slate-50 border-transparent text-slate-500'}`}
+                    className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${data.is_recurring ? 'bg-indigo-500/15 border-indigo-200 text-indigo-700' : 'bg-white/5 border-transparent text-slate-500'}`}
                 >
                     <span className="flex items-center gap-2 text-sm font-bold"><RefreshCw size={14}/> Berulang setiap bulan</span>
                     <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${data.is_recurring ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'}`}>
@@ -172,16 +172,16 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Tajuk</label>
-                    <input type="text" placeholder="e.g. Astro, Bil Air" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Astro, Bil Air" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah</label>
-                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.default_amount} onChange={(e) => setData('default_amount', e.target.value)} />
+                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.default_amount} onChange={(e) => setData('default_amount', e.target.value)} />
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
-                        <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
+                        <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                     </div>
@@ -189,7 +189,7 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">PIC</label>
-                        <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.assigned_to} onChange={(e) => setData('assigned_to', e.target.value)}>
+                        <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.assigned_to} onChange={(e) => setData('assigned_to', e.target.value)}>
                             {(familyMembers || []).map(m => (
                                 <option key={m.id} value={m.name}>{m.name}</option>
                             ))}
@@ -197,12 +197,12 @@ function BillModal({ show, onClose, allDebts, editTemplate, familyMembers }) {
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Due Hari Ke-</label>
-                        <input type="number" min="1" max="31" placeholder="cth: 15" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.due_day} onChange={(e) => setData('due_day', e.target.value)} />
+                        <input type="number" min="1" max="31" placeholder="cth: 15" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.due_day} onChange={(e) => setData('due_day', e.target.value)} />
                     </div>
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Link Hutang</label>
-                    <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
+                    <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.debt_id} onChange={(e) => setData('debt_id', e.target.value)}>
                         <option value="">Tiada</option>
                         {(allDebts || []).map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
                     </select>
@@ -257,23 +257,23 @@ function ExpenseModal({ show, onClose, monthYear, editExpense }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Perkara</label>
-                    <input type="text" placeholder="e.g. Beli TV, Duit raya" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Beli TV, Duit raya" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
-                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                        <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
-                        <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
+                        <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.category} onChange={(e) => setData('category', e.target.value)}>
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                     </div>
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nota (optional)</label>
-                    <input type="text" placeholder="Kenapa beli, untuk siapa..." className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
+                    <input type="text" placeholder="Kenapa beli, untuk siapa..." className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-violet-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-violet-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Saving...' : isEdit ? 'Kemaskini' : 'Tambah Perbelanjaan'}
@@ -319,15 +319,15 @@ function DebtModal({ show, onClose, editDebt }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Hutang</label>
-                    <input type="text" placeholder="e.g. Hutang Kereta, CC Bank" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Hutang Kereta, CC Bank" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah Asal (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.total_amount} onChange={(e) => setData('total_amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.total_amount} onChange={(e) => setData('total_amount', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jenis Bayaran</label>
-                    <select className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.type} onChange={(e) => setData('type', e.target.value)}>
+                    <select className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 appearance-none focus:ring-2 focus:ring-indigo-300 outline-none" value={data.type} onChange={(e) => setData('type', e.target.value)}>
                         <option value="fixed">Tetap (Fixed)</option>
                         <option value="flexible">Fleksibel</option>
                     </select>
@@ -355,7 +355,7 @@ function PaymentModal({ show, onClose, debt }) {
     };
     return (
         <Modal show={show} onClose={onClose} title={`Bayar: ${debt?.title || ''}`}>
-            <div className="mb-4 p-4 bg-orange-50 rounded-2xl">
+            <div className="mb-4 p-4 bg-orange-500/15 rounded-2xl">
                 <div className="flex justify-between text-sm">
                     <span className="text-slate-500">Baki semasa</span>
                     <span className="font-black text-orange-600">{formatMoney(debt?.remaining || 0)}</span>
@@ -364,7 +364,7 @@ function PaymentModal({ show, onClose, debt }) {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah Bayaran (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-orange-500 text-white font-bold p-4 rounded-2xl shadow-lg shadow-orange-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Processing...' : 'Rekod Bayaran'}
@@ -396,15 +396,15 @@ function HistoryModal({ show, onClose, debt }) {
 
     return (
         <Modal show={show} onClose={onClose} title={`Sejarah: ${debt?.title || ''}`}>
-            <div className="mb-4 p-4 bg-slate-50 rounded-2xl">
+            <div className="mb-4 p-4 bg-white/5 rounded-2xl">
                 <div className="grid grid-cols-3 gap-2 text-center">
                     <div>
                         <p className="text-[9px] font-bold text-slate-400 uppercase">Jumlah</p>
-                        <p className="text-sm font-black text-slate-700">{formatMoney(debt?.total || 0)}</p>
+                        <p className="text-sm font-black text-slate-100">{formatMoney(debt?.total || 0)}</p>
                     </div>
                     <div>
                         <p className="text-[9px] font-bold text-slate-400 uppercase">Dah Bayar</p>
-                        <p className="text-sm font-black text-green-600">{formatMoney(debt?.paid || 0)}</p>
+                        <p className="text-sm font-black text-emerald-400">{formatMoney(debt?.paid || 0)}</p>
                     </div>
                     <div>
                         <p className="text-[9px] font-bold text-slate-400 uppercase">Baki</p>
@@ -428,18 +428,18 @@ function HistoryModal({ show, onClose, debt }) {
             ) : (
                 <div className="space-y-3">
                     {history.map((p, i) => (
-                        <div key={p.id || i} className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                        <div key={p.id || i} className="flex items-center gap-4 p-3 bg-white/5 rounded-2xl">
                             <div className="bg-green-100 p-2 rounded-xl">
-                                <DollarSign size={16} className="text-green-600" />
+                                <DollarSign size={16} className="text-emerald-400" />
                             </div>
                             <div className="flex-1">
-                                <p className="text-sm font-bold text-slate-700">{formatMoney(p.amount_paid)}</p>
+                                <p className="text-sm font-bold text-slate-100">{formatMoney(p.amount_paid)}</p>
                                 <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
                                     <Clock size={10} /> {formatDate(p.payment_date)}
                                 </p>
                             </div>
                             {p.bill_record_id && (
-                                <span className="text-[8px] font-bold bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-md uppercase">
+                                <span className="text-[8px] font-bold bg-indigo-500/15 text-indigo-500 px-2 py-0.5 rounded-md uppercase">
                                     Auto
                                 </span>
                             )}
@@ -481,7 +481,7 @@ function ReceiptModal({ show, onClose, bill }) {
                 <div className="space-y-4">
                     <img src={route('bills.receipt.view', bill.id)} alt="Resit" className="w-full rounded-2xl shadow-sm border border-slate-100" />
                     <div className="grid grid-cols-2 gap-3">
-                        <label className="flex items-center justify-center gap-2 text-[10px] font-bold text-indigo-600 bg-indigo-50 py-3 rounded-xl cursor-pointer active:scale-95 transition-all">
+                        <label className="flex items-center justify-center gap-2 text-[10px] font-bold text-indigo-300 bg-indigo-500/15 py-3 rounded-xl cursor-pointer active:scale-95 transition-all">
                             <Camera size={14}/> Tukar Resit
                             <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleUpload} />
                         </label>
@@ -492,7 +492,7 @@ function ReceiptModal({ show, onClose, bill }) {
                 </div>
             ) : (
                 <div className="text-center py-8 space-y-4">
-                    <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+                    <div className="bg-white/5 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
                         <Camera size={32} className="text-slate-300" />
                     </div>
                     <p className="text-slate-400 text-sm">Tiada resit untuk bil ini</p>
@@ -548,16 +548,16 @@ function SavingsModal({ show, onClose, editGoal }) {
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Simpanan</label>
-                    <input type="text" placeholder="e.g. Dana Kecemasan, DP Rumah" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
+                    <input type="text" placeholder="e.g. Dana Kecemasan, DP Rumah" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Target (RM)</label>
-                        <input type="number" step="1" placeholder="10000" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.target_amount} onChange={(e) => setData('target_amount', e.target.value)} />
+                        <input type="number" step="1" placeholder="10000" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.target_amount} onChange={(e) => setData('target_amount', e.target.value)} />
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Tarikh Target</label>
-                        <input type="date" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} />
+                        <input type="date" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} />
                     </div>
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-emerald-200 mt-2 active:scale-95 transition-all disabled:opacity-50">
@@ -582,21 +582,21 @@ function SavingsContributeModal({ show, onClose, goal }) {
     };
     return (
         <Modal show={show} onClose={onClose} title={`Tambah: ${goal?.title || ''}`}>
-            <div className="mb-4 p-4 bg-emerald-50 rounded-2xl flex items-center justify-between">
+            <div className="mb-4 p-4 bg-emerald-500/15 rounded-2xl flex items-center justify-between">
                 <div>
                     <p className="text-[9px] font-bold text-slate-400 uppercase">Terkumpul</p>
-                    <p className="text-sm font-black text-emerald-600">{formatMoney(goal?.saved || 0)} / {formatMoney(goal?.target || 0)}</p>
+                    <p className="text-sm font-black text-emerald-400">{formatMoney(goal?.saved || 0)} / {formatMoney(goal?.target || 0)}</p>
                 </div>
                 <span className="text-3xl">{goal?.emoji}</span>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Jumlah (RM)</label>
-                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
+                    <input type="number" step="0.01" placeholder="0.00" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.amount} onChange={(e) => setData('amount', e.target.value)} />
                 </div>
                 <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nota (optional)</label>
-                    <input type="text" placeholder="e.g. Lebihan gaji" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
+                    <input type="text" placeholder="e.g. Lebihan gaji" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-emerald-300 outline-none" value={data.note} onChange={(e) => setData('note', e.target.value)} />
                 </div>
                 <button type="submit" disabled={processing} className="w-full bg-emerald-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-emerald-200 active:scale-95 transition-all disabled:opacity-50">
                     {processing ? 'Saving...' : 'Tambah Simpanan'}
@@ -635,7 +635,7 @@ function AnalyticsView({ familyId }) {
             </div>
 
             {/* Trend Chart */}
-            <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <div className="luxe-card rounded-[28px] p-5">
                 <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Pendapatan vs Komitmen</h3>
                 <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={data.trend} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -660,7 +660,7 @@ function AnalyticsView({ familyId }) {
             </div>
 
             {/* Monthly savings bars */}
-            <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <div className="luxe-card rounded-[28px] p-5">
                 <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Lebihan Bulanan</h3>
                 <ResponsiveContainer width="100%" height={140}>
                     <BarChart data={data.trend} margin={{ top: 0, right: 5, left: -20, bottom: 0 }} barSize={24}>
@@ -678,7 +678,7 @@ function AnalyticsView({ familyId }) {
 
             {/* Category breakdown */}
             {data.breakdown?.length > 0 && (
-                <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+                <div className="luxe-card rounded-[28px] p-5">
                     <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Breakdown Kategori (Bulan Ini)</h3>
                     <div className="space-y-3">
                         {data.breakdown.map((item, i) => {
@@ -686,10 +686,10 @@ function AnalyticsView({ familyId }) {
                             return (
                                 <div key={item.category}>
                                     <div className="flex justify-between mb-1">
-                                        <span className="text-xs font-bold text-slate-600">{item.category}</span>
-                                        <span className="text-xs font-black text-slate-700">RM {Number(item.amount).toLocaleString()}</span>
+                                        <span className="text-xs font-bold text-slate-300">{item.category}</span>
+                                        <span className="text-xs font-black text-slate-100">RM {Number(item.amount).toLocaleString()}</span>
                                     </div>
-                                    <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
+                                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                                         <div className="h-full rounded-full transition-all" style={{ width: `${(item.amount / max) * 100}%`, background: COLORS[i % COLORS.length] }}></div>
                                     </div>
                                 </div>
@@ -728,11 +728,11 @@ function EditProfileModal({ show, onClose, user }) {
     return (
         <Modal show={show} onClose={onClose} title="Edit Profil">
             {/* Tab toggle */}
-            <div className="flex bg-slate-100 rounded-2xl p-1 mb-5">
-                <button onClick={() => setTab('profil')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'profil' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}>
+            <div className="flex bg-white/10 rounded-2xl p-1 mb-5">
+                <button onClick={() => setTab('profil')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'profil' ? 'bg-white shadow-sm text-indigo-300' : 'text-slate-400'}`}>
                     Maklumat
                 </button>
-                <button onClick={() => setTab('password')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'password' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}>
+                <button onClick={() => setTab('password')} className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${tab === 'password' ? 'bg-white shadow-sm text-indigo-300' : 'text-slate-400'}`}>
                     Password
                 </button>
             </div>
@@ -741,12 +741,12 @@ function EditProfileModal({ show, onClose, user }) {
                 <form onSubmit={handleProfileSubmit} className="space-y-4">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Paparan</label>
-                        <input type="text" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.name} onChange={e => profileForm.setData('name', e.target.value)} />
+                        <input type="text" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.name} onChange={e => profileForm.setData('name', e.target.value)} />
                         <p className="text-[9px] text-amber-500 font-bold ml-1 mt-1">⚠️ Nama ini digunakan untuk assignment bil. Tukar nama akan ubah PIC pada semua komitmen.</p>
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Email</label>
-                        <input type="email" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.email} onChange={e => profileForm.setData('email', e.target.value)} />
+                        <input type="email" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={profileForm.data.email} onChange={e => profileForm.setData('email', e.target.value)} />
                     </div>
                     {profileForm.errors.name && <p className="text-xs text-red-500 ml-1">{profileForm.errors.name}</p>}
                     {profileForm.errors.email && <p className="text-xs text-red-500 ml-1">{profileForm.errors.email}</p>}
@@ -758,17 +758,17 @@ function EditProfileModal({ show, onClose, user }) {
                 <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Password Semasa</label>
-                        <input type="password" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.current_password} onChange={e => passwordForm.setData('current_password', e.target.value)} />
+                        <input type="password" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.current_password} onChange={e => passwordForm.setData('current_password', e.target.value)} />
                         {passwordForm.errors.current_password && <p className="text-xs text-red-500 ml-1 mt-1">{passwordForm.errors.current_password}</p>}
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Password Baru</label>
-                        <input type="password" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password} onChange={e => passwordForm.setData('password', e.target.value)} />
+                        <input type="password" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password} onChange={e => passwordForm.setData('password', e.target.value)} />
                         {passwordForm.errors.password && <p className="text-xs text-red-500 ml-1 mt-1">{passwordForm.errors.password}</p>}
                     </div>
                     <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Sahkan Password Baru</label>
-                        <input type="password" className="w-full bg-slate-50 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password_confirmation} onChange={e => passwordForm.setData('password_confirmation', e.target.value)} />
+                        <input type="password" className="w-full bg-white/5 border-none rounded-2xl p-4 mt-1 focus:ring-2 focus:ring-indigo-300 outline-none" value={passwordForm.data.password_confirmation} onChange={e => passwordForm.setData('password_confirmation', e.target.value)} />
                     </div>
                     <button type="submit" disabled={passwordForm.processing} className="w-full bg-indigo-600 text-white font-bold p-4 rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50">
                         {passwordForm.processing ? 'Saving...' : 'Tukar Password'}
@@ -790,15 +790,15 @@ function UpgradeModal({ show, onClose }) {
                     <span className="text-2xl">🔒</span>
                 </div>
                 <div>
-                    <h3 className="text-xl font-black text-slate-800">Ciri Berbayar</h3>
+                    <h3 className="text-xl font-black text-white">Ciri Berbayar</h3>
                     <p className="text-slate-500 text-sm mt-2">
-                        Ciri ini hanya untuk akaun <span className="font-bold text-indigo-600">SwiftMoney Pro</span>.
+                        Ciri ini hanya untuk akaun <span className="font-bold text-indigo-300">SwiftMoney Pro</span>.
                     </p>
                 </div>
-                <div className="bg-indigo-50 rounded-2xl p-4 text-left space-y-2">
+                <div className="bg-indigo-500/15 rounded-2xl p-4 text-left space-y-2">
                     <p className="text-xs font-black text-indigo-700 uppercase tracking-wide">Pro — RM 5/bulan</p>
                     {['Hutang tracker', 'Simpanan goals', 'Analitik 6 bulan', 'Upload resit', 'Navigasi bulan lepas', 'Bil tanpa had'].map(f => (
-                        <div key={f} className="flex items-center gap-2 text-xs text-slate-600">
+                        <div key={f} className="flex items-center gap-2 text-xs text-slate-300">
                             <CheckCircle size={13} className="text-emerald-500 flex-shrink-0"/>
                             {f}
                         </div>
@@ -837,7 +837,7 @@ function FamilySection({ user, familyMembers, inviteLink }) {
     return (
         <div className="space-y-3">
             <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">{t('family.title')}</h3>
-            <div className="bg-white rounded-[32px] p-5 border border-slate-100 shadow-sm space-y-3">
+            <div className="luxe-card rounded-[32px] p-5 space-y-3">
                 {(familyMembers || []).map(m => (
                     <div key={m.id} className="flex items-center gap-3">
                         {m.avatar
@@ -845,31 +845,31 @@ function FamilySection({ user, familyMembers, inviteLink }) {
                             : <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black uppercase flex-shrink-0">{m.name?.substring(0, 2)}</div>
                         }
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-slate-700 truncate">{m.name}</p>
+                            <p className="text-sm font-bold text-slate-100 truncate">{m.name}</p>
                             <p className="text-[10px] text-slate-400 font-medium uppercase">{m.role}</p>
                         </div>
                         {m.id === user?.id && (
-                            <span className="text-[9px] font-black bg-indigo-50 text-indigo-600 px-2 py-1 rounded-full">{t('dash.my_view')}</span>
+                            <span className="text-[9px] font-black bg-indigo-500/15 text-indigo-300 px-2 py-1 rounded-full">{t('dash.my_view')}</span>
                         )}
                     </div>
                 ))}
 
                 {isAdmin && (
-                    <div className="border-t border-slate-50 pt-3 space-y-2">
+                    <div className="border-t border-white/10 pt-3 space-y-2">
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{t('family.invite')}</p>
                         {(familyMembers || []).length >= 2 ? (
-                            <div className="flex items-center gap-2 bg-slate-50 rounded-2xl px-3 py-2.5">
+                            <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-3 py-2.5">
                                 <Users size={12} className="text-slate-400 shrink-0"/>
                                 <p className="text-[10px] text-slate-400 font-medium">{t('family.full')}</p>
                             </div>
                         ) : inviteLink ? (
                             <div className="flex gap-2">
-                                <div className="flex-1 bg-slate-50 rounded-2xl px-3 py-2 text-[10px] text-slate-500 truncate font-mono">
+                                <div className="flex-1 bg-white/5 rounded-2xl px-3 py-2 text-[10px] text-slate-500 truncate font-mono">
                                     {inviteLink}
                                 </div>
                                 <button
                                     onClick={copyLink}
-                                    className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all ${copied ? 'bg-green-100 text-green-600' : 'bg-indigo-50 text-indigo-600 active:scale-95'}`}
+                                    className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all ${copied ? 'bg-green-100 text-emerald-400' : 'bg-indigo-500/15 text-indigo-300 active:scale-95'}`}
                                 >
                                     {copied ? t('family.copied') : t('family.copy')}
                                 </button>
@@ -912,8 +912,8 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
         : 100;
     const healthScore = Math.round(billsScore * 0.5 + savingsScore * 0.25 + debtScore * 0.25);
 
-    const scoreConfig = healthScore >= 90 ? { label: 'Cemerlang', color: 'text-emerald-600', bg: 'bg-emerald-500', ring: 'ring-emerald-200', icon: <Trophy size={20} className="text-emerald-600"/> } :
-                        healthScore >= 75 ? { label: 'Bagus', color: 'text-indigo-600', bg: 'bg-indigo-500', ring: 'ring-indigo-200', icon: <Award size={20} className="text-indigo-600"/> } :
+    const scoreConfig = healthScore >= 90 ? { label: 'Cemerlang', color: 'text-emerald-400', bg: 'bg-emerald-500', ring: 'ring-emerald-200', icon: <Trophy size={20} className="text-emerald-400"/> } :
+                        healthScore >= 75 ? { label: 'Bagus', color: 'text-indigo-300', bg: 'bg-indigo-500', ring: 'ring-indigo-200', icon: <Award size={20} className="text-indigo-300"/> } :
                         healthScore >= 60 ? { label: 'OK', color: 'text-sky-600', bg: 'bg-sky-400', ring: 'ring-sky-200', icon: <ShieldCheck size={20} className="text-sky-600"/> } :
                         healthScore >= 40 ? { label: 'Perlu Perhatian', color: 'text-amber-600', bg: 'bg-amber-400', ring: 'ring-amber-200', icon: <AlertTriangle size={20} className="text-amber-600"/> } :
                                            { label: 'Kritikal', color: 'text-red-600', bg: 'bg-red-500', ring: 'ring-red-200', icon: <Flame size={20} className="text-red-600"/> };
@@ -934,10 +934,10 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                         <h2 className="font-display text-xl font-semibold text-white tracking-tight">{user?.name}</h2>
                         <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
                         <div className="flex gap-1.5 mt-1 flex-wrap">
-                            <span className="bg-indigo-50 text-indigo-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span className="bg-indigo-500/15 text-indigo-300 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
                                 <ShieldCheck size={9}/> Verified
                             </span>
-                            <span className="bg-green-50 text-green-600 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span className="bg-green-500/15 text-emerald-400 text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
                                 <Users size={9}/> Family
                             </span>
                             {isPaid && (
@@ -948,13 +948,13 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                         </div>
                     </div>
                 </div>
-                <button onClick={onEditProfile} className="flex items-center gap-1.5 bg-slate-100 text-slate-600 text-xs font-bold px-3 py-2 rounded-2xl active:scale-95 transition-all">
+                <button onClick={onEditProfile} className="flex items-center gap-1.5 bg-white/10 text-slate-300 text-xs font-bold px-3 py-2 rounded-2xl active:scale-95 transition-all">
                     <UserCog size={14}/> Edit
                 </button>
             </div>
 
             {/* Financial Health Score */}
-            <div className={`bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 ring-2 ${scoreConfig.ring}`}>
+            <div className={`luxe-card rounded-[28px] p-5 ring-2 ${scoreConfig.ring}`}>
                 <div className="flex items-center justify-between mb-4">
                     <div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kesihatan Kewangan</p>
@@ -977,11 +977,11 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
                     {[
-                        { label: 'Bil Bayar', value: Math.round(billsScore), color: 'text-indigo-600' },
-                        { label: 'Simpanan', value: Math.round(savingsScore), color: 'text-emerald-600' },
+                        { label: 'Bil Bayar', value: Math.round(billsScore), color: 'text-indigo-300' },
+                        { label: 'Simpanan', value: Math.round(savingsScore), color: 'text-emerald-400' },
                         { label: 'Hutang', value: Math.round(debtScore), color: 'text-orange-500' },
                     ].map(({ label, value, color }) => (
-                        <div key={label} className="bg-slate-50 rounded-2xl p-2">
+                        <div key={label} className="bg-white/5 rounded-2xl p-2">
                             <p className={`text-sm font-black ${color}`}>{value}%</p>
                             <p className="text-[8px] font-bold text-slate-400 uppercase mt-0.5">{label}</p>
                         </div>
@@ -991,12 +991,12 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+                <div className="luxe-card p-4 rounded-3xl">
                     <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Tahunan</p>
-                    <p className="text-sm font-black text-slate-800">{formatMoney(totalIncome * 12, isHidden, true)}</p>
+                    <p className="text-sm font-black text-white">{formatMoney(totalIncome * 12, isHidden, true)}</p>
                     <p className="text-[8px] text-slate-300 font-bold mt-1 tracking-tighter">ANGGARAN ANNUAL</p>
                 </div>
-                <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+                <div className="luxe-card p-4 rounded-3xl">
                     <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Burn Rate</p>
                     <p className={`text-sm font-black ${burnRate > 80 ? 'text-red-500' : burnRate > 60 ? 'text-amber-500' : 'text-emerald-500'}`}>{burnRate}%</p>
                     <p className="text-[8px] text-slate-300 font-bold mt-1 tracking-tighter">{t('profile.income_used').toUpperCase()}</p>
@@ -1009,12 +1009,12 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
             {/* Settings */}
             <div className="space-y-3">
                 <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest ml-1">{t('profile.settings')}</h3>
-                <div className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
-                    <button onClick={onEditProfile} className="w-full p-4 flex items-center justify-between border-b border-slate-50 active:bg-slate-50 transition-colors">
+                <div className="luxe-card rounded-[32px] overflow-hidden">
+                    <button onClick={onEditProfile} className="w-full p-4 flex items-center justify-between border-b border-white/10 active:bg-white/5 transition-colors">
                         <div className="flex items-center gap-4">
-                            <div className="bg-indigo-50 text-indigo-600 p-2.5 rounded-2xl"><UserCog size={20}/></div>
+                            <div className="bg-indigo-500/15 text-indigo-300 p-2.5 rounded-2xl"><UserCog size={20}/></div>
                             <div className="text-left">
-                                <p className="text-sm font-bold text-slate-700">{t('profile.edit')}</p>
+                                <p className="text-sm font-bold text-slate-100">{t('profile.edit')}</p>
                                 <p className="text-[10px] text-slate-400 font-medium">{t('profile.name')}, {t('profile.email')}, password</p>
                             </div>
                         </div>
@@ -1024,22 +1024,22 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                     {/* Language Toggle */}
                     <div className="p-4 flex items-center justify-between border-b border-slate-50">
                         <div className="flex items-center gap-4">
-                            <div className="bg-emerald-50 text-emerald-600 p-2.5 rounded-2xl">
+                            <div className="bg-emerald-500/15 text-emerald-400 p-2.5 rounded-2xl">
                                 <span className="text-sm font-black">{lang === 'ms' ? 'BM' : 'EN'}</span>
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-slate-700">{t('lang.label')}</p>
+                                <p className="text-sm font-bold text-slate-100">{t('lang.label')}</p>
                                 <p className="text-[10px] text-slate-400 font-medium">{t('lang.ms')} / {t('lang.en')}</p>
                             </div>
                         </div>
-                        <div className="flex gap-1 bg-slate-100 rounded-2xl p-1">
+                        <div className="flex gap-1 bg-white/10 rounded-2xl p-1">
                             <button
                                 onClick={() => setLanguage('ms')}
-                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'ms' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'ms' ? 'bg-white text-indigo-300 shadow-sm' : 'text-slate-400'}`}
                             >BM</button>
                             <button
                                 onClick={() => setLanguage('en')}
-                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'en' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400'}`}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${lang === 'en' ? 'bg-white text-indigo-300 shadow-sm' : 'text-slate-400'}`}
                             >EN</button>
                         </div>
                     </div>
@@ -1048,7 +1048,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                         <div className="flex items-center gap-4">
                             <div className="bg-blue-50 text-blue-600 p-2.5 rounded-2xl"><Bell size={20}/></div>
                             <div>
-                                <p className="text-sm font-bold text-slate-700">Notifikasi</p>
+                                <p className="text-sm font-bold text-slate-100">Notifikasi</p>
                                 <p className="text-[10px] text-slate-400 font-medium">Auto-remind setiap 29hb</p>
                             </div>
                         </div>
@@ -1056,9 +1056,9 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                     </div>
                     <div className="p-4 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="bg-slate-50 text-slate-600 p-2.5 rounded-2xl"><FileText size={20}/></div>
+                            <div className="bg-white/5 text-slate-300 p-2.5 rounded-2xl"><FileText size={20}/></div>
                             <div>
-                                <p className="text-sm font-bold text-slate-700">Laporan Kewangan</p>
+                                <p className="text-sm font-bold text-slate-100">Laporan Kewangan</p>
                                 <p className="text-[10px] text-slate-400 font-medium">Export PDF bulanan</p>
                             </div>
                         </div>
@@ -1066,7 +1066,7 @@ function ProfileView({ user, summary, savingsGoals, activeDebts, isHidden, onEdi
                     </div>
                 </div>
 
-                <div className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
+                <div className="luxe-card rounded-[32px] overflow-hidden">
                     <button onClick={() => router.post(route('logout'))} className="w-full p-4 flex items-center gap-4 text-red-500 active:bg-red-50 transition-colors">
                         <div className="bg-red-50 p-2.5 rounded-2xl"><LogOut size={20}/></div>
                         <p className="text-sm font-bold">{t('profile.logout')}</p>
@@ -1097,15 +1097,15 @@ function OnboardingScreen() {
                 <div className="bg-white rounded-[32px] p-8 shadow-xl w-full max-w-sm space-y-6">
                     <div className="text-center space-y-3">
                         <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-                            <Wallet size={32} className="text-indigo-600" />
+                            <Wallet size={32} className="text-indigo-300" />
                         </div>
-                        <h2 className="text-xl font-black text-slate-800">Selamat Datang!</h2>
+                        <h2 className="text-xl font-black text-white">Selamat Datang!</h2>
                         <p className="text-slate-500 text-sm">Namakan rumahtangga anda untuk mula guna SwiftMoney.</p>
                     </div>
 
                     <form onSubmit={submit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-1">
+                            <label className="block text-sm font-semibold text-slate-100 mb-1">
                                 Nama Rumahtangga / Keluarga
                             </label>
                             <input
@@ -1157,13 +1157,13 @@ function OnboardingScreen() {
 // ─── Suspended Screen ───
 function SuspendedScreen() {
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-white/5 flex items-center justify-center p-6">
             <div className="bg-white rounded-[32px] p-8 shadow-xl max-w-sm w-full text-center space-y-5">
                 <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
                     <span className="text-3xl">🚫</span>
                 </div>
                 <div>
-                    <h2 className="text-xl font-black text-slate-800">Akaun Digantung</h2>
+                    <h2 className="text-xl font-black text-white">Akaun Digantung</h2>
                     <p className="text-slate-500 text-sm mt-2">Akaun anda telah digantung sementara. Sila hubungi kami untuk maklumat lanjut.</p>
                 </div>
                 <a
@@ -1404,10 +1404,10 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                 <div className={`p-4 rounded-3xl border shadow-sm flex items-center gap-3 ${
                                     familyS.total_unpaid > 0
                                         ? 'bg-amber-50 border-amber-100'
-                                        : 'bg-green-50 border-green-100'
+                                        : 'bg-green-500/15 border-green-100'
                                 }`}>
                                     <div className={`p-2 rounded-2xl ${familyS.total_unpaid > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                                        <Users size={18} className={familyS.total_unpaid > 0 ? 'text-amber-600' : 'text-green-600'} />
+                                        <Users size={18} className={familyS.total_unpaid > 0 ? 'text-amber-600' : 'text-emerald-400'} />
                                     </div>
                                     <div className="flex-1">
                                         <p className={`text-xs font-black ${familyS.total_unpaid > 0 ? 'text-amber-700' : 'text-green-700'}`}>
@@ -1431,17 +1431,17 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
                                         <ArrowUpRight size={14} className="text-green-500" /> Sumber Pendapatan
                                     </h3>
-                                    <button onClick={() => { setSelectedIncome(null); setShowIncomeModal(true); }} className="text-[10px] font-bold text-indigo-600 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded-lg">
+                                    <button onClick={() => { setSelectedIncome(null); setShowIncomeModal(true); }} className="text-[10px] font-bold text-indigo-300 flex items-center gap-1 bg-indigo-500/15 px-2 py-1 rounded-lg">
                                         <Plus size={12}/> TAMBAH
                                     </button>
                                 </div>
-                                <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex gap-6 overflow-x-auto">
+                                <div className="luxe-card rounded-3xl p-5 flex gap-6 overflow-x-auto">
                                     {incomeList.length === 0 ? (
                                         <p className="text-slate-400 text-xs">Tiada pendapatan untuk bulan ini</p>
                                     ) : incomeList.map(inc => (
                                         <div key={inc.id} onClick={() => { setSelectedIncome(inc); setShowIncomeModal(true); }} className="min-w-[120px] flex flex-col cursor-pointer active:scale-95 transition-all p-2 -m-2 rounded-2xl hover:bg-slate-50">
                                             <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">{inc.source}</p>
-                                            <p className="text-sm font-black text-slate-700">{formatMoney(inc.amount, isHidden, true)}</p>
+                                            <p className="text-sm font-black text-slate-100">{formatMoney(inc.amount, isHidden, true)}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -1453,11 +1453,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                     <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
                                         <Receipt size={14} className="text-violet-500" /> Perbelanjaan Lain
                                     </h3>
-                                    <button onClick={() => { setEditExpense(null); setShowExpenseModal(true); }} className="text-[10px] font-bold text-violet-600 flex items-center gap-1 bg-violet-50 px-2 py-1 rounded-lg">
+                                    <button onClick={() => { setEditExpense(null); setShowExpenseModal(true); }} className="text-[10px] font-bold text-violet-300 flex items-center gap-1 bg-violet-500/15 px-2 py-1 rounded-lg">
                                         <Plus size={12}/> TAMBAH
                                     </button>
                                 </div>
-                                <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+                                <div className="luxe-card rounded-3xl p-5">
                                     {(expenses || []).length === 0 ? (
                                         <p className="text-slate-400 text-xs text-center">Tiada perbelanjaan lain bulan ini</p>
                                     ) : (
@@ -1465,15 +1465,15 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                             {(expenses || []).map(exp => (
                                                 <div key={exp.id} onClick={() => { setEditExpense(exp); setShowExpenseModal(true); }} className="flex items-center justify-between cursor-pointer active:scale-[0.98] transition-all">
                                                     <div>
-                                                        <p className="text-[13px] font-bold text-slate-700">{exp.title}</p>
+                                                        <p className="text-[13px] font-bold text-slate-100">{exp.title}</p>
                                                         <p className="text-[10px] text-slate-400">{exp.category}{exp.note ? ` · ${exp.note}` : ''} · {exp.by}</p>
                                                     </div>
-                                                    <p className="text-sm font-black text-violet-600">{formatMoney(exp.amount, isHidden, true)}</p>
+                                                    <p className="text-sm font-black text-violet-300">{formatMoney(exp.amount, isHidden, true)}</p>
                                                 </div>
                                             ))}
                                             <div className="border-t pt-2 mt-1 flex justify-between">
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase">Jumlah</p>
-                                                <p className="text-[12px] font-black text-violet-600">{formatMoney((expenses||[]).reduce((a,e)=>a+e.amount,0), isHidden, true)}</p>
+                                                <p className="text-[12px] font-black text-violet-300">{formatMoney((expenses||[]).reduce((a,e)=>a+e.amount,0), isHidden, true)}</p>
                                             </div>
                                         </div>
                                     )}
@@ -1493,31 +1493,31 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                         <TrendingDown size={14} className="text-orange-500" /> Pengurangan Hutang
                                     </h3>
                                     {isAdmin && (
-                                        <button onClick={() => requirePaid(() => setShowDebtModal(true))} className="text-[10px] font-bold text-orange-600 flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg">
+                                        <button onClick={() => requirePaid(() => setShowDebtModal(true))} className="text-[10px] font-bold text-orange-600 flex items-center gap-1 bg-orange-500/15 px-2 py-1 rounded-lg">
                                             {isPaid ? <Plus size={12}/> : <span>🔒</span>} TAMBAH
                                         </button>
                                     )}
                                 </div>
                                 {debts.length === 0 ? (
-                                    <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+                                    <div className="luxe-card rounded-3xl p-5">
                                         <p className="text-slate-400 text-xs text-center">Tiada hutang aktif</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
                                         {debts.map((debt) => (
-                                            <div key={debt.id} className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-100">
+                                            <div key={debt.id} className="luxe-card p-5 rounded-[24px]">
                                                 <div className="flex justify-between items-end mb-2.5">
                                                     <div>
-                                                        <h4 className="font-bold text-slate-700 text-[13px]">{debt.title}</h4>
+                                                        <h4 className="font-bold text-slate-100 text-[13px]">{debt.title}</h4>
                                                         <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
                                                             {debt.type === 'fixed' ? 'Bayaran Tetap' : 'Bayaran Fleksibel'}
                                                         </p>
                                                     </div>
-                                                    <p className="text-[11px] font-black text-indigo-600 font-mono">
+                                                    <p className="text-[11px] font-black text-indigo-300 font-mono">
                                                         {formatMoney(debt.paid, isHidden, true)}
                                                     </p>
                                                 </div>
-                                                <div className="w-full bg-slate-50 h-2 rounded-full overflow-hidden border border-slate-100/50">
+                                                <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
                                                     <div className="bg-orange-400 h-full rounded-full transition-all duration-1000" style={{ width: `${debt.pct}%` }}></div>
                                                 </div>
                                                 <div className="flex justify-between mt-2">
@@ -1526,19 +1526,19 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                 </div>
                                                 {/* Action buttons */}
                                                 <div className="flex gap-2 mt-3 pt-3 border-t border-slate-50">
-                                                    <button onClick={() => openPayment(debt)} className="flex-1 text-[10px] font-bold text-orange-600 bg-orange-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                    <button onClick={() => openPayment(debt)} className="flex-1 text-[10px] font-bold text-orange-600 bg-orange-500/15 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                         <DollarSign size={12}/> Bayar
                                                     </button>
-                                                    <button onClick={() => openHistory(debt)} className="flex-1 text-[10px] font-bold text-slate-500 bg-slate-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                    <button onClick={() => openHistory(debt)} className="flex-1 text-[10px] font-bold text-slate-500 bg-white/5 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                         <Clock size={12}/> Sejarah
                                                     </button>
                                                     {isAdmin && (
-                                                        <button onClick={() => { setEditDebt(debt); setShowDebtModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <button onClick={() => { setEditDebt(debt); setShowDebtModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-500/15 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                             <Pencil size={12}/> Edit
                                                         </button>
                                                     )}
                                                     {isAdmin && (
-                                                        <button onClick={() => { if (confirm('Mark hutang ini selesai?')) router.post(route('debts.settle', debt.id), {}, { preserveScroll: true }); }} className="flex-1 text-[10px] font-bold text-green-600 bg-green-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <button onClick={() => { if (confirm('Mark hutang ini selesai?')) router.post(route('debts.settle', debt.id), {}, { preserveScroll: true }); }} className="flex-1 text-[10px] font-bold text-emerald-400 bg-green-500/15 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                             <CheckCheck size={12}/> Selesai
                                                         </button>
                                                     )}
@@ -1556,24 +1556,24 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                         <PiggyBank size={14} className="text-emerald-500" /> Simpanan
                                     </h3>
                                     {isAdmin && (
-                                        <button onClick={() => setShowSavingsModal(true)} className="text-[10px] font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg">
+                                        <button onClick={() => setShowSavingsModal(true)} className="text-[10px] font-bold text-emerald-400 flex items-center gap-1 bg-emerald-500/15 px-2 py-1 rounded-lg">
                                             <Plus size={12}/> TAMBAH
                                         </button>
                                     )}
                                 </div>
                                 {(savings_goals || []).length === 0 ? (
-                                    <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 text-center">
+                                    <div className="luxe-card rounded-3xl p-5 text-center">
                                         <p className="text-slate-400 text-xs">Tiada sasaran simpanan</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
                                         {(savings_goals || []).map(goal => (
-                                            <div key={goal.id} className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-100">
+                                            <div key={goal.id} className="luxe-card p-5 rounded-[24px]">
                                                 <div className="flex justify-between items-start mb-2.5">
                                                     <div className="flex items-center gap-3">
                                                         <span className="text-2xl">{goal.emoji}</span>
                                                         <div>
-                                                            <h4 className="font-bold text-slate-700 text-[13px]">{goal.title}</h4>
+                                                            <h4 className="font-bold text-slate-100 text-[13px]">{goal.title}</h4>
                                                             {goal.deadline && (
                                                                 <p className="text-[9px] text-slate-400 font-bold uppercase flex items-center gap-1">
                                                                     <Calendar size={9}/> {new Date(goal.deadline).toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -1582,14 +1582,14 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-[11px] font-black text-emerald-600">{goal.pct}%</p>
-                                                        {goal.on_track === 'on_track' && <span className="text-[8px] font-bold text-emerald-500 bg-emerald-50 px-1.5 py-0.5 rounded-md">On track 🟢</span>}
+                                                        <p className="text-[11px] font-black text-emerald-400">{goal.pct}%</p>
+                                                        {goal.on_track === 'on_track' && <span className="text-[8px] font-bold text-emerald-500 bg-emerald-500/15 px-1.5 py-0.5 rounded-md">On track 🟢</span>}
                                                         {goal.on_track === 'behind' && <span className="text-[8px] font-bold text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded-md">Perlu kejar 🟡</span>}
                                                         {goal.on_track === 'far_behind' && <span className="text-[8px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-md">Jauh ketinggalan 🔴</span>}
                                                         {goal.on_track === 'overdue' && <span className="text-[8px] font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded-md">Tarikh lepas!</span>}
                                                     </div>
                                                 </div>
-                                                <div className="w-full bg-slate-50 h-2 rounded-full overflow-hidden border border-slate-100/50">
+                                                <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
                                                     <div className="bg-emerald-400 h-full rounded-full transition-all duration-1000" style={{ width: `${goal.pct}%` }}></div>
                                                 </div>
                                                 <div className="flex justify-between mt-2">
@@ -1597,11 +1597,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     <p className="text-[8px] text-slate-400 font-bold">Baki: {formatMoney(goal.remaining)}</p>
                                                 </div>
                                                 <div className="flex gap-2 mt-3 pt-3 border-t border-slate-50">
-                                                    <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                    <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/15 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                         <Plus size={12}/> Tambah
                                                     </button>
                                                     {isAdmin && (
-                                                        <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                                        <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="flex-1 text-[10px] font-bold text-indigo-500 bg-indigo-500/15 py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                             <Pencil size={12}/> Edit
                                                         </button>
                                                     )}
@@ -1635,15 +1635,15 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                     onClick={() => handleTogglePaid(bill.id)}
                                                     className={`flex items-center justify-between p-4 rounded-[22px] transition-all border-2 cursor-pointer ${
                                                         bill.paid
-                                                            ? 'bg-slate-50 border-transparent opacity-60'
-                                                            : 'bg-white border-white shadow-sm ring-1 ring-slate-100'
+                                                            ? 'bg-white/5 border-transparent opacity-60'
+                                                            : 'bg-white/[0.05] border-white/10 shadow-sm'
                                                     }`}
                                                 >
                                                     <div className="flex items-center gap-4">
                                                         {bill.paid ? <CheckCircle size={26} className="text-green-500" /> : <Circle size={26} className="text-slate-200" />}
                                                         <div>
                                                             <div className="flex items-center gap-2">
-                                                                <h4 className={`text-[13px] font-bold leading-tight ${bill.paid ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
+                                                                <h4 className={`text-[13px] font-bold leading-tight ${bill.paid ? 'text-slate-400 line-through' : 'text-slate-100'}`}>
                                                                     {bill.title}
                                                                 </h4>
                                                                 {!bill.paid && bill.urgency === 'overdue' && <span className="text-[8px] font-black bg-red-100 text-red-600 px-1.5 py-0.5 rounded-md uppercase animate-pulse">Lewat!</span>}
@@ -1651,26 +1651,26 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                                 {!bill.paid && bill.urgency === 'soon' && <span className="text-[8px] font-black bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded-md uppercase">{bill.due_day - new Date().getDate()}h lagi</span>}
                                                             </div>
                                                             <div className="flex items-center gap-2 mt-1">
-                                                                <span className={`text-xs font-black ${bill.paid ? 'text-slate-400' : 'text-indigo-600'}`}>
+                                                                <span className={`text-xs font-black ${bill.paid ? 'text-slate-400' : 'text-indigo-300'}`}>
                                                                     {formatMoney(bill.amount)}
                                                                 </span>
                                                                 {isAdmin ? (
                                                                     <button
                                                                         onClick={(e) => handleToggleAssign(e, bill.template_id, bill.assigned)}
                                                                         className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase active:scale-90 transition-all ${
-                                                                        (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
+                                                                        (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-500/15 text-indigo-500' : 'bg-pink-50 text-pink-500'
                                                                     }`}>
                                                                         {bill.assigned}
                                                                     </button>
                                                                 ) : (
                                                                     <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase ${
-                                                                        (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-50 text-indigo-500' : 'bg-pink-50 text-pink-500'
+                                                                        (family_members || [])[0]?.name === bill.assigned ? 'bg-indigo-500/15 text-indigo-500' : 'bg-pink-50 text-pink-500'
                                                                     }`}>
                                                                         {bill.assigned}
                                                                     </span>
                                                                 )}
                                                                 {bill.debt_title && (
-                                                                    <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-500 uppercase flex items-center gap-0.5">
+                                                                    <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-md bg-orange-500/15 text-orange-500 uppercase flex items-center gap-0.5">
                                                                         <Link2 size={8}/> {bill.debt_title}
                                                                     </span>
                                                                 )}
@@ -1684,21 +1684,21 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 onClick={(e) => e.stopPropagation()}
-                                                                className="p-1.5 rounded-xl bg-green-50 text-green-500 active:scale-90 transition-all"
+                                                                className="p-1.5 rounded-xl bg-green-500/15 text-green-500 active:scale-90 transition-all"
                                                             >
                                                                 <MessageCircle size={14} />
                                                             </a>
                                                         )}
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); setSelectedBill(bill); setShowReceiptModal(true); }}
-                                                            className={`p-1.5 rounded-xl active:scale-90 transition-all ${bill.receipt_path ? 'bg-green-50 text-green-500' : 'bg-slate-50 text-slate-300'}`}
+                                                            className={`p-1.5 rounded-xl active:scale-90 transition-all ${bill.receipt_path ? 'bg-green-500/15 text-green-500' : 'bg-white/5 text-slate-300'}`}
                                                         >
                                                             {bill.receipt_path ? <Image size={14} /> : <Camera size={14} />}
                                                         </button>
                                                         {isAdmin && (
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); setSelectedTemplate({ id: bill.template_id, title: bill.title, default_amount: bill.default_amount, category: bill.category, assigned_to: bill.assigned, debt_id: bill.debt_id || '', due_day: bill.due_day || '' }); setShowBillModal(true); }}
-                                                                className="p-1.5 rounded-xl bg-slate-50 text-slate-400 active:scale-90 transition-all"
+                                                                className="p-1.5 rounded-xl bg-white/5 text-slate-400 active:scale-90 transition-all"
                                                             >
                                                                 <Pencil size={14} />
                                                             </button>
@@ -1728,7 +1728,7 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                             </div>
                                                             <button
                                                                 onClick={() => router.post(route('bills.unskip', bill.id), {}, { preserveScroll: true })}
-                                                                className="flex items-center gap-1 text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2.5 py-1.5 rounded-xl active:scale-90 transition-all opacity-100"
+                                                                className="flex items-center gap-1 text-[10px] font-bold text-indigo-500 bg-indigo-500/15 px-2.5 py-1.5 rounded-xl active:scale-90 transition-all opacity-100"
                                                             >
                                                                 <RotateCcw size={11} /> Pulihkan
                                                             </button>
@@ -1767,11 +1767,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             )}
                         </div>
                         {(savings_goals || []).length === 0 ? (
-                            <div className="bg-white rounded-[28px] p-10 shadow-sm border border-slate-100 text-center space-y-3">
+                            <div className="luxe-card rounded-[28px] p-10 text-center space-y-3">
                                 <span className="text-5xl">🐷</span>
                                 <p className="text-slate-400 text-sm font-medium">Belum ada sasaran simpanan</p>
                                 {isAdmin && (
-                                    <button onClick={() => setShowSavingsModal(true)} className="text-emerald-600 font-bold text-xs bg-emerald-50 px-4 py-2 rounded-xl">
+                                    <button onClick={() => setShowSavingsModal(true)} className="text-emerald-400 font-bold text-xs bg-emerald-500/15 px-4 py-2 rounded-xl">
                                         Tambah Pertama
                                     </button>
                                 )}
@@ -1780,22 +1780,22 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                             <div className="space-y-4">
                                 {/* Summary bar */}
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+                                    <div className="luxe-card p-4 rounded-3xl">
                                         <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Terkumpul</p>
-                                        <p className="text-sm font-black text-emerald-600">{formatMoney((savings_goals||[]).reduce((a,g)=>a+g.saved,0))}</p>
+                                        <p className="text-sm font-black text-emerald-400">{formatMoney((savings_goals||[]).reduce((a,g)=>a+g.saved,0))}</p>
                                     </div>
-                                    <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+                                    <div className="luxe-card p-4 rounded-3xl">
                                         <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Total Target</p>
-                                        <p className="text-sm font-black text-slate-700">{formatMoney((savings_goals||[]).reduce((a,g)=>a+g.target,0))}</p>
+                                        <p className="text-sm font-black text-slate-100">{formatMoney((savings_goals||[]).reduce((a,g)=>a+g.target,0))}</p>
                                     </div>
                                 </div>
                                 {(savings_goals || []).map(goal => (
-                                    <div key={goal.id} className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-100">
+                                    <div key={goal.id} className="luxe-card p-5 rounded-[24px]">
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex items-center gap-3">
                                                 <span className="text-3xl">{goal.emoji}</span>
                                                 <div>
-                                                    <h4 className="font-bold text-slate-700">{goal.title}</h4>
+                                                    <h4 className="font-bold text-slate-100">{goal.title}</h4>
                                                     {goal.deadline && (
                                                         <p className="text-[9px] text-slate-400 font-bold flex items-center gap-1 mt-0.5">
                                                             <Calendar size={9}/> {new Date(goal.deadline).toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'})}
@@ -1804,23 +1804,23 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-lg font-black text-emerald-600">{goal.pct}%</p>
+                                                <p className="text-lg font-black text-emerald-400">{goal.pct}%</p>
                                                 <p className="text-[9px] text-slate-400 font-bold">selesai</p>
                                             </div>
                                         </div>
-                                        <div className="w-full bg-slate-50 h-3 rounded-full overflow-hidden">
+                                        <div className="w-full bg-white/5 h-3 rounded-full overflow-hidden">
                                             <div className="bg-emerald-400 h-full rounded-full transition-all duration-1000" style={{ width: `${goal.pct}%` }}></div>
                                         </div>
                                         <div className="flex justify-between mt-2 mb-3">
-                                            <p className="text-xs font-black text-emerald-600">{formatMoney(goal.saved)}</p>
+                                            <p className="text-xs font-black text-emerald-400">{formatMoney(goal.saved)}</p>
                                             <p className="text-xs font-black text-slate-400">{formatMoney(goal.target)}</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                            <button onClick={() => { setSelectedGoal(goal); setShowContributeModal(true); }} className="flex-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/15 py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
                                                 <Plus size={12}/> Tambah Simpanan
                                             </button>
                                             {isAdmin && (
-                                                <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="px-4 text-[10px] font-bold text-slate-500 bg-slate-50 py-2.5 rounded-xl flex items-center justify-center active:scale-95 transition-all">
+                                                <button onClick={() => { setEditGoal(goal); setShowSavingsModal(true); }} className="px-4 text-[10px] font-bold text-slate-500 bg-white/5 py-2.5 rounded-xl flex items-center justify-center active:scale-95 transition-all">
                                                     <Pencil size={12}/>
                                                 </button>
                                             )}
@@ -1837,11 +1837,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                 {/* ─── Floating Nav ─── */}
                 <div className="fixed bottom-6 left-6 right-6 max-w-[calc(448px-3rem)] mx-auto z-50">
                     <div className="bg-ink-soft/85 backdrop-blur-2xl border border-white/[0.08] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[32px] flex justify-around items-center p-3">
-                        <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'home' ? 'text-indigo-600' : 'text-slate-400'}`}>
+                        <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'home' ? 'text-indigo-300' : 'text-slate-400'}`}>
                             <Home size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Home</span>
                         </button>
-                        <button onClick={() => setActiveTab('analytics')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'analytics' ? 'text-indigo-600' : 'text-slate-400'}`}>
+                        <button onClick={() => setActiveTab('analytics')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'analytics' ? 'text-indigo-300' : 'text-slate-400'}`}>
                             <BarChart2 size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Analitik</span>
                         </button>
@@ -1852,11 +1852,11 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
                         ) : (
                             <div className="w-14" />
                         )}
-                        <button onClick={() => setActiveTab('savings')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'savings' ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        <button onClick={() => setActiveTab('savings')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'savings' ? 'text-emerald-400' : 'text-slate-400'}`}>
                             <PiggyBank size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Simpan</span>
                         </button>
-                        <button onClick={() => setActiveTab('user')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'user' ? 'text-indigo-600' : 'text-slate-400'}`}>
+                        <button onClick={() => setActiveTab('user')} className={`flex flex-col items-center p-2 transition-all ${activeTab === 'user' ? 'text-indigo-300' : 'text-slate-400'}`}>
                             <User size={22} strokeWidth={2.5} />
                             <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">Profil</span>
                         </button>
