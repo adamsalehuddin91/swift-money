@@ -1269,6 +1269,17 @@ export default function Dashboard({ user, summary, my_summary, incomes, my_incom
     const openPayment = (debt) => { setSelectedDebt(debt); setShowPaymentModal(true); };
     const openHistory = (debt) => { setSelectedDebt(debt); setShowHistoryModal(true); };
 
+    // Real-time sync — when spouse updates a bill, refresh shared data live
+    useEffect(() => {
+        const familyId = user?.family_id;
+        if (!familyId || !window.Echo) return;
+        const channelName = `family.${familyId}`;
+        window.Echo.private(channelName).listen('.bill.updated', () => {
+            router.reload({ only: ['categorized_bills', 'my_bills', 'summary', 'my_summary', 'active_debts', 'forecast', 'my_forecast'] });
+        });
+        return () => window.Echo.leave(channelName);
+    }, [user?.family_id]);
+
     return (
         <>
             <Head title="Dashboard" />
