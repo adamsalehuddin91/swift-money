@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libonig-dev libxml2-dev libsqlite3-dev \
     nodejs npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_sqlite pdo_mysql mbstring xml gd bcmath opcache \
+    && docker-php-ext-install pdo pdo_sqlite pdo_mysql mbstring xml gd bcmath opcache pcntl posix sockets \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Composer
