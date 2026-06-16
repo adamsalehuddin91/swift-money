@@ -1,4 +1,8 @@
-// Custom Web-Push handlers, imported by the generated Workbox service worker.
+// Standalone root-scoped service worker dedicated to Web Push.
+// (Registered at '/' by PushToggle — independent of the Workbox /build SW.)
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
+
 self.addEventListener('push', (event) => {
     let payload = {};
     try {

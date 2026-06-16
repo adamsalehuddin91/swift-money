@@ -10,6 +10,18 @@ function urlBase64ToUint8Array(base64String) {
     return out;
 }
 
+// Register our own root-scoped SW for push, then wait until it's active.
+async function getPushReg() {
+    const reg = await navigator.serviceWorker.register('/push-sw.js', { scope: '/' });
+    if (reg.active) return reg;
+    await new Promise((resolve) => {
+        const sw = reg.installing || reg.waiting;
+        if (!sw) return resolve();
+        sw.addEventListener('statechange', () => sw.state === 'activated' && resolve());
+    });
+    return reg;
+}
+
 export default function PushToggle() {
     const supported = typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window;
     const [enabled, setEnabled] = useState(false);
@@ -17,7 +29,7 @@ export default function PushToggle() {
 
     useEffect(() => {
         if (!supported) return;
-        navigator.serviceWorker.ready
+        getPushReg()
             .then((reg) => reg.pushManager.getSubscription())
             .then((sub) => setEnabled(!!sub))
             .catch(() => {});
@@ -28,8 +40,9 @@ export default function PushToggle() {
         try {
             const perm = await Notification.requestPermission();
             if (perm !== 'granted') return;
-            const reg = await navigator.serviceWorker.ready;
             const key = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+            if (!key) throw new Error('VITE_VAPID_PUBLIC_KEY tidak di-set (build variable)');
+            const reg = await getPushReg();
             const sub = await reg.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(key),
@@ -38,6 +51,7 @@ export default function PushToggle() {
             setEnabled(true);
         } catch (e) {
             console.error('Push subscribe failed', e);
+            alert('Gagal hidupkan peringatan: ' + (e?.message || e));
         } finally {
             setBusy(false);
         }
@@ -46,7 +60,7 @@ export default function PushToggle() {
     const disable = async () => {
         setBusy(true);
         try {
-            const reg = await navigator.serviceWorker.ready;
+            const reg = await getPushReg();
             const sub = await reg.pushManager.getSubscription();
             if (sub) {
                 await window.axios.post(route('push.unsubscribe'), { endpoint: sub.endpoint });
