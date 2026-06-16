@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    /* Dark canvas behind everything — no white gutters beyond the app's max-width
+       (incl. notch safe-areas / overscroll). Login keeps its own bg on top. */
+    html { background-color: #0B1120; }
+    body { overflow-x: hidden; }
+}
+
 @layer components {
     /* ── Dark-luxe "private wealth" design system ──
        Use on full-screen authenticated pages. */
