@@ -31,4 +31,7 @@ php artisan storage:link --quiet 2>/dev/null || true
 # Run migrations automatically on every deploy
 php artisan migrate --force
 
+# Seed/refresh reference data (idempotent — updateOrCreate). Tax relief caps per YA.
+php artisan db:seed --class=TaxReliefCategorySeeder --force
+
 exec supervisord -c /etc/supervisord.conf
