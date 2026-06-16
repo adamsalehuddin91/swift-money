@@ -121,6 +121,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Web Push subscriptions
     Route::post('/push/subscribe', [PushController::class, 'subscribe'])->name('push.subscribe');
     Route::post('/push/unsubscribe', [PushController::class, 'unsubscribe'])->name('push.unsubscribe');
+    Route::post('/push/test', [PushController::class, 'test'])->name('push.test');
 
     // Language preference
     Route::post('/language', [LanguageController::class, 'update'])->name('language.update');

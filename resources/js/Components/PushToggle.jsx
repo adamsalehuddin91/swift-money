@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell, BellRing, Loader2 } from 'lucide-react';
+import { Bell, BellRing, Loader2, Send } from 'lucide-react';
 
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -26,6 +26,7 @@ export default function PushToggle() {
     const supported = typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window;
     const [enabled, setEnabled] = useState(false);
     const [busy, setBusy] = useState(false);
+    const [testing, setTesting] = useState(false);
 
     useEffect(() => {
         if (!supported) return;
@@ -74,26 +75,52 @@ export default function PushToggle() {
         }
     };
 
+    const sendTest = async () => {
+        setTesting(true);
+        try {
+            const { data } = await window.axios.post(route('push.test'));
+            if (!data.ok) throw new Error(data.error || 'gagal');
+        } catch (e) {
+            alert('Ujian gagal: ' + (e?.response?.data?.error || e?.message || e));
+        } finally {
+            setTesting(false);
+        }
+    };
+
     if (!supported) return null;
 
     return (
-        <button
-            onClick={enabled ? disable : enable}
-            disabled={busy}
-            className="w-full flex items-center justify-between p-4 border-b border-white/10 active:bg-white/5 transition-colors disabled:opacity-60"
-        >
-            <div className="flex items-center gap-3">
-                <span className={`grid place-items-center w-9 h-9 rounded-full border ${enabled ? 'bg-gold/15 border-gold/40 text-gold' : 'bg-white/[0.06] border-white/10 text-slate-400'}`}>
-                    {busy ? <Loader2 size={16} className="animate-spin" /> : enabled ? <BellRing size={16} /> : <Bell size={16} />}
-                </span>
-                <div className="text-left">
-                    <p className="text-sm font-bold text-slate-100">Peringatan Bil</p>
-                    <p className="text-[11px] text-slate-400">{enabled ? 'Notifikasi dihidupkan' : 'Hidupkan push notification due-date'}</p>
+        <>
+            <button
+                onClick={enabled ? disable : enable}
+                disabled={busy}
+                className="w-full flex items-center justify-between p-4 border-b border-white/10 active:bg-white/5 transition-colors disabled:opacity-60"
+            >
+                <div className="flex items-center gap-3">
+                    <span className={`grid place-items-center w-9 h-9 rounded-full border ${enabled ? 'bg-gold/15 border-gold/40 text-gold' : 'bg-white/[0.06] border-white/10 text-slate-400'}`}>
+                        {busy ? <Loader2 size={16} className="animate-spin" /> : enabled ? <BellRing size={16} /> : <Bell size={16} />}
+                    </span>
+                    <div className="text-left">
+                        <p className="text-sm font-bold text-slate-100">Peringatan Bil</p>
+                        <p className="text-[11px] text-slate-400">{enabled ? 'Notifikasi dihidupkan' : 'Hidupkan push notification due-date'}</p>
+                    </div>
                 </div>
-            </div>
-            <span className={`text-[10px] font-black uppercase tracking-wide px-2.5 py-1 rounded-lg ${enabled ? 'bg-gold text-ink' : 'luxe-chip'}`}>
-                {enabled ? 'On' : 'Off'}
-            </span>
-        </button>
+                <span className={`text-[10px] font-black uppercase tracking-wide px-2.5 py-1 rounded-lg ${enabled ? 'bg-gold text-ink' : 'luxe-chip'}`}>
+                    {enabled ? 'On' : 'Off'}
+                </span>
+            </button>
+
+            {enabled && (
+                <button onClick={sendTest} disabled={testing} className="w-full flex items-center gap-3 p-4 border-b border-white/10 active:bg-white/5 transition-colors disabled:opacity-60 text-left">
+                    <span className="grid place-items-center w-9 h-9 rounded-full bg-white/[0.06] border border-white/10 text-slate-300">
+                        {testing ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
+                    </span>
+                    <div>
+                        <p className="text-sm font-bold text-slate-100">Hantar ujian</p>
+                        <p className="text-[11px] text-slate-400">Test notifikasi sampai ke phone sekarang</p>
+                    </div>
+                </button>
+            )}
+        </>
     );
 }
