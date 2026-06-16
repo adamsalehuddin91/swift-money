@@ -21,6 +21,19 @@ COPY . .
 # PHP dependencies
 RUN composer install --optimize-autoloader --no-interaction --no-dev
 
+# Frontend build-time vars — Vite bakes these into the bundle (runtime env is too late).
+# Pass via Coolify "Build Variables". Empty defaults keep features dormant + safe.
+ARG VITE_VAPID_PUBLIC_KEY=""
+ARG VITE_REVERB_APP_KEY=""
+ARG VITE_REVERB_HOST=""
+ARG VITE_REVERB_PORT="443"
+ARG VITE_REVERB_SCHEME="https"
+ENV VITE_VAPID_PUBLIC_KEY=$VITE_VAPID_PUBLIC_KEY \
+    VITE_REVERB_APP_KEY=$VITE_REVERB_APP_KEY \
+    VITE_REVERB_HOST=$VITE_REVERB_HOST \
+    VITE_REVERB_PORT=$VITE_REVERB_PORT \
+    VITE_REVERB_SCHEME=$VITE_REVERB_SCHEME
+
 # Node dependencies + frontend build
 RUN npm ci --production=false \
     && npm run build \
@@ -41,6 +54,6 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 80
+EXPOSE 80 8080
 
 CMD ["/entrypoint.sh"]
